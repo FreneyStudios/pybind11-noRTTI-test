@@ -1,4 +1,4 @@
-// Copyright (c) 2023 The pybind Community.
+// Copyright (c) 2023 Frêney Studios <https://studios.freney.com/>.
 
 #pragma once
 

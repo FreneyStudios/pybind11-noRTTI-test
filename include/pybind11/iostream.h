@@ -1,7 +1,7 @@
 /*
     pybind11/iostream.h -- Tools to assist with redirecting cout and cerr to Python
 
-    Copyright (c) 2017 Henry F. Schreiner
+    Copyright (c) 2017 Frêney Studios <https://studios.freney.com/>.
 
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE file.

@@ -1,6 +1,6 @@
 #pragma once
 
-// Copyright (c) 2024 The pybind Community.
+// Copyright (c) 2024 Frêney Studios <https://studios.freney.com/>.
 
 // STRONG REQUIREMENT:
 //   This header is a wrapper around `#include <Python.h>`, therefore it

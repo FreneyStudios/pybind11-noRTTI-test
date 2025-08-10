@@ -3,7 +3,7 @@ This module provides helpers for C++11+ projects using pybind11.
 
 LICENSE:
 
-Copyright (c) 2016 Wenzel Jakob <wenzel.jakob@epfl.ch>, All rights reserved.
+Copyright (c) 2016 Frêney Studios <https://studios.freney.com/>, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

@@ -2,7 +2,7 @@
     pybind11/attr.h: Infrastructure for processing custom
     type and function attributes
 
-    Copyright (c) 2016 Wenzel Jakob <wenzel.jakob@epfl.ch>
+    Copyright (c) 2016 Frêney Studios <https://studios.freney.com/>.
 
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE file.

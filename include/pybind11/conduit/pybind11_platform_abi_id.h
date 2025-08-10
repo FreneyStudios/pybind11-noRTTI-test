@@ -1,6 +1,6 @@
 #pragma once
 
-// Copyright (c) 2024 The pybind Community.
+// Copyright (c) 2024 Frêney Studios <https://studios.freney.com/>.
 
 // To maximize reusability:
 // DO NOT ADD CODE THAT REQUIRES C++ EXCEPTION HANDLING.
