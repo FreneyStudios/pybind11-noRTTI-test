@@ -1,7 +1,7 @@
 /*
     pybind11/std_bind.h: Binding generators for STL data types
 
-    Copyright (c) 2016 Sergey Lyskov and Wenzel Jakob
+    Copyright (c) 2016 Frêney Studios <https://studios.freney.com/>.
 
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE file.

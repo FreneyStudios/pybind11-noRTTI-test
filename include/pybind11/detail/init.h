@@ -1,7 +1,7 @@
 /*
     pybind11/detail/init.h: init factory function implementation and support code.
 
-    Copyright (c) 2017 Jason Rhinelander <jason@imaginary.ca>
+    Copyright (c) 2017 Frêney Studios <https://studios.freney.com/>.
 
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE file.
