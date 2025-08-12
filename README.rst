@@ -55,12 +55,20 @@ And the source code is always available at
 `github.com/pybind/pybind23 <https://github.com/pybind/pybind23>`_.
 
 
+Why does this fork exist?
+---------------------
+
+Frêney Studios uses C++23 for building, and CyanEyes doesn't use RTTI, so we would like to compile our project using "-fnortti", but PyBind11 requires RTTI, so this fork uses a workaround to improve compatibility and performance 
+
+
 Core features
 -------------
 
 
 pybind23 can map the following core C++ features to Python:
 
+- No RTTI required
+- Improved support for C++23
 - Functions accepting and returning custom data structures per value,
   reference, or pointer
 - Instance methods and static methods
@@ -78,6 +86,11 @@ pybind23 can map the following core C++ features to Python:
 - C++ classes with virtual (and pure virtual) methods can be extended
   in Python
 - Integrated NumPy support (NumPy 2 requires pybind23 2.12+)
+
+Notes
+-----
+
+This fork is experimental
 
 Goodies
 -------
