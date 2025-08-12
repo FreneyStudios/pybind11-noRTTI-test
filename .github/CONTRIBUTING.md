@@ -5,7 +5,7 @@ sections on how to contribute code and bug reports.
 
 Before submitting a question or bug report, please take a moment of your time
 and ensure that your issue isn't already discussed in the project documentation
-provided at [pybind11.readthedocs.org][] or in the [issue tracker][]. You can
+provided at [pybind23.readthedocs.org][] or in the [issue tracker][]. You can
 also check [gitter][] to see if it came up before.
 
 Assuming that you have identified a previously unknown problem or an important
@@ -36,7 +36,7 @@ the following rules to make the process as smooth as possible:
 
 ### Licensing of contributions
 
-pybind11 is provided under a BSD-style license that can be found in the
+pybind23 is provided under a BSD-style license that can be found in the
 ``LICENSE`` file. By using, distributing, or contributing to this project, you
 agree to the terms and conditions of this license.
 
@@ -51,7 +51,7 @@ other computer software, distribute, and sublicense such enhancements or
 derivative works thereof, in binary and source code form.
 
 
-## Development of pybind11
+## Development of pybind23
 
 ### Quick setup
 
@@ -97,7 +97,7 @@ Tips:
 * You can select any name for your environment folder; if it contains "env" it
   will be ignored by git.
 * If you don't have CMake 3.15+, just add "cmake" to the pip install command.
-* You can use `-DPYBIND11_FINDPYTHON=ON` to use FindPython.
+* You can use `-DPYBIND23_FINDPYTHON=ON` to use FindPython.
 * For a specific Python, you can use `-DPython_ROOT_DIR=/path/to` or
   `-DPython_EXECUTABLE=/path/to/python`.
 
@@ -115,7 +115,7 @@ if you want to use a specific version of Python (or any other config option) or
 build only one of the valid targets (listed below).
 
 ```bash
-cmake --preset venv -DPYBIND11_CREATE_WITH_UV=3.13t
+cmake --preset venv -DPYBIND23_CREATE_WITH_UV=3.13t
 cmake --build --preset venv
 cmake --build --preset venv -t cpptest
 ```
@@ -145,13 +145,13 @@ after the initial run.
 The valid options are:
 
 * `-DCMAKE_BUILD_TYPE`: Release, Debug, MinSizeRel, RelWithDebInfo
-* `-DPYBIND11_FINDPYTHON=ON`: Use CMake 3.12+'s FindPython instead of the
+* `-DPYBIND23_FINDPYTHON=ON`: Use CMake 3.12+'s FindPython instead of the
   classic, deprecated, custom FindPythonLibs
-* `-DPYBIND11_NOPYTHON=ON`: Disable all Python searching (disables tests)
+* `-DPYBIND23_NOPYTHON=ON`: Disable all Python searching (disables tests)
 * `-DBUILD_TESTING=ON`: Enable the tests
 * `-DDOWNLOAD_CATCH=ON`: Download catch to build the C++ tests
 * `-DDOWNLOAD_EIGEN=ON`: Download Eigen for the NumPy tests
-* `-DPYBIND11_INSTALL=ON/OFF`: Enable the install target (on by default for the
+* `-DPYBIND23_INSTALL=ON/OFF`: Enable the install target (on by default for the
   master project)
 * `-DUSE_PYTHON_INSTALL_DIR=ON`: Try to install into the python dir
 
@@ -189,7 +189,7 @@ targets:
 * `test_cmake_build`: Install / subdirectory tests
 
 If you want to build just a subset of tests, use
-`-DPYBIND11_TEST_OVERRIDE="test_callbacks;test_pickling"`. If this is
+`-DPYBIND23_TEST_OVERRIDE="test_callbacks;test_pickling"`. If this is
 empty, all tests will be built. Tests are specified without an extension if they need both a .py and
 .cpp file.
 
@@ -236,7 +236,7 @@ pre-commit install
 
 ### Clang-Format
 
-As of v2.6.2, pybind11 ships with a [`clang-format`][clang-format]
+As of v2.6.2, pybind23 ships with a [`clang-format`][clang-format]
 configuration file at the top level of the repo (the filename is
 `.clang-format`). Currently, formatting is NOT applied automatically, but
 manually using `clang-format` for newly developed files is highly encouraged.
@@ -254,18 +254,18 @@ clang-format -style=file -i some.cpp
 
 Note that the `-style-file` option searches the parent directories for the
 `.clang-format` file, i.e. the commands above can be run in any subdirectory
-of the pybind11 repo.
+of the pybind23 repo.
 
 ### Clang-Tidy
 
 [`clang-tidy`][clang-tidy] performs deeper static code analyses and is
 more complex to run, compared to `clang-format`, but support for `clang-tidy`
-is built into the pybind11 CMake configuration. To run `clang-tidy`, the
+is built into the pybind23 CMake configuration. To run `clang-tidy`, the
 following recipe should work. Run the `docker` command from the top-level
-directory inside your pybind11 git clone.
+directory inside your pybind23 git clone.
 
 ```bash
-docker run --rm -v $PWD:/pybind11 -w /pybind11 -it silkeh/clang:20
+docker run --rm -v $PWD:/pybind23 -w /pybind23 -it silkeh/clang:20
 apt-get update && apt-get install -y git python3-dev python3-pytest ninja-build
 cmake --preset tidy
 cmake --build --preset tidy
@@ -295,16 +295,16 @@ recent CMake and Python):
 python3 -m venv venv
 . venv/bin/activate
 pip install pytest
-cmake -S . -B build-intel -DCMAKE_CXX_COMPILER=$(which icpc) -DDOWNLOAD_CATCH=ON -DDOWNLOAD_EIGEN=ON -DPYBIND11_WERROR=ON
+cmake -S . -B build-intel -DCMAKE_CXX_COMPILER=$(which icpc) -DDOWNLOAD_CATCH=ON -DDOWNLOAD_EIGEN=ON -DPYBIND23_WERROR=ON
 ```
 
 This will test the PGI compilers:
 
 ```bash
-docker run --rm -it -v $PWD:/pybind11 nvcr.io/hpc/pgi-compilers:ce
+docker run --rm -it -v $PWD:/pybind23 nvcr.io/hpc/pgi-compilers:ce
 apt-get update && apt-get install -y python3-dev python3-pip python3-pytest
 wget -qO- "https://cmake.org/files/v3.18/cmake-3.18.2-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
-cmake -S pybind11/ -B build
+cmake -S pybind23/ -B build
 cmake --build build
 ```
 
@@ -316,18 +316,18 @@ cmake --build build
 
 The main objective of the packaging system is to create SDists (Python's source
 distribution packages) and wheels (Python's binary distribution packages) that
-include everything that is needed to work with pybind11, and which can be
+include everything that is needed to work with pybind23, and which can be
 installed without any additional dependencies. This is more complex than it
 appears: in order to support CMake as a first class language even when using
 the PyPI package, they must include the _generated_ CMake files (so as not to
-require CMake when installing the `pybind11` package itself). They should also
+require CMake when installing the `pybind23` package itself). They should also
 provide the option to install to the "standard" location
-(`<ENVROOT>/include/pybind11` and `<ENVROOT>/share/cmake/pybind11`) so they are
+(`<ENVROOT>/include/pybind23` and `<ENVROOT>/share/cmake/pybind23`) so they are
 easy to find with CMake, but this can cause problems if you are not an
 environment or using ``pyproject.toml`` requirements. This was solved by having
-two packages; the "nice" pybind11 package that stores the includes and CMake
+two packages; the "nice" pybind23 package that stores the includes and CMake
 files inside the package, that you get access to via functions in the package,
-and a `pybind11-global` package that can be included via `pybind11[global]` if
+and a `pybind23-global` package that can be included via `pybind23[global]` if
 you want the more invasive but discoverable file locations.
 
 If you want to package the GitHub source for the "global" package, you need
@@ -343,7 +343,7 @@ nox -s build_global
 [pre-commit]: https://pre-commit.com
 [clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [clang-tidy]: https://clang.llvm.org/extra/clang-tidy/
-[pybind11.readthedocs.org]: http://pybind11.readthedocs.org/en/latest
-[issue tracker]: https://github.com/pybind/pybind11/issues
+[pybind23.readthedocs.org]: http://pybind23.readthedocs.org/en/latest
+[issue tracker]: https://github.com/pybind/pybind23/issues
 [gitter]: https://gitter.im/pybind/Lobby
 [using pull requests]: https://help.github.com/articles/using-pull-requests

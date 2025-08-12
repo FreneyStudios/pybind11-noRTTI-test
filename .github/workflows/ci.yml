@@ -37,13 +37,13 @@ jobs:
         include:
           - runs-on: ubuntu-22.04
             python-version: '3.8'
-            cmake-args: -DPYBIND11_FINDPYTHON=OFF -DPYBIND11_NUMPY_1_ONLY=ON
+            cmake-args: -DPYBIND23_FINDPYTHON=OFF -DPYBIND23_NUMPY_1_ONLY=ON
           - runs-on: ubuntu-latest
             python-version: '3.13'
-            cmake-args: -DCMAKE_CXX_STANDARD=23 -DPYBIND11_SIMPLE_GIL_MANAGEMENT=ON
+            cmake-args: -DCMAKE_CXX_STANDARD=23 -DPYBIND23_SIMPLE_GIL_MANAGEMENT=ON
           - runs-on: ubuntu-latest
             python-version: '3.14t'
-            cmake-args: -DCMAKE_CXX_STANDARD=17 -DPYBIND11_TEST_SMART_HOLDER=ON
+            cmake-args: -DCMAKE_CXX_STANDARD=17 -DPYBIND23_TEST_SMART_HOLDER=ON
           - runs-on: ubuntu-latest
             python-version: 'pypy3.11'
             cmake-args: -DCMAKE_CXX_STANDARD=17
@@ -55,7 +55,7 @@ jobs:
             cmake-args: -DCMAKE_CXX_STANDARD=14
           - runs-on: windows-2022
             python-version: '3.8'
-            cmake-args: -DPYBIND11_FINDPYTHON=OFF
+            cmake-args: -DPYBIND23_FINDPYTHON=OFF
 
 
     name: 🐍
@@ -73,22 +73,22 @@ jobs:
         include:
           - runs-on: ubuntu-latest
             python-version: '3.8'
-            cmake-args: -DPYBIND11_FINDPYTHON=ON -DCMAKE_CXX_STANDARD=17
+            cmake-args: -DPYBIND23_FINDPYTHON=ON -DCMAKE_CXX_STANDARD=17
           - runs-on: ubuntu-latest
             python-version: '3.10'
             cmake-args: -DCMAKE_CXX_STANDARD=20
           - runs-on: ubuntu-latest
             python-version: '3.11'
-            cmake-args: -DPYBIND11_TEST_SMART_HOLDER=ON -DCMAKE_CXX_STANDARD=17
+            cmake-args: -DPYBIND23_TEST_SMART_HOLDER=ON -DCMAKE_CXX_STANDARD=17
           - runs-on: ubuntu-latest
             python-version: '3.12'
-            cmake-args: -DPYBIND11_TEST_SMART_HOLDER=ON -DPYBIND11_SIMPLE_GIL_MANAGEMENT=ON
+            cmake-args: -DPYBIND23_TEST_SMART_HOLDER=ON -DPYBIND23_SIMPLE_GIL_MANAGEMENT=ON
           - runs-on: ubuntu-latest
             python-version: '3.13t'
-            cmake-args: -DCMAKE_CXX_STANDARD=20 -DPYBIND11_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION=ON
+            cmake-args: -DCMAKE_CXX_STANDARD=20 -DPYBIND23_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION=ON
           - runs-on: ubuntu-latest
             python-version: '3.14'
-            cmake-args: -DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_FLAGS="-DPYBIND11_HAS_SUBINTERPRETER_SUPPORT=0"
+            cmake-args: -DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_FLAGS="-DPYBIND23_HAS_SUBINTERPRETER_SUPPORT=0"
           - runs-on: ubuntu-latest
             python-version: 'pypy-3.10'
             cmake-args: -DCMAKE_CXX_STANDARD=14
@@ -101,10 +101,10 @@ jobs:
             cmake-args: -DCMAKE_CXX_STANDARD=14
           - runs-on: macos-13
             python-version: '3.11'
-            cmake-args: -DPYBIND11_TEST_SMART_HOLDER=ON
+            cmake-args: -DPYBIND23_TEST_SMART_HOLDER=ON
           - runs-on: macos-latest
             python-version: '3.12'
-            cmake-args: -DCMAKE_CXX_STANDARD=17 -DPYBIND11_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION=ON
+            cmake-args: -DCMAKE_CXX_STANDARD=17 -DPYBIND23_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION=ON
           - runs-on: macos-13
             python-version: '3.13t'
             cmake-args: -DCMAKE_CXX_STANDARD=11
@@ -121,10 +121,10 @@ jobs:
 
           - runs-on: windows-latest
             python-version: '3.9'
-            cmake-args: -DPYBIND11_TEST_SMART_HOLDER=ON
+            cmake-args: -DPYBIND23_TEST_SMART_HOLDER=ON
           - runs-on: windows-2022
             python-version: '3.8'
-            cmake-args: -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DPYBIND11_NUMPY_1_ONLY=ON
+            cmake-args: -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DPYBIND23_NUMPY_1_ONLY=ON
           - runs-on: windows-2022
             python-version: '3.9'
             cmake-args: -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_CXX_STANDARD=14
@@ -134,7 +134,7 @@ jobs:
           #   cmake-args: -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug
           - runs-on: windows-2022
             python-version: '3.10'
-            cmake-args: -DPYBIND11_TEST_SMART_HOLDER=ON -DCMAKE_CXX_FLAGS="/GR /EHsc"
+            cmake-args: -DPYBIND23_TEST_SMART_HOLDER=ON -DCMAKE_CXX_FLAGS="/GR /EHsc"
           - runs-on: windows-2022
             python-version: '3.13'
             cmake-args: -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL
@@ -206,9 +206,9 @@ jobs:
     - name: Configure
       run: >
         cmake -S. -B.
-        -DPYBIND11_WERROR=ON
-        -DPYBIND11_SIMPLE_GIL_MANAGEMENT=ON
-        -DPYBIND11_PYTEST_ARGS=-v
+        -DPYBIND23_WERROR=ON
+        -DPYBIND23_SIMPLE_GIL_MANAGEMENT=ON
+        -DPYBIND23_PYTEST_ARGS=-v
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=14
@@ -253,7 +253,7 @@ jobs:
         run: uv tool install ninja
 
       - name: Configure via preset
-        run: cmake --preset venv -DPYBIND11_CREATE_WITH_UV=python3.13t
+        run: cmake --preset venv -DPYBIND23_CREATE_WITH_UV=python3.13t
 
       - name: Build C++11
         run: cmake --build --preset venv
@@ -268,7 +268,7 @@ jobs:
       matrix:
         include:
         # TODO: Fails on 3.10, investigate
-        # JOB DISABLED (NEEDS WORK): https://github.com/pybind/pybind11/issues/4889
+        # JOB DISABLED (NEEDS WORK): https://github.com/pybind/pybind23/issues/4889
         # - python-version: "3.9"
         #   python-debug: true
         #   valgrind: true
@@ -375,7 +375,7 @@ jobs:
       shell: bash
       run: >
         cmake -S . -B build
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DCMAKE_CXX_STANDARD=${{ matrix.std }}
         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}"
@@ -410,7 +410,7 @@ jobs:
       run: apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y cmake git python3-dev python3-pytest python3-numpy
 
     - name: Configure
-      run: cmake -S . -B build -DPYBIND11_CUDA_TESTS=ON -DPYBIND11_WERROR=ON -DDOWNLOAD_CATCH=ON
+      run: cmake -S . -B build -DPYBIND23_CUDA_TESTS=ON -DPYBIND23_WERROR=ON -DDOWNLOAD_CATCH=ON
 
     - name: Build
       run: cmake --build build -j2 --verbose
@@ -490,7 +490,7 @@ jobs:
         python3 -m pip install --upgrade pytest
 
     # On some systems, you many need further workarounds:
-    # https://github.com/pybind/pybind11/pull/2475
+    # https://github.com/pybind/pybind23/pull/2475
     - name: Configure
       shell: bash
       run: |
@@ -500,7 +500,7 @@ jobs:
                             -DCMAKE_CXX_STANDARD=17 \
                             -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)") \
                             -DCMAKE_CXX_FLAGS="-Wc,--pending_instantiations=0" \
-                            -DPYBIND11_TEST_FILTER="test_smart_ptr.cpp"
+                            -DPYBIND23_TEST_FILTER="test_smart_ptr.cpp"
 
     - name: Build
       run: cmake --build build -j 2 --verbose
@@ -549,7 +549,7 @@ jobs:
       shell: bash
       run: >
         cmake -S . -B build
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DCMAKE_CXX_STANDARD=${{ matrix.std }}
         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}"
@@ -570,22 +570,22 @@ jobs:
     - name: Visibility test
       run: cmake --build build --target test_cross_module_rtti
 
-    - name: Configure - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Configure - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       if: matrix.gcc == '12'
       shell: bash
       run: >
         cmake -S . -B build_partial
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DCMAKE_CXX_STANDARD=${{ matrix.std }}
         -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
-        "-DPYBIND11_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
+        "-DPYBIND23_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
 
-    - name: Build - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Build - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       if: matrix.gcc == '12'
       run: cmake --build build_partial -j 2
 
-    - name: Python tests - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Python tests - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       if: matrix.gcc == '12'
       run: cmake --build build_partial --target pytest
 
@@ -624,7 +624,7 @@ jobs:
       run: |
         set +e; source /opt/intel/oneapi/setvars.sh; set -e
         cmake -S . -B build-11     \
-        -DPYBIND11_WERROR=ON    \
+        -DPYBIND23_WERROR=ON    \
         -DDOWNLOAD_CATCH=ON     \
         -DDOWNLOAD_EIGEN=OFF    \
         -DCMAKE_CXX_STANDARD=11             \
@@ -661,7 +661,7 @@ jobs:
       run: |
         set +e; source /opt/intel/oneapi/setvars.sh; set -e
         cmake -S . -B build-17     \
-        -DPYBIND11_WERROR=ON    \
+        -DPYBIND23_WERROR=ON    \
         -DDOWNLOAD_CATCH=ON     \
         -DDOWNLOAD_EIGEN=OFF    \
         -DCMAKE_CXX_STANDARD=17             \
@@ -737,7 +737,7 @@ jobs:
       run: >
         cmake -S . -B build
         -DCMAKE_BUILD_TYPE=MinSizeRel
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=11
@@ -778,23 +778,23 @@ jobs:
     - name: Configure for install
       run: >
         cmake .
-        -DPYBIND11_INSTALL=1 -DPYBIND11_TEST=0
+        -DPYBIND23_INSTALL=1 -DPYBIND23_TEST=0
         -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
 
     - name: Make and install
       run: make install
 
     - name: Copy tests to new directory
-      run: cp -a tests /pybind11-tests
+      run: cp -a tests /pybind23-tests
 
     - name: Make a new test directory
       run: mkdir /build-tests
 
     - name: Configure tests
       run: >
-        cmake ../pybind11-tests
+        cmake ../pybind23-tests
         -DDOWNLOAD_CATCH=ON
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
       working-directory: /build-tests
 
@@ -830,15 +830,15 @@ jobs:
 
     - name: Check local include dir
       run: >
-        ls pybind11;
-        python3 -c "import pybind11, pathlib; assert (a := pybind11.get_include()) == (b := str(pathlib.Path('include').resolve())), f'{a} != {b}'"
+        ls pybind23;
+        python3 -c "import pybind23, pathlib; assert (a := pybind23.get_include()) == (b := str(pathlib.Path('include').resolve())), f'{a} != {b}'"
 
     - name: Compare Dists (headers only)
       working-directory: include
       run: |
         python3 -m pip install --user -U ../dist/*.tar.gz
-        installed=$(python3 -c "import pybind11; print(pybind11.get_include() + '/pybind11')")
-        diff -rq $installed ./pybind11
+        installed=$(python3 -c "import pybind23; print(pybind23.get_include() + '/pybind23')")
+        diff -rq $installed ./pybind23
 
   win32:
     if: github.event.pull_request.draft == false
@@ -884,7 +884,7 @@ jobs:
       run: >
         cmake -S . -B build
         -G "Visual Studio 17 2022" -A Win32
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         ${{ matrix.args }}
@@ -934,7 +934,7 @@ jobs:
         cmake -S . -B build
         -G "Visual Studio 17 2022" -A Win32
         -DCMAKE_BUILD_TYPE=Debug
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         ${{ matrix.args }}
@@ -973,7 +973,7 @@ jobs:
     - name: Configure C++20
       run: >
         cmake -S . -B build
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=20
@@ -993,19 +993,19 @@ jobs:
     - name: Visibility test
       run: cmake --build build --target test_cross_module_rtti
 
-    - name: Configure C++20 - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Configure C++20 - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       run: >
         cmake -S . -B build_partial
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=20
-        "-DPYBIND11_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
+        "-DPYBIND23_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
 
-    - name: Build C++20 - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Build C++20 - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       run: cmake --build build_partial -j 2
 
-    - name: Python tests - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+    - name: Python tests - Exercise cmake -DPYBIND23_TEST_OVERRIDE
       run: cmake --build build_partial --target pytest
 
   mingw:
@@ -1048,9 +1048,9 @@ jobs:
 
     - name: Configure C++11
       # LTO leads to many undefined reference like
-      # `pybind11::detail::function_call::function_call(pybind11::detail::function_call&&)
+      # `pybind23::detail::function_call::function_call(pybind23::detail::function_call&&)
       run: >-
-        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=11 -DPYBIND11_WERROR=ON -DDOWNLOAD_CATCH=ON
+        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=11 -DPYBIND23_WERROR=ON -DDOWNLOAD_CATCH=ON
         -DPYTHON_EXECUTABLE=$(python -c "import sys; print(sys.executable)")
         -S . -B build
 
@@ -1074,7 +1074,7 @@ jobs:
 
     - name: Configure C++14
       run: >-
-        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=14 -DPYBIND11_WERROR=ON -DDOWNLOAD_CATCH=ON
+        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=14 -DPYBIND23_WERROR=ON -DDOWNLOAD_CATCH=ON
         -DPYTHON_EXECUTABLE=$(python -c "import sys; print(sys.executable)")
         -S . -B build2
 
@@ -1098,7 +1098,7 @@ jobs:
 
     - name: Configure C++17
       run: >-
-        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=17 -DPYBIND11_WERROR=ON -DDOWNLOAD_CATCH=ON
+        cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=17 -DPYBIND23_WERROR=ON -DDOWNLOAD_CATCH=ON
         -DPYTHON_EXECUTABLE=$(python -c "import sys; print(sys.executable)")
         -S . -B build3
 
@@ -1165,8 +1165,8 @@ jobs:
       - name: Configure Clang
         run: >
           cmake -G Ninja -S . -B .
-          -DPYBIND11_WERROR=OFF
-          -DPYBIND11_SIMPLE_GIL_MANAGEMENT=OFF
+          -DPYBIND23_WERROR=OFF
+          -DPYBIND23_SIMPLE_GIL_MANAGEMENT=OFF
           -DDOWNLOAD_CATCH=ON
           -DDOWNLOAD_EIGEN=ON
           -DCMAKE_CXX_COMPILER=clang++
@@ -1234,8 +1234,8 @@ jobs:
       - name: CMake Configure
         run: >
           cmake -S . -B .
-          -DPYBIND11_WERROR=ON
-          -DPYBIND11_SIMPLE_GIL_MANAGEMENT=OFF
+          -DPYBIND23_WERROR=ON
+          -DPYBIND23_SIMPLE_GIL_MANAGEMENT=OFF
           -DDOWNLOAD_CATCH=ON
           -DDOWNLOAD_EIGEN=ON
           -DCMAKE_CXX_COMPILER=clang++
@@ -1257,22 +1257,22 @@ jobs:
       - name: Visibility test
         run: cmake --build . --target test_cross_module_rtti -j 2
 
-      - name: CMake Configure - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+      - name: CMake Configure - Exercise cmake -DPYBIND23_TEST_OVERRIDE
         run: >
           cmake -S . -B build_partial
-          -DPYBIND11_WERROR=ON
-          -DPYBIND11_SIMPLE_GIL_MANAGEMENT=OFF
+          -DPYBIND23_WERROR=ON
+          -DPYBIND23_SIMPLE_GIL_MANAGEMENT=OFF
           -DDOWNLOAD_CATCH=ON
           -DDOWNLOAD_EIGEN=ON
           -DCMAKE_CXX_COMPILER=clang++
           -DCMAKE_CXX_STANDARD=17
           -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
-          "-DPYBIND11_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
+          "-DPYBIND23_TEST_OVERRIDE=test_call_policies.cpp;test_gil_scoped.cpp;test_thread.cpp"
 
-      - name: Build - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+      - name: Build - Exercise cmake -DPYBIND23_TEST_OVERRIDE
         run: cmake --build build_partial -j 2
 
-      - name: Python tests - Exercise cmake -DPYBIND11_TEST_OVERRIDE
+      - name: Python tests - Exercise cmake -DPYBIND23_TEST_OVERRIDE
         run: cmake --build build_partial --target pytest -j 2
 
       - name: Clean directory

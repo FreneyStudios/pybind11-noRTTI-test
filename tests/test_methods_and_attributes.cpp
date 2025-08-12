@@ -11,7 +11,7 @@
 #include "constructor_stats.h"
 #include "pybind11_tests.h"
 
-#if !defined(PYBIND11_OVERLOAD_CAST)
+#if !defined(PYBIND23_OVERLOAD_CAST)
 template <typename... Args>
 using overload_cast_ = pybind11::detail::overload_cast_impl<Args...>;
 #endif
@@ -237,7 +237,7 @@ TEST_SUBMODULE(methods_and_attributes, m) {
         .def("internal3", &ExampleMandA::internal3)
         .def("internal4", &ExampleMandA::internal4)
         .def("internal5", &ExampleMandA::internal5)
-#if defined(PYBIND11_OVERLOAD_CAST)
+#if defined(PYBIND23_OVERLOAD_CAST)
         .def("overloaded", py::overload_cast<>(&ExampleMandA::overloaded))
         .def("overloaded", py::overload_cast<int>(&ExampleMandA::overloaded))
         .def("overloaded", py::overload_cast<int, float>(&ExampleMandA::overloaded))
@@ -392,7 +392,7 @@ TEST_SUBMODULE(methods_and_attributes, m) {
 
     // test_bad_arg_default
     // Issue/PR #648: bad arg default debugging output
-#if defined(PYBIND11_DETAILED_ERROR_MESSAGES)
+#if defined(PYBIND23_DETAILED_ERROR_MESSAGES)
     m.attr("detailed_error_messages_enabled") = true;
 #else
     m.attr("detailed_error_messages_enabled") = false;

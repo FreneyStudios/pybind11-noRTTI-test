@@ -2,21 +2,21 @@ cmake_minimum_required(VERSION 3.15...4.0)
 
 project(test_subdirectory_target CXX)
 
-# Allow PYTHON_EXECUTABLE if in FINDPYTHON mode and building pybind11's tests
+# Allow PYTHON_EXECUTABLE if in FINDPYTHON mode and building pybind23's tests
 # (makes transition easier while we support both modes).
 if(DEFINED PYTHON_EXECUTABLE AND NOT DEFINED Python_EXECUTABLE)
   set(Python_EXECUTABLE "${PYTHON_EXECUTABLE}")
 endif()
 
-add_subdirectory("${pybind11_SOURCE_DIR}" pybind11)
+add_subdirectory("${pybind23_SOURCE_DIR}" pybind23)
 
 add_library(test_subdirectory_target MODULE ../main.cpp)
 set_target_properties(test_subdirectory_target PROPERTIES OUTPUT_NAME test_cmake_build)
 
-target_link_libraries(test_subdirectory_target PRIVATE pybind11::module)
+target_link_libraries(test_subdirectory_target PRIVATE pybind23::module)
 
 # Make sure result is, for example, test_installed_target.so, not libtest_installed_target.dylib
-pybind11_extension(test_subdirectory_target)
+pybind23_extension(test_subdirectory_target)
 
 if(DEFINED Python_EXECUTABLE)
   set(_Python_EXECUTABLE "${Python_EXECUTABLE}")

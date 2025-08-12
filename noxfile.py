@@ -42,7 +42,7 @@ def tests(session: nox.Session) -> None:
         "cmake",
         "-S.",
         f"-B{tmpdir}",
-        "-DPYBIND11_WERROR=ON",
+        "-DPYBIND23_WERROR=ON",
         "-DDOWNLOAD_CATCH=ON",
         "-DDOWNLOAD_EIGEN=ON",
         *session.posargs,
@@ -136,7 +136,7 @@ def build_global(session: nox.Session) -> None:
 
     installer = ["--installer=uv"] if session.venv_backend == "uv" else []
     session.install("build", "tomlkit")
-    session.log("Building pybind11-global files")
+    session.log("Building pybind23-global files")
     pyproject = Path("pyproject.toml")
     with preserve_file(pyproject):
         newer_txt = session.run("python", "tools/make_global.py", silent=True)

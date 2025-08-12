@@ -3,8 +3,8 @@
 Build systems
 #############
 
-For an overview of Python packaging including compiled packaging with a pybind11
-example, along with a cookiecutter that includes several pybind11 options, see
+For an overview of Python packaging including compiled packaging with a pybind23
+example, along with a cookiecutter that includes several pybind23 options, see
 the `Scientific Python Development Guide`_.
 
 .. _Scientific Python Development Guide: https://learn.scientific-python.org/development/guides/packaging-compiled/
@@ -21,16 +21,16 @@ A Python extension module can be created with just a few lines of code:
     cmake_minimum_required(VERSION 3.15...4.0)
     project(example LANGUAGES CXX)
 
-    set(PYBIND11_FINDPYTHON ON)
-    find_package(pybind11 CONFIG REQUIRED)
+    set(PYBIND23_FINDPYTHON ON)
+    find_package(pybind23 CONFIG REQUIRED)
 
-    pybind11_add_module(example example.cpp)
+    pybind23_add_module(example example.cpp)
     install(TARGETS example DESTINATION .)
 
 (You use the ``add_subdirectory`` instead, see the example in :ref:`cmake`.) In
 this example, the code is located in a file named :file:`example.cpp`.  Either
-method will import the pybind11 project which provides the
-``pybind11_add_module`` function. It will take care of all the details needed
+method will import the pybind23 project which provides the
+``pybind23_add_module`` function. It will take care of all the details needed
 to build a Python extension module on any platform.
 
 To build with pip, build, cibuildwheel, uv, or other Python tools, you can
@@ -39,7 +39,7 @@ add a ``pyproject.toml`` file like this:
 .. code-block:: toml
 
     [build-system]
-    requires = ["scikit-build-core", "pybind11"]
+    requires = ["scikit-build-core", "pybind23"]
     build-backend = "scikit_build_core.build"
 
     [project]
@@ -83,12 +83,12 @@ that. Your ``meson.build`` file would look something like this:
    )
 
    py = import('python').find_installation(pure: false)
-   pybind11_dep = dependency('pybind11')
+   pybind23_dep = dependency('pybind23')
 
    py.extension_module('example',
        'example.cpp',
        install: true,
-       dependencies : [pybind11_dep],
+       dependencies : [pybind23_dep],
    )
 
 
@@ -97,7 +97,7 @@ And you would need a ``pyproject.toml`` file like this:
 .. code-block:: toml
 
    [build-system]
-   requires = ["meson-python", "pybind11"]
+   requires = ["meson-python", "pybind23"]
    build-backend = "mesonpy"
 
 Meson-python *requires* your project to be in git (or mercurial) as it uses it
@@ -123,25 +123,25 @@ Please refer to the [python_example]_ repository.
 
 .. [python_example] https://github.com/pybind/python_example
 
-A helper file is provided with pybind11 that can simplify usage with setuptools.
+A helper file is provided with pybind23 that can simplify usage with setuptools.
 
-To use pybind11 inside your ``setup.py``, you have to have some system to
-ensure that ``pybind11`` is installed when you build your package. There are
-four possible ways to do this, and pybind11 supports all four: You can ask all
-users to install pybind11 beforehand (bad), you can use
+To use pybind23 inside your ``setup.py``, you have to have some system to
+ensure that ``pybind23`` is installed when you build your package. There are
+four possible ways to do this, and pybind23 supports all four: You can ask all
+users to install pybind23 beforehand (bad), you can use
 :ref:`setup_helpers-pep518` (good), ``setup_requires=`` (discouraged), or you
 can :ref:`setup_helpers-copy-manually` (works but you have to manually sync
 your copy to get updates). Third party packagers like conda-forge generally
 strongly prefer the ``pyproject.toml`` method, as it gives them control over
-the ``pybind11`` version, and they may apply patches, etc.
+the ``pybind23`` version, and they may apply patches, etc.
 
-An example of a ``setup.py`` using pybind11's helpers:
+An example of a ``setup.py`` using pybind23's helpers:
 
 .. code-block:: python
 
     from glob import glob
     from setuptools import setup
-    from pybind11.setup_helpers import Pybind11Extension
+    from pybind23.setup_helpers import Pybind11Extension
 
     ext_modules = [
         Pybind11Extension(
@@ -160,7 +160,7 @@ that is supported via a ``build_ext`` command override; it will only affect
 
     from glob import glob
     from setuptools import setup
-    from pybind11.setup_helpers import Pybind11Extension, build_ext
+    from pybind23.setup_helpers import Pybind11Extension, build_ext
 
     ext_modules = [
         Pybind11Extension(
@@ -184,12 +184,12 @@ module will be generated and made available upon installation.
 layout (as long as no namespace packages are involved), but you can also
 explicitly pass ``package_dir`` to it (as in ``setuptools.setup``).
 
-Since pybind11 does not require NumPy when building, a light-weight replacement
+Since pybind23 does not require NumPy when building, a light-weight replacement
 for NumPy's parallel compilation distutils tool is included. Use it like this:
 
 .. code-block:: python
 
-    from pybind11.setup_helpers import ParallelCompile
+    from pybind23.setup_helpers import ParallelCompile
 
     # Optional multithreaded build
     ParallelCompile("NPY_NUM_BUILD_JOBS").install()
@@ -212,7 +212,7 @@ with the following:
 
 .. code-block:: python
 
-    from pybind11.setup_helpers import ParallelCompile, naive_recompile
+    from pybind23.setup_helpers import ParallelCompile, naive_recompile
 
     ParallelCompile("NPY_NUM_BUILD_JOBS", needs_recompile=naive_recompile).install()
 
@@ -246,7 +246,7 @@ CLI tools that can compare the SDist contents with your source control.
 Build requirements
 ------------------
 
-With a ``pyproject.toml`` file, you can ensure that ``pybind11`` is available
+With a ``pyproject.toml`` file, you can ensure that ``pybind23`` is available
 during the compilation of your project.  When this file exists, Pip will make a
 new virtual environment, download just the packages listed here in
 ``requires=``, and build a wheel (binary Python package). It will then throw
@@ -257,7 +257,7 @@ Your ``pyproject.toml`` file will likely look something like this:
 .. code-block:: toml
 
     [build-system]
-    requires = ["setuptools", "pybind11"]
+    requires = ["setuptools", "pybind23"]
     build-backend = "setuptools.build_meta"
 
 .. _PEP 517: https://www.python.org/dev/peps/pep-0517/
@@ -273,25 +273,25 @@ Copy manually
 
 You can also copy ``setup_helpers.py`` directly to your project; it was
 designed to be usable standalone, like the old example ``setup.py``. You can
-set ``include_pybind11=False`` to skip including the pybind11 package headers,
+set ``include_pybind23=False`` to skip including the pybind23 package headers,
 so you can use it with git submodules and a specific git version. If you use
 this, you will need to import from a local file in ``setup.py`` and ensure the
 helper file is part of your MANIFEST.
 
 
-Closely related, if you include pybind11 as a subproject, you can run the
+Closely related, if you include pybind23 as a subproject, you can run the
 ``setup_helpers.py`` inplace. If loaded correctly, this should even pick up
-the correct include for pybind11, though you can turn it off as shown above if
+the correct include for pybind23, though you can turn it off as shown above if
 you want to input it manually.
 
-Suggested usage if you have pybind11 as a submodule in ``extern/pybind11``:
+Suggested usage if you have pybind23 as a submodule in ``extern/pybind23``:
 
 .. code-block:: python
 
     DIR = os.path.abspath(os.path.dirname(__file__))
 
-    sys.path.append(os.path.join(DIR, "extern", "pybind11"))
-    from pybind11.setup_helpers import Pybind11Extension  # noqa: E402
+    sys.path.append(os.path.join(DIR, "extern", "pybind23"))
+    from pybind23.setup_helpers import Pybind11Extension  # noqa: E402
 
     del sys.path[-1]
 
@@ -305,7 +305,7 @@ Building with cppimport
 
 [cppimport]_ is a small Python import hook that determines whether there is a C++
 source file whose name matches the requested module. If there is, the file is
-compiled as a Python extension using pybind11 and placed in the same folder as
+compiled as a Python extension using pybind23 and placed in the same folder as
 the C++ source file. Python is then able to find the module and load it.
 
 .. [cppimport] https://github.com/tbenthompson/cppimport
@@ -320,7 +320,7 @@ Building with CMake
 For C++ codebases that have an existing CMake-based build system, a Python
 extension module can be created with just a few lines of code, as seen above in
 the module section. Pybind11 currently defaults to the old mechanism, though be
-aware that CMake 3.27 removed the old mechanism, so pybind11 will automatically
+aware that CMake 3.27 removed the old mechanism, so pybind23 will automatically
 switch if the old mechanism is not available. Please opt into the new mechanism
 if at all possible. Our default may change in future versions. This is the
 minimum required:
@@ -339,15 +339,15 @@ minimum required:
 
 Further information can be found at :doc:`cmake/index`.
 
-pybind11_add_module
+pybind23_add_module
 -------------------
 
-To ease the creation of Python extension modules, pybind11 provides a CMake
+To ease the creation of Python extension modules, pybind23 provides a CMake
 function with the following signature:
 
 .. code-block:: cmake
 
-    pybind11_add_module(<name> [MODULE | SHARED] [EXCLUDE_FROM_ALL]
+    pybind23_add_module(<name> [MODULE | SHARED] [EXCLUDE_FROM_ALL]
                         [NO_EXTRAS] [THIN_LTO] [OPT_SIZE] source1 [source2 ...])
 
 This function behaves very much like CMake's builtin ``add_library`` (in fact,
@@ -363,12 +363,12 @@ Python-exclusive module. Specifying ``SHARED`` will create a more traditional
 dynamic library which can also be linked from elsewhere. ``EXCLUDE_FROM_ALL``
 removes this target from the default build (see CMake docs for details).
 
-Since pybind11 is a template library, ``pybind11_add_module`` adds compiler
+Since pybind23 is a template library, ``pybind23_add_module`` adds compiler
 flags to ensure high quality code generation without bloat arising from long
 symbol names and duplication of code in different translation units. It
-sets default visibility to *hidden*, which is required for some pybind11
-features and functionality when attempting to load multiple pybind11 modules
-compiled under different pybind11 versions.  It also adds additional flags
+sets default visibility to *hidden*, which is required for some pybind23
+features and functionality when attempting to load multiple pybind23 modules
+compiled under different pybind23 versions.  It also adds additional flags
 enabling LTO (Link Time Optimization) and strip unneeded symbols. See the
 :ref:`FAQ entry <faq:symhidden>` for a more detailed explanation. These
 latter optimizations are never applied in ``Debug`` mode.  If ``NO_EXTRAS`` is
@@ -387,7 +387,7 @@ that will be respected instead of the built-in flag search.
    If you want to set the property form on targets or the
    ``CMAKE_INTERPROCEDURAL_OPTIMIZATION_<CONFIG>`` versions of this, you should
    still use ``set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)`` (otherwise a
-   no-op) to disable pybind11's ipo flags.
+   no-op) to disable pybind23's ipo flags.
 
 The ``OPT_SIZE`` flag enables size-based optimization equivalent to the
 standard ``/Os`` or ``-Os`` compiler flags and the ``MinSizeRel`` build type,
@@ -407,8 +407,8 @@ optimizations remain disabled.
 Configuration variables
 -----------------------
 
-By default, pybind11 will compile modules with the compiler default or the
-minimum standard required by pybind11, whichever is higher.  You can set the
+By default, pybind23 will compile modules with the compiler default or the
+minimum standard required by pybind23, whichever is higher.  You can set the
 standard explicitly with
 `CMAKE_CXX_STANDARD <https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_STANDARD.html>`_:
 
@@ -424,12 +424,12 @@ on a target or use ``target_compile_features`` on your targets - anything that
 CMake supports.
 
 Classic Python support: The target Python version can be selected by setting
-``PYBIND11_PYTHON_VERSION`` or an exact Python installation can be specified
+``PYBIND23_PYTHON_VERSION`` or an exact Python installation can be specified
 with ``PYTHON_EXECUTABLE``.  For example:
 
 .. code-block:: bash
 
-    cmake -DPYBIND11_PYTHON_VERSION=3.8 ..
+    cmake -DPYBIND23_PYTHON_VERSION=3.8 ..
 
     # Another method:
     cmake -DPYTHON_EXECUTABLE=/path/to/python ..
@@ -441,8 +441,8 @@ with ``PYTHON_EXECUTABLE``.  For example:
 find_package vs. add_subdirectory
 ---------------------------------
 
-For CMake-based projects that don't include the pybind11 repository internally,
-an external installation can be detected through ``find_package(pybind11)``.
+For CMake-based projects that don't include the pybind23 repository internally,
+an external installation can be detected through ``find_package(pybind23)``.
 See the `Config file`_ docstring for details of relevant CMake variables.
 
 .. code-block:: cmake
@@ -450,35 +450,35 @@ See the `Config file`_ docstring for details of relevant CMake variables.
     cmake_minimum_required(VERSION 3.15...4.0)
     project(example LANGUAGES CXX)
 
-    find_package(pybind11 REQUIRED)
-    pybind11_add_module(example example.cpp)
+    find_package(pybind23 REQUIRED)
+    pybind23_add_module(example example.cpp)
 
-Note that ``find_package(pybind11)`` will only work correctly if pybind11
+Note that ``find_package(pybind23)`` will only work correctly if pybind23
 has been correctly installed on the system, e. g. after downloading or cloning
-the pybind11 repository  :
+the pybind23 repository  :
 
 .. code-block:: bash
 
     # Classic CMake
-    cd pybind11
+    cd pybind23
     mkdir build
     cd build
     cmake ..
     make install
 
     # CMake 3.15+
-    cd pybind11
+    cd pybind23
     cmake -S . -B build
     cmake --build build -j 2  # Build on 2 cores
     cmake --install build
 
-Once detected, the aforementioned ``pybind11_add_module`` can be employed as
+Once detected, the aforementioned ``pybind23_add_module`` can be employed as
 before. The function usage and configuration variables are identical no matter
-if pybind11 is added as a subdirectory or found as an installed package. You
+if pybind23 is added as a subdirectory or found as an installed package. You
 can refer to the same [cmake_example]_ repository for a full sample project
 -- just swap out ``add_subdirectory`` for ``find_package``.
 
-.. _Config file: https://github.com/pybind/pybind11/blob/master/tools/pybind11Config.cmake.in
+.. _Config file: https://github.com/pybind/pybind23/blob/master/tools/pybind23Config.cmake.in
 
 
 .. _find-python-mode:
@@ -488,7 +488,7 @@ FindPython mode
 
 Modern CMake (3.18.2+ ideal) added a new module called FindPython that had a
 highly improved search algorithm and modern targets and tools. If you use
-FindPython, pybind11 will detect this and use the existing targets instead:
+FindPython, pybind23 will detect this and use the existing targets instead:
 
 .. code-block:: cmake
 
@@ -496,15 +496,15 @@ FindPython, pybind11 will detect this and use the existing targets instead:
     project(example LANGUAGES CXX)
 
     find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
-    find_package(pybind11 CONFIG REQUIRED)
-    # or add_subdirectory(pybind11)
+    find_package(pybind23 CONFIG REQUIRED)
+    # or add_subdirectory(pybind23)
 
-    pybind11_add_module(example example.cpp)
+    pybind23_add_module(example example.cpp)
 
 You can also use the targets (as listed below) with FindPython. If you define
-``PYBIND11_FINDPYTHON``, pybind11 will perform the FindPython step for you
-(mostly useful when building pybind11's own tests, or as a way to change search
-algorithms from the CMake invocation, with ``-DPYBIND11_FINDPYTHON=ON``.
+``PYBIND23_FINDPYTHON``, pybind23 will perform the FindPython step for you
+(mostly useful when building pybind23's own tests, or as a way to change search
+algorithms from the CMake invocation, with ``-DPYBIND23_FINDPYTHON=ON``.
 
 .. warning::
 
@@ -533,36 +533,36 @@ Advanced: interface library targets
 Pybind11 supports modern CMake usage patterns with a set of interface targets,
 available in all modes. The targets provided are:
 
-   ``pybind11::headers``
-     Just the pybind11 headers and minimum compile requirements
+   ``pybind23::headers``
+     Just the pybind23 headers and minimum compile requirements
 
-   ``pybind11::pybind11``
-     Python headers + ``pybind11::headers``
+   ``pybind23::pybind23``
+     Python headers + ``pybind23::headers``
 
-   ``pybind11::python_link_helper``
-     Just the "linking" part of pybind11:module
+   ``pybind23::python_link_helper``
+     Just the "linking" part of pybind23:module
 
-   ``pybind11::module``
-     Everything for extension modules - ``pybind11::pybind11`` + ``Python::Module`` (FindPython) or ``pybind11::python_link_helper``
+   ``pybind23::module``
+     Everything for extension modules - ``pybind23::pybind23`` + ``Python::Module`` (FindPython) or ``pybind23::python_link_helper``
 
-   ``pybind11::embed``
-     Everything for embedding the Python interpreter - ``pybind11::pybind11`` + ``Python::Python`` (FindPython) or Python libs
+   ``pybind23::embed``
+     Everything for embedding the Python interpreter - ``pybind23::pybind23`` + ``Python::Python`` (FindPython) or Python libs
 
-   ``pybind11::lto`` / ``pybind11::thin_lto``
+   ``pybind23::lto`` / ``pybind23::thin_lto``
      An alternative to `INTERPROCEDURAL_OPTIMIZATION` for adding link-time optimization.
 
-   ``pybind11::windows_extras``
+   ``pybind23::windows_extras``
      ``/bigobj`` and ``/mp`` for MSVC.
 
-   ``pybind11::opt_size``
+   ``pybind23::opt_size``
      ``/Os`` for MSVC, ``-Os`` for other compilers. Does nothing for debug builds.
 
 Two helper functions are also provided:
 
-    ``pybind11_strip(target)``
+    ``pybind23_strip(target)``
       Strips a target (uses ``CMAKE_STRIP`` after the target is built)
 
-    ``pybind11_extension(target)``
+    ``pybind23_extension(target)``
       Sets the correct extension (with SOABI) for a target.
 
 You can use these targets to build complex applications. For example, the
@@ -573,16 +573,16 @@ You can use these targets to build complex applications. For example, the
     cmake_minimum_required(VERSION 3.15...4.0)
     project(example LANGUAGES CXX)
 
-    find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
+    find_package(pybind23 REQUIRED)  # or add_subdirectory(pybind23)
 
     add_library(example MODULE main.cpp)
 
-    target_link_libraries(example PRIVATE pybind11::module pybind11::lto pybind11::windows_extras)
+    target_link_libraries(example PRIVATE pybind23::module pybind23::lto pybind23::windows_extras)
 
-    pybind11_extension(example)
+    pybind23_extension(example)
     if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
         # Strip unnecessary sections of the binary on Linux/macOS
-        pybind11_strip(example)
+        pybind23_strip(example)
     endif()
 
     set_target_properties(example PROPERTIES CXX_VISIBILITY_PRESET "hidden"
@@ -592,9 +592,9 @@ Instead of setting properties, you can set ``CMAKE_*`` variables to initialize t
 
 .. warning::
 
-    Since pybind11 is a metatemplate library, it is crucial that certain
+    Since pybind23 is a metatemplate library, it is crucial that certain
     compiler flags are provided to ensure high quality code generation. In
-    contrast to the ``pybind11_add_module()`` command, the CMake interface
+    contrast to the ``pybind23_add_module()`` command, the CMake interface
     provides a *composable* set of targets to ensure that you retain flexibility.
     It can be especially important to provide or set these properties; the
     :ref:`FAQ <faq:symhidden>` contains an explanation on why these are needed.
@@ -606,12 +606,12 @@ Instead of setting properties, you can set ``CMAKE_*`` variables to initialize t
 Advanced: NOPYTHON mode
 -----------------------
 
-If you want complete control, you can set ``PYBIND11_NOPYTHON`` to completely
+If you want complete control, you can set ``PYBIND23_NOPYTHON`` to completely
 disable Python integration (this also happens if you run ``FindPython2`` and
 ``FindPython3`` without running ``FindPython``). This gives you complete
 freedom to integrate into an existing system (like `Scikit-Build's
 <https://scikit-build.readthedocs.io>`_ ``PythonExtensions``).
-``pybind11_add_module`` and ``pybind11_extension`` will be unavailable, and the
+``pybind23_add_module`` and ``pybind23_extension`` will be unavailable, and the
 targets will be missing any Python specific behavior.
 
 .. versionadded:: 2.6
@@ -619,10 +619,10 @@ targets will be missing any Python specific behavior.
 Embedding the Python interpreter
 --------------------------------
 
-In addition to extension modules, pybind11 also supports embedding Python into
-a C++ executable or library. In CMake, simply link with the ``pybind11::embed``
+In addition to extension modules, pybind23 also supports embedding Python into
+a C++ executable or library. In CMake, simply link with the ``pybind23::embed``
 target. It provides everything needed to get the interpreter running. The Python
-headers and libraries are attached to the target. Unlike ``pybind11::module``,
+headers and libraries are attached to the target. Unlike ``pybind23::module``,
 there is no need to manually set any additional properties here. For more
 information about usage in C++, see :doc:`/advanced/embedding`.
 
@@ -631,17 +631,17 @@ information about usage in C++, see :doc:`/advanced/embedding`.
     cmake_minimum_required(VERSION 3.15...4.0)
     project(example LANGUAGES CXX)
 
-    find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
+    find_package(pybind23 REQUIRED)  # or add_subdirectory(pybind23)
 
     add_executable(example main.cpp)
-    target_link_libraries(example PRIVATE pybind11::embed)
+    target_link_libraries(example PRIVATE pybind23::embed)
 
 .. _building_manually:
 
 Building manually
 =================
 
-pybind11 is a header-only library, hence it is not necessary to link against
+pybind23 is a header-only library, hence it is not necessary to link against
 any special libraries and there are no intermediate (magic) translation steps.
 
 On Linux, you can compile an example such as the one given in
@@ -649,12 +649,12 @@ On Linux, you can compile an example such as the one given in
 
 .. code-block:: bash
 
-    $ c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind11 --includes) example.cpp -o example$(python3-config --extension-suffix)
+    $ c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind23 --includes) example.cpp -o example$(python3-config --extension-suffix)
 
-The ``python3 -m pybind11 --includes`` command fetches the include paths for
-both pybind11 and Python headers. This assumes that pybind11 has been installed
+The ``python3 -m pybind23 --includes`` command fetches the include paths for
+both pybind23 and Python headers. This assumes that pybind23 has been installed
 using ``pip`` or ``conda``. If it hasn't, you can also manually specify
-``-I <path-to-pybind11>/include`` together with the Python includes path
+``-I <path-to-pybind23>/include`` together with the Python includes path
 ``python3-config --includes``.
 
 On macOS: the build command is almost the same but it also requires passing
@@ -663,7 +663,7 @@ building the module:
 
 .. code-block:: bash
 
-    $ c++ -O3 -Wall -shared -std=c++11 -undefined dynamic_lookup $(python3 -m pybind11 --includes) example.cpp -o example$(python3-config --extension-suffix)
+    $ c++ -O3 -Wall -shared -std=c++11 -undefined dynamic_lookup $(python3 -m pybind23 --includes) example.cpp -o example$(python3-config --extension-suffix)
 
 In general, it is advisable to include several additional build parameters
 that can considerably reduce the size of the created binary. Refer to section
@@ -685,20 +685,20 @@ build system that works on all platforms including Windows.
 Building with Bazel
 ===================
 
-You can build with the Bazel build system using the `pybind11_bazel
-<https://github.com/pybind/pybind11_bazel>`_ repository.
+You can build with the Bazel build system using the `pybind23_bazel
+<https://github.com/pybind/pybind23_bazel>`_ repository.
 
 Building with Meson
 ===================
 
-You can use Meson, which has support for ``pybind11`` as a dependency (internally
+You can use Meson, which has support for ``pybind23`` as a dependency (internally
 relying on our ``pkg-config`` support). See the :ref:`module example above <meson-example>`.
 
 
 Generating binding code automatically
 =====================================
 
-The ``Binder`` project is a tool for automatic generation of pybind11 binding
+The ``Binder`` project is a tool for automatic generation of pybind23 binding
 code by introspecting existing C++ codebases using LLVM/Clang. See the
 [binder]_ documentation for details.
 
@@ -713,9 +713,9 @@ classes or incorporating modern meta-programming constructs.
 .. [AutoWIG] https://github.com/StatisKit/AutoWIG
 
 [robotpy-build]_ is a is a pure python, cross platform build tool that aims to
-simplify creation of python wheels for pybind11 projects, and provide
+simplify creation of python wheels for pybind23 projects, and provide
 cross-project dependency management. Additionally, it is able to autogenerate
-customizable pybind11-based wrappers by parsing C++ header files.
+customizable pybind23-based wrappers by parsing C++ header files.
 
 .. [robotpy-build] https://robotpy-build.readthedocs.io
 

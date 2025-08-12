@@ -6,9 +6,9 @@
 
 #include "pybind11/detail/struct_smart_holder.h"
 
-PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
-PYBIND11_NAMESPACE_BEGIN(memory)
-PYBIND11_NAMESPACE_BEGIN(smart_holder_poc) // Proof-of-Concept implementations.
+PYBIND23_NAMESPACE_BEGIN(PYBIND23_NAMESPACE)
+PYBIND23_NAMESPACE_BEGIN(memory)
+PYBIND23_NAMESPACE_BEGIN(smart_holder_poc) // Proof-of-Concept implementations.
 
 // NOLINTNEXTLINE(bugprone-incorrect-enable-shared-from-this)
 struct PrivateESFT : private std::enable_shared_from_this<PrivateESFT> {};
@@ -51,6 +51,6 @@ std::unique_ptr<T, D> as_unique_ptr(smart_holder &hld) {
     return std::unique_ptr<T, D>(raw_ptr);
 }
 
-PYBIND11_NAMESPACE_END(smart_holder_poc)
-PYBIND11_NAMESPACE_END(memory)
-PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)
+PYBIND23_NAMESPACE_END(smart_holder_poc)
+PYBIND23_NAMESPACE_END(memory)
+PYBIND23_NAMESPACE_END(PYBIND23_NAMESPACE)

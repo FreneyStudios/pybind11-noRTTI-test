@@ -3,17 +3,17 @@
 Embedding the interpreter
 #########################
 
-While pybind11 is mainly focused on extending Python using C++, it's also
+While pybind23 is mainly focused on extending Python using C++, it's also
 possible to do the reverse: embed the Python interpreter into a C++ program.
 All of the other documentation pages still apply here, so refer to them for
-general pybind11 usage. This section will cover a few extra things required
+general pybind23 usage. This section will cover a few extra things required
 for embedding.
 
 Getting started
 ===============
 
 A basic executable with an embedded interpreter can be created with just a few
-lines of CMake and the ``pybind11::embed`` target, as shown below. For more
+lines of CMake and the ``pybind23::embed`` target, as shown below. For more
 information, see :doc:`/compiling`.
 
 .. code-block:: cmake
@@ -21,17 +21,17 @@ information, see :doc:`/compiling`.
     cmake_minimum_required(VERSION 3.15...4.0)
     project(example)
 
-    find_package(pybind11 REQUIRED)  # or `add_subdirectory(pybind11)`
+    find_package(pybind23 REQUIRED)  # or `add_subdirectory(pybind23)`
 
     add_executable(example main.cpp)
-    target_link_libraries(example PRIVATE pybind11::embed)
+    target_link_libraries(example PRIVATE pybind23::embed)
 
 The essential structure of the ``main.cpp`` file looks like this:
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h> // everything needed for embedding
-    namespace py = pybind11;
+    #include <pybind23/embed.h> // everything needed for embedding
+    namespace py = pybind23;
 
     int main() {
         py::scoped_interpreter guard{}; // start the interpreter and keep it alive
@@ -40,7 +40,7 @@ The essential structure of the ``main.cpp`` file looks like this:
     }
 
 The interpreter must be initialized before using any Python API, which includes
-all the functions and classes in pybind11. The RAII guard class ``scoped_interpreter``
+all the functions and classes in pybind23. The RAII guard class ``scoped_interpreter``
 takes care of the interpreter lifetime. After the guard is destroyed, the interpreter
 shuts down and clears its memory. No Python functions can be called after this.
 
@@ -53,8 +53,8 @@ the context of an executable with an embedded interpreter:
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h>
-    namespace py = pybind11;
+    #include <pybind23/embed.h>
+    namespace py = pybind23;
 
     int main() {
         py::scoped_interpreter guard{};
@@ -66,13 +66,13 @@ the context of an executable with an embedded interpreter:
         )");
     }
 
-Alternatively, similar results can be achieved using pybind11's API (see
+Alternatively, similar results can be achieved using pybind23's API (see
 :doc:`/advanced/pycpp/index` for more details).
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h>
-    namespace py = pybind11;
+    #include <pybind23/embed.h>
+    namespace py = pybind23;
     using namespace py::literals;
 
     int main() {
@@ -87,10 +87,10 @@ The two approaches can also be combined:
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h>
+    #include <pybind23/embed.h>
     #include <iostream>
 
-    namespace py = pybind11;
+    namespace py = pybind23;
     using namespace py::literals;
 
     int main() {
@@ -144,16 +144,16 @@ changes by the user. Note that this function does not reload modules recursively
 Adding embedded modules
 =======================
 
-Embedded binary modules can be added using the ``PYBIND11_EMBEDDED_MODULE`` macro.
+Embedded binary modules can be added using the ``PYBIND23_EMBEDDED_MODULE`` macro.
 Note that the definition must be placed at global scope. They can be imported
 like any other module.
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h>
-    namespace py = pybind11;
+    #include <pybind23/embed.h>
+    namespace py = pybind23;
 
-    PYBIND11_EMBEDDED_MODULE(fast_calc, m) {
+    PYBIND23_EMBEDDED_MODULE(fast_calc, m) {
         // `m` is a `py::module_` which is used to bind functions and classes
         m.def("add", [](int i, int j) {
             return i + j;
@@ -170,7 +170,7 @@ like any other module.
 
 Unlike extension modules where only a single binary module can be created, on
 the embedded side an unlimited number of modules can be added using multiple
-``PYBIND11_EMBEDDED_MODULE`` definitions (as long as they have unique names).
+``PYBIND23_EMBEDDED_MODULE`` definitions (as long as they have unique names).
 
 These modules are added to Python's list of builtins, so they can also be
 imported in pure Python files loaded by the interpreter. Everything interacts
@@ -187,10 +187,10 @@ naturally:
 
 .. code-block:: cpp
 
-    #include <pybind11/embed.h>
-    namespace py = pybind11;
+    #include <pybind23/embed.h>
+    namespace py = pybind23;
 
-    PYBIND11_EMBEDDED_MODULE(cpp_module, m) {
+    PYBIND23_EMBEDDED_MODULE(cpp_module, m) {
         m.attr("a") = 1;
     }
 
@@ -212,10 +212,10 @@ naturally:
         assert(locals["message"].cast<std::string>() == "1 + 2 = 3");
     }
 
-``PYBIND11_EMBEDDED_MODULE`` also accepts
+``PYBIND23_EMBEDDED_MODULE`` also accepts
 :func:`py::mod_gil_not_used()`,
 :func:`py::multiple_interpreters::per_interpreter_gil()`, and
-:func:`py::multiple_interpreters::shared_gil()` tags just like ``PYBIND11_MODULE``.
+:func:`py::multiple_interpreters::shared_gil()` tags just like ``PYBIND23_MODULE``.
 See :ref:`misc_subinterp` and :ref:`misc_free_threading` for more information.
 
 Interpreter lifetime
@@ -226,7 +226,7 @@ this, creating a new instance will restart the interpreter. Alternatively, the
 ``initialize_interpreter`` / ``finalize_interpreter`` pair of functions can be used
 to directly set the state at any time.
 
-Modules created with pybind11 can be safely re-initialized after the interpreter
+Modules created with pybind23 can be safely re-initialized after the interpreter
 has been restarted. However, this may not apply to third-party extension modules.
 The issue is that Python itself cannot completely unload extension modules and
 there are several caveats with regard to interpreter restarting. In short, not
@@ -242,7 +242,7 @@ global data. All the details can be found in the CPython documentation.
 
     Do not use the raw CPython API functions ``Py_Initialize`` and
     ``Py_Finalize`` as these do not properly handle the lifetime of
-    pybind11's internal data.
+    pybind23's internal data.
 
 
 .. _subinterp:
@@ -258,9 +258,9 @@ their own Global Interpreter Lock (GIL), which means that running a
 sub-interpreter in a separate thread from the main interpreter can achieve true
 concurrency.
 
-pybind11's sub-interpreter API can be found in ``pybind11/subinterpreter.h``.
+pybind23's sub-interpreter API can be found in ``pybind23/subinterpreter.h``.
 
-pybind11 :class:`subinterpreter` instances can be safely moved and shared between
+pybind23 :class:`subinterpreter` instances can be safely moved and shared between
 threads as needed. However, managing multiple threads and the lifetimes of multiple
 interpreters and their GILs can be challenging.
 Proceed with caution (and lots of testing)!
@@ -288,12 +288,12 @@ sub-interpreter, call :func:`subinterpreter::create()`.
     the call before returning (or return to no active interpreter if none was
     active at the time of the call).
 
-Each sub-interpreter will import a separate copy of each ``PYBIND11_EMBEDDED_MODULE``
+Each sub-interpreter will import a separate copy of each ``PYBIND23_EMBEDDED_MODULE``
 when those modules specify a ``multiple_interpreters`` tag. If a module does not
 specify a ``multiple_interpreters`` tag, then Python will report an ``ImportError``
 if it is imported in a sub-interpreter.
 
-pybind11 also has a :class:`scoped_subinterpreter` class, which creates and
+pybind23 also has a :class:`scoped_subinterpreter` class, which creates and
 activates a sub-interpreter when it is constructed, and deactivates and deletes
 it when it goes out of scope.
 
@@ -370,12 +370,12 @@ Here is an example showing how to create and activate sub-interpreters:
 .. code-block:: cpp
 
     #include <iostream>
-    #include <pybind11/embed.h>
-    #include <pybind11/subinterpreter.h>
+    #include <pybind23/embed.h>
+    #include <pybind23/subinterpreter.h>
 
-    namespace py = pybind11;
+    namespace py = pybind23;
 
-    PYBIND11_EMBEDDED_MODULE(printer, m, py::multiple_interpreters::per_interpreter_gil()) {
+    PYBIND23_EMBEDDED_MODULE(printer, m, py::multiple_interpreters::per_interpreter_gil()) {
         m.def("which", [](const std::string& when) {
             std::cout << when << "; Current Interpreter is "
                     << py::subinterpreter::current().id()

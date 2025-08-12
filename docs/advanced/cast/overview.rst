@@ -7,7 +7,7 @@ Exposing a custom C++ type using :class:`py::class_` was covered in detail
 in the :doc:`/classes` section. There, the underlying data structure is
 always the original C++ class while the :class:`py::class_` wrapper provides
 a Python interface. Internally, when an object like this is sent from C++ to
-Python, pybind11 will just add the outer wrapper layer over the native C++
+Python, pybind23 will just add the outer wrapper layer over the native C++
 object. Getting it back from Python is just a matter of peeling off the
 wrapper.
 
@@ -53,7 +53,7 @@ the other. Now, we have native types on both sides and we convert between them.
     >>> print_vector([1, 2, 3])
     1 2 3
 
-In this case, pybind11 will construct a new ``std::vector<int>`` and copy each
+In this case, pybind23 will construct a new ``std::vector<int>`` and copy each
 element from the Python ``list``. The newly constructed object will be passed
 to ``print_vector``. The same thing happens in the other direction: a new
 ``list`` is made to match the value returned from C++.
@@ -78,92 +78,92 @@ as arguments and return values, refer to the section on binding :ref:`classes`.
 +------------------------------------+---------------------------+-----------------------------------+
 |  Data type                         |  Description              | Header file                       |
 +====================================+===========================+===================================+
-| ``int8_t``, ``uint8_t``            | 8-bit integers            | :file:`pybind11/pybind11.h`       |
+| ``int8_t``, ``uint8_t``            | 8-bit integers            | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``int16_t``, ``uint16_t``          | 16-bit integers           | :file:`pybind11/pybind11.h`       |
+| ``int16_t``, ``uint16_t``          | 16-bit integers           | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``int32_t``, ``uint32_t``          | 32-bit integers           | :file:`pybind11/pybind11.h`       |
+| ``int32_t``, ``uint32_t``          | 32-bit integers           | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``int64_t``, ``uint64_t``          | 64-bit integers           | :file:`pybind11/pybind11.h`       |
+| ``int64_t``, ``uint64_t``          | 64-bit integers           | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``ssize_t``, ``size_t``            | Platform-dependent size   | :file:`pybind11/pybind11.h`       |
+| ``ssize_t``, ``size_t``            | Platform-dependent size   | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``float``, ``double``              | Floating point types      | :file:`pybind11/pybind11.h`       |
+| ``float``, ``double``              | Floating point types      | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``bool``                           | Two-state Boolean type    | :file:`pybind11/pybind11.h`       |
+| ``bool``                           | Two-state Boolean type    | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``char``                           | Character literal         | :file:`pybind11/pybind11.h`       |
+| ``char``                           | Character literal         | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``char16_t``                       | UTF-16 character literal  | :file:`pybind11/pybind11.h`       |
+| ``char16_t``                       | UTF-16 character literal  | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``char32_t``                       | UTF-32 character literal  | :file:`pybind11/pybind11.h`       |
+| ``char32_t``                       | UTF-32 character literal  | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``wchar_t``                        | Wide character literal    | :file:`pybind11/pybind11.h`       |
+| ``wchar_t``                        | Wide character literal    | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``const char *``                   | UTF-8 string literal      | :file:`pybind11/pybind11.h`       |
+| ``const char *``                   | UTF-8 string literal      | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``const char16_t *``               | UTF-16 string literal     | :file:`pybind11/pybind11.h`       |
+| ``const char16_t *``               | UTF-16 string literal     | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``const char32_t *``               | UTF-32 string literal     | :file:`pybind11/pybind11.h`       |
+| ``const char32_t *``               | UTF-32 string literal     | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``const wchar_t *``                | Wide string literal       | :file:`pybind11/pybind11.h`       |
+| ``const wchar_t *``                | Wide string literal       | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::string``                    | STL dynamic UTF-8 string  | :file:`pybind11/pybind11.h`       |
+| ``std::string``                    | STL dynamic UTF-8 string  | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::u16string``                 | STL dynamic UTF-16 string | :file:`pybind11/pybind11.h`       |
+| ``std::u16string``                 | STL dynamic UTF-16 string | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::u32string``                 | STL dynamic UTF-32 string | :file:`pybind11/pybind11.h`       |
+| ``std::u32string``                 | STL dynamic UTF-32 string | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::wstring``                   | STL dynamic wide string   | :file:`pybind11/pybind11.h`       |
+| ``std::wstring``                   | STL dynamic wide string   | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::string_view``,              | STL C++17 string views    | :file:`pybind11/pybind11.h`       |
+| ``std::string_view``,              | STL C++17 string views    | :file:`pybind23/pybind23.h`       |
 | ``std::u16string_view``, etc.      |                           |                                   |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::pair<T1, T2>``              | Pair of two custom types  | :file:`pybind11/pybind11.h`       |
+| ``std::pair<T1, T2>``              | Pair of two custom types  | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::tuple<...>``                | Arbitrary tuple of types  | :file:`pybind11/pybind11.h`       |
+| ``std::tuple<...>``                | Arbitrary tuple of types  | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::reference_wrapper<...>``    | Reference type wrapper    | :file:`pybind11/pybind11.h`       |
+| ``std::reference_wrapper<...>``    | Reference type wrapper    | :file:`pybind23/pybind23.h`       |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::complex<T>``                | Complex numbers           | :file:`pybind11/complex.h`        |
+| ``std::complex<T>``                | Complex numbers           | :file:`pybind23/complex.h`        |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::array<T, Size>``            | STL static array          | :file:`pybind11/stl.h`            |
+| ``std::array<T, Size>``            | STL static array          | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::vector<T>``                 | STL dynamic array         | :file:`pybind11/stl.h`            |
+| ``std::vector<T>``                 | STL dynamic array         | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::deque<T>``                  | STL double-ended queue    | :file:`pybind11/stl.h`            |
+| ``std::deque<T>``                  | STL double-ended queue    | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::valarray<T>``               | STL value array           | :file:`pybind11/stl.h`            |
+| ``std::valarray<T>``               | STL value array           | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::list<T>``                   | STL linked list           | :file:`pybind11/stl.h`            |
+| ``std::list<T>``                   | STL linked list           | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::map<T1, T2>``               | STL ordered map           | :file:`pybind11/stl.h`            |
+| ``std::map<T1, T2>``               | STL ordered map           | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::unordered_map<T1, T2>``     | STL unordered map         | :file:`pybind11/stl.h`            |
+| ``std::unordered_map<T1, T2>``     | STL unordered map         | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::set<T>``                    | STL ordered set           | :file:`pybind11/stl.h`            |
+| ``std::set<T>``                    | STL ordered set           | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::unordered_set<T>``          | STL unordered set         | :file:`pybind11/stl.h`            |
+| ``std::unordered_set<T>``          | STL unordered set         | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::optional<T>``               | STL optional type (C++17) | :file:`pybind11/stl.h`            |
+| ``std::optional<T>``               | STL optional type (C++17) | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::experimental::optional<T>`` | STL optional type (exp.)  | :file:`pybind11/stl.h`            |
+| ``std::experimental::optional<T>`` | STL optional type (exp.)  | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::variant<...>``              | Type-safe union (C++17)   | :file:`pybind11/stl.h`            |
+| ``std::variant<...>``              | Type-safe union (C++17)   | :file:`pybind23/stl.h`            |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::filesystem::path``          | STL path (C++17) [#]_     | :file:`pybind11/stl/filesystem.h` |
+| ``std::filesystem::path``          | STL path (C++17) [#]_     | :file:`pybind23/stl/filesystem.h` |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::function<...>``             | STL polymorphic function  | :file:`pybind11/functional.h`     |
+| ``std::function<...>``             | STL polymorphic function  | :file:`pybind23/functional.h`     |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::chrono::duration<...>``     | STL time duration         | :file:`pybind11/chrono.h`         |
+| ``std::chrono::duration<...>``     | STL time duration         | :file:`pybind23/chrono.h`         |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``std::chrono::time_point<...>``   | STL date/time             | :file:`pybind11/chrono.h`         |
+| ``std::chrono::time_point<...>``   | STL date/time             | :file:`pybind23/chrono.h`         |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``Eigen::Matrix<...>``             | Eigen: dense matrix       | :file:`pybind11/eigen.h`          |
+| ``Eigen::Matrix<...>``             | Eigen: dense matrix       | :file:`pybind23/eigen.h`          |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``Eigen::Map<...>``                | Eigen: mapped memory      | :file:`pybind11/eigen.h`          |
+| ``Eigen::Map<...>``                | Eigen: mapped memory      | :file:`pybind23/eigen.h`          |
 +------------------------------------+---------------------------+-----------------------------------+
-| ``Eigen::SparseMatrix<...>``       | Eigen: sparse matrix      | :file:`pybind11/eigen.h`          |
+| ``Eigen::SparseMatrix<...>``       | Eigen: sparse matrix      | :file:`pybind23/eigen.h`          |
 +------------------------------------+---------------------------+-----------------------------------+
 
 .. [#] ``std::filesystem::path`` is converted to ``pathlib.Path`` and

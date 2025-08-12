@@ -45,23 +45,23 @@ namespace test_exc_sp {
 // [workaround(intel)] Unable to use noexcept instead of noexcept(true)
 // Make the f1 test basically the same as the f2 test in C++17 mode for the Intel compiler as
 // it fails to compile with a plain noexcept (tested with icc (ICC) 2021.1 Beta 20200827).
-#if defined(__INTEL_COMPILER) && defined(PYBIND11_CPP17)
+#if defined(__INTEL_COMPILER) && defined(PYBIND23_CPP17)
 int f1(int x) noexcept(true) { return x + 1; }
 #else
 int f1(int x) noexcept { return x + 1; }
 #endif
 int f2(int x) noexcept(true) { return x + 2; }
 int f3(int x) noexcept(false) { return x + 3; }
-PYBIND11_WARNING_PUSH
-PYBIND11_WARNING_DISABLE_GCC("-Wdeprecated")
+PYBIND23_WARNING_PUSH
+PYBIND23_WARNING_DISABLE_GCC("-Wdeprecated")
 #if defined(__clang_major__) && __clang_major__ >= 5
-PYBIND11_WARNING_DISABLE_CLANG("-Wdeprecated-dynamic-exception-spec")
+PYBIND23_WARNING_DISABLE_CLANG("-Wdeprecated-dynamic-exception-spec")
 #else
-PYBIND11_WARNING_DISABLE_CLANG("-Wdeprecated")
+PYBIND23_WARNING_DISABLE_CLANG("-Wdeprecated")
 #endif
 // NOLINTNEXTLINE(modernize-use-noexcept)
 int f4(int x) throw() { return x + 4; } // Deprecated equivalent to noexcept(true)
-PYBIND11_WARNING_POP
+PYBIND23_WARNING_POP
 struct C {
     int m1(int x) noexcept { return x - 1; }
     int m2(int x) const noexcept { return x - 2; }
@@ -69,14 +69,14 @@ struct C {
     int m4(int x) const noexcept(true) { return x - 4; }
     int m5(int x) noexcept(false) { return x - 5; }
     int m6(int x) const noexcept(false) { return x - 6; }
-    PYBIND11_WARNING_PUSH
-    PYBIND11_WARNING_DISABLE_GCC("-Wdeprecated")
-    PYBIND11_WARNING_DISABLE_CLANG("-Wdeprecated")
+    PYBIND23_WARNING_PUSH
+    PYBIND23_WARNING_DISABLE_GCC("-Wdeprecated")
+    PYBIND23_WARNING_DISABLE_CLANG("-Wdeprecated")
     // NOLINTNEXTLINE(modernize-use-noexcept)
     int m7(int x) throw() { return x - 7; }
     // NOLINTNEXTLINE(modernize-use-noexcept)
     int m8(int x) const throw() { return x - 8; }
-    PYBIND11_WARNING_POP
+    PYBIND23_WARNING_POP
 };
 } // namespace test_exc_sp
 
@@ -89,7 +89,7 @@ TEST_SUBMODULE(constants_and_functions, m) {
     m.def("test_function", &test_function2);
     m.def("test_function", &test_function3);
 
-#if defined(PYBIND11_OVERLOAD_CAST)
+#if defined(PYBIND23_OVERLOAD_CAST)
     m.def("test_function", py::overload_cast<>(&test_function4));
     m.def("test_function", py::overload_cast<char *>(&test_function4));
     m.def("test_function", py::overload_cast<int, float>(&test_function4));
@@ -125,10 +125,10 @@ TEST_SUBMODULE(constants_and_functions, m) {
     m.def("f1", f1);
     m.def("f2", f2);
 
-    PYBIND11_WARNING_PUSH
-    PYBIND11_WARNING_DISABLE_INTEL(878) // incompatible exception specifications
+    PYBIND23_WARNING_PUSH
+    PYBIND23_WARNING_DISABLE_INTEL(878) // incompatible exception specifications
     m.def("f3", f3);
-    PYBIND11_WARNING_POP
+    PYBIND23_WARNING_POP
 
     m.def("f4", f4);
 

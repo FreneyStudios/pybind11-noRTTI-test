@@ -5,7 +5,7 @@
     BSD-style license that can be found in the LICENSE file.
 */
 
-#define PYBIND11_TEST_EIGEN_TENSOR_NAMESPACE eigen_tensor
+#define PYBIND23_TEST_EIGEN_TENSOR_NAMESPACE eigen_tensor
 
 #ifdef EIGEN_AVOID_STL_ARRAY
 #    undef EIGEN_AVOID_STL_ARRAY

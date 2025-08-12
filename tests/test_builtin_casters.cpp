@@ -15,8 +15,8 @@ struct ConstRefCasted {
     int tag;
 };
 
-PYBIND11_NAMESPACE_BEGIN(pybind11)
-PYBIND11_NAMESPACE_BEGIN(detail)
+PYBIND23_NAMESPACE_BEGIN(pybind11)
+PYBIND23_NAMESPACE_BEGIN(detail)
 template <>
 class type_caster<ConstRefCasted> {
 public:
@@ -69,12 +69,12 @@ public:
 private:
     ConstRefCasted value = {0};
 };
-PYBIND11_NAMESPACE_END(detail)
-PYBIND11_NAMESPACE_END(pybind11)
+PYBIND23_NAMESPACE_END(detail)
+PYBIND23_NAMESPACE_END(pybind11)
 
 TEST_SUBMODULE(builtin_casters, m) {
-    PYBIND11_WARNING_PUSH
-    PYBIND11_WARNING_DISABLE_MSVC(4127)
+    PYBIND23_WARNING_PUSH
+    PYBIND23_WARNING_DISABLE_MSVC(4127)
 
     // test_simple_string
     m.def("string_roundtrip", [](const char *s) { return s; });
@@ -138,7 +138,7 @@ TEST_SUBMODULE(builtin_casters, m) {
     m.def("strlen", [](char *s) { return strlen(s); });
     m.def("string_length", [](const std::string &s) { return s.length(); });
 
-#ifdef PYBIND11_HAS_U8STRING
+#ifdef PYBIND23_HAS_U8STRING
     m.attr("has_u8string") = true;
     m.def("good_utf8_u8string", []() {
         return std::u8string(u8"Say utf8\u203d \U0001f382 \U0001d400");
@@ -156,7 +156,7 @@ TEST_SUBMODULE(builtin_casters, m) {
 #endif
 
     // test_string_view
-#ifdef PYBIND11_HAS_STRING_VIEW
+#ifdef PYBIND23_HAS_STRING_VIEW
     m.attr("has_string_view") = true;
     m.def("string_view_print", [](std::string_view s) { py::print(s, s.size()); });
     m.def("string_view16_print", [](std::u16string_view s) { py::print(s, s.size()); });
@@ -202,7 +202,7 @@ TEST_SUBMODULE(builtin_casters, m) {
         return py::memoryview::from_memory(val);
     });
 
-#    ifdef PYBIND11_HAS_U8STRING
+#    ifdef PYBIND23_HAS_U8STRING
     m.def("string_view8_print", [](std::u8string_view s) { py::print(s, s.size()); });
     m.def("string_view8_chars", [](std::u8string_view s) {
         py::list l;
@@ -387,5 +387,5 @@ TEST_SUBMODULE(builtin_casters, m) {
     m.def("takes_const_ref_wrap",
           [](std::reference_wrapper<const ConstRefCasted> x) { return x.get().tag; });
 
-    PYBIND11_WARNING_POP
+    PYBIND23_WARNING_POP
 }

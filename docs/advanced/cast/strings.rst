@@ -5,7 +5,7 @@ Passing Python strings to C++
 =============================
 
 When a Python ``str`` is passed from Python to a C++ function that accepts
-``std::string`` or ``char *`` as arguments, pybind11 will encode the Python
+``std::string`` or ``char *`` as arguments, pybind23 will encode the Python
 string to UTF-8. All Python ``str`` can be encoded in UTF-8, so this operation
 does not fail.
 
@@ -59,9 +59,9 @@ Returning C++ strings to Python
 ===============================
 
 When a C++ function returns a ``std::string`` or ``char*`` to a Python caller,
-**pybind11 will assume that the string is valid UTF-8** and will decode it to a
+**pybind23 will assume that the string is valid UTF-8** and will decode it to a
 native Python ``str``, using the same API as Python uses to perform
-``bytes.decode('utf-8')``. If this implicit conversion fails, pybind11 will
+``bytes.decode('utf-8')``. If this implicit conversion fails, pybind23 will
 raise a ``UnicodeDecodeError``.
 
 .. code-block:: c++
@@ -145,7 +145,7 @@ returned to Python as ``bytes``, then one can return the data as a
     b'\xba\xd0\xba\xd0'
 
 
-Note the asymmetry: pybind11 will convert ``bytes`` to ``std::string`` without
+Note the asymmetry: pybind23 will convert ``bytes`` to ``std::string`` without
 encoding, but cannot convert ``std::string`` back to ``bytes`` implicitly.
 
 .. code-block:: c++
@@ -225,7 +225,7 @@ character.
     >>> example.pass_char("A")
     'A'
 
-While C++ will cast integers to character types (``char c = 0x65;``), pybind11
+While C++ will cast integers to character types (``char c = 0x65;``), pybind23
 does not convert Python integers to characters implicitly. The Python function
 ``chr()`` can be used to convert integers to characters.
 

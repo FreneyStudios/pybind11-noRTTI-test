@@ -23,7 +23,7 @@ struct AbaseAlias : Abase, py::trampoline_self_life_support {
     using Abase::Abase;
 
     int Add(int other_val) const override {
-        PYBIND11_OVERRIDE_PURE(int,   /* Return type */
+        PYBIND23_OVERRIDE_PURE(int,   /* Return type */
                                Abase, /* Parent class */
                                Add,   /* Name of function in C++ (must match Python name) */
                                other_val);

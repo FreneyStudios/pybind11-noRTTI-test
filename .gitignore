@@ -35,12 +35,12 @@ MANIFEST
 /*build*
 .cache/
 sosize-*.txt
-pybind11Config*.cmake
-pybind11Targets.cmake
+pybind23Config*.cmake
+pybind23Targets.cmake
 /*env*
 /.vscode
-/pybind11/include/*
-/pybind11/share/*
+/pybind23/include/*
+/pybind23/share/*
 /docs/_build/*
 .ipynb_checkpoints/
 tests/main.cpp

@@ -18,9 +18,9 @@
 #include <utility>
 #include <vector>
 
-#ifdef PYBIND11_HAS_OPTIONAL
+#ifdef PYBIND23_HAS_OPTIONAL
 #    include <optional>
-#endif // PYBIND11_HAS_OPTIONAL
+#endif // PYBIND23_HAS_OPTIONAL
 
 template <typename T>
 class NonZeroIterator {
@@ -86,8 +86,8 @@ private:
 };
 using NonCopyableIntPair = std::pair<NonCopyableInt, NonCopyableInt>;
 
-PYBIND11_MAKE_OPAQUE(std::vector<NonCopyableInt>)
-PYBIND11_MAKE_OPAQUE(std::vector<NonCopyableIntPair>)
+PYBIND23_MAKE_OPAQUE(std::vector<NonCopyableInt>)
+PYBIND23_MAKE_OPAQUE(std::vector<NonCopyableIntPair>)
 
 template <typename PythonType>
 py::list test_random_access_iterator(const PythonType &x) {
@@ -157,7 +157,7 @@ TEST_SUBMODULE(sequences_and_iterators, m) {
     m.def("make_forward_slice_size_t", []() { return py::slice(0, -1, 1); });
     m.def("make_reversed_slice_object",
           []() { return py::slice(py::none(), py::none(), py::int_(-1)); });
-#ifdef PYBIND11_HAS_OPTIONAL
+#ifdef PYBIND23_HAS_OPTIONAL
     m.attr("has_optional") = true;
     m.def("make_reversed_slice_size_t_optional_verbose",
           []() { return py::slice(std::nullopt, std::nullopt, -1); });

@@ -31,7 +31,7 @@ TEST_SUBMODULE(warnings_, m) {
           []() { py::warnings::warn("Invalid category", PyExc_Exception); });
 
     // Test custom warnings
-    PYBIND11_CONSTINIT static py::gil_safe_call_once_and_store<py::object> ex_storage;
+    PYBIND23_CONSTINIT static py::gil_safe_call_once_and_store<py::object> ex_storage;
     ex_storage.call_once_and_store_result([&]() {
         return py::warnings::new_warning_type(m, "CustomWarning", PyExc_DeprecationWarning);
     });

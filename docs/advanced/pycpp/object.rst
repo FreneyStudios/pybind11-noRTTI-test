@@ -29,7 +29,7 @@ Dictionaries can be initialized in the :class:`dict` constructor:
 
 .. code-block:: cpp
 
-    using namespace pybind11::literals; // to bring in the `_a` literal
+    using namespace pybind23::literals; // to bring in the `_a` literal
     py::dict d("spam"_a=py::none(), "eggs"_a=42);
 
 A tuple of python objects can be instantiated using :func:`py::make_tuple`:
@@ -44,7 +44,7 @@ A `simple namespace`_ can be instantiated using
 
 .. code-block:: cpp
 
-    using namespace pybind11::literals;  // to bring in the `_a` literal
+    using namespace pybind23::literals;  // to bring in the `_a` literal
     py::object SimpleNamespace = py::module_::import("types").attr("SimpleNamespace");
     py::object ns = SimpleNamespace("spam"_a=py::none(), "eggs"_a=42);
 
@@ -173,7 +173,7 @@ In C++, the same call can be made using:
 
 .. code-block:: cpp
 
-    using namespace pybind11::literals; // to bring in the `_a` literal
+    using namespace pybind23::literals; // to bring in the `_a` literal
     f(1234, "say"_a="hello", "to"_a=some_instance); // keyword call in C++
 
 Unpacking arguments
@@ -228,8 +228,8 @@ C++ functions that require a specific subtype rather than a generic :class:`obje
 
 .. code-block:: cpp
 
-    #include <pybind11/numpy.h>
-    using namespace pybind11::literals;
+    #include <pybind23/numpy.h>
+    using namespace pybind23::literals;
 
     py::module_ os = py::module_::import("os");
     py::module_ path = py::module_::import("os.path");  // like 'import os.path as path'

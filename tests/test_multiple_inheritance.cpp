@@ -114,27 +114,27 @@ TEST_SUBMODULE(multiple_inheritance, m) {
     py::class_<MIType, Base12>(m, "MIType").def(py::init<int, int>());
 
     // test_multiple_inheritance_python_many_bases
-#define PYBIND11_BASEN(N)                                                                         \
+#define PYBIND23_BASEN(N)                                                                         \
     py::class_<BaseN<(N)>>(m, "BaseN" #N).def(py::init<int>()).def("f" #N, [](BaseN<N> &b) {      \
         return b.i + (N);                                                                         \
     })
-    PYBIND11_BASEN(1);
-    PYBIND11_BASEN(2);
-    PYBIND11_BASEN(3);
-    PYBIND11_BASEN(4);
-    PYBIND11_BASEN(5);
-    PYBIND11_BASEN(6);
-    PYBIND11_BASEN(7);
-    PYBIND11_BASEN(8);
-    PYBIND11_BASEN(9);
-    PYBIND11_BASEN(10);
-    PYBIND11_BASEN(11);
-    PYBIND11_BASEN(12);
-    PYBIND11_BASEN(13);
-    PYBIND11_BASEN(14);
-    PYBIND11_BASEN(15);
-    PYBIND11_BASEN(16);
-    PYBIND11_BASEN(17);
+    PYBIND23_BASEN(1);
+    PYBIND23_BASEN(2);
+    PYBIND23_BASEN(3);
+    PYBIND23_BASEN(4);
+    PYBIND23_BASEN(5);
+    PYBIND23_BASEN(6);
+    PYBIND23_BASEN(7);
+    PYBIND23_BASEN(8);
+    PYBIND23_BASEN(9);
+    PYBIND23_BASEN(10);
+    PYBIND23_BASEN(11);
+    PYBIND23_BASEN(12);
+    PYBIND23_BASEN(13);
+    PYBIND23_BASEN(14);
+    PYBIND23_BASEN(15);
+    PYBIND23_BASEN(16);
+    PYBIND23_BASEN(17);
 
     // Uncommenting this should result in a compile time failure (MI can only be specified via
     // template parameters because pybind has to know the types involved; see discussion in #742

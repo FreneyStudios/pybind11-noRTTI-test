@@ -8,7 +8,7 @@ nfns = 4  # Functions per class
 nargs = 4  # Arguments per function
 
 
-def generate_dummy_code_pybind11(nclasses=10):
+def generate_dummy_code_pybind23(nclasses=10):
     decl = ""
     bindings = ""
 
@@ -30,10 +30,10 @@ def generate_dummy_code_pybind11(nclasses=10):
         decl += "};\n\n"
         bindings += "        ;\n"
 
-    result = "#include <pybind11/pybind11.h>\n\n"
-    result += "namespace py = pybind11;\n\n"
+    result = "#include <pybind23/pybind23.h>\n\n"
+    result += "namespace py = pybind23;\n\n"
     result += decl + "\n"
-    result += "PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {\n"
+    result += "PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {\n"
     result += bindings
     result += "}"
     return result
@@ -70,7 +70,7 @@ def generate_dummy_code_boost(nclasses=10):
     return result
 
 
-for codegen in [generate_dummy_code_pybind11, generate_dummy_code_boost]:
+for codegen in [generate_dummy_code_pybind23, generate_dummy_code_boost]:
     print("{")
     for i in range(10):
         nclasses = 2**i

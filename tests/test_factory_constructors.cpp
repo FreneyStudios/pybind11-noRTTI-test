@@ -128,7 +128,7 @@ public:
         print_created(this, s);
     }
     ~PyTF6() override { print_destroyed(this); }
-    int get() override { PYBIND11_OVERRIDE(int, TestFactory6, get, /*no args*/); }
+    int get() override { PYBIND23_OVERRIDE(int, TestFactory6, get, /*no args*/); }
 };
 
 class TestFactory7 {
@@ -166,7 +166,7 @@ public:
     PyTF7(PyTF7 &&f) noexcept : TestFactory7(std::move(f)) { print_move_created(this); }
     PyTF7(const PyTF7 &f) : TestFactory7(f) { print_copy_created(this); }
     ~PyTF7() override { print_destroyed(this); }
-    int get() override { PYBIND11_OVERRIDE(int, TestFactory7, get, /*no args*/); }
+    int get() override { PYBIND23_OVERRIDE(int, TestFactory7, get, /*no args*/); }
 };
 
 class TestFactoryHelper {

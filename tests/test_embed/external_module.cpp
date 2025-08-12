@@ -1,12 +1,12 @@
-#include <pybind11/pybind11.h>
+#include <pybind23/pybind23.h>
 
-namespace py = pybind11;
+namespace py = pybind23;
 
-/* Simple test module/test class to check that the referenced internals data of external pybind11
+/* Simple test module/test class to check that the referenced internals data of external pybind23
  * modules aren't preserved over a finalize/initialize.
  */
 
-PYBIND11_MODULE(external_module,
+PYBIND23_MODULE(external_module,
                 m,
                 py::mod_gil_not_used(),
                 py::multiple_interpreters::per_interpreter_gil()) {

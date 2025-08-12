@@ -267,7 +267,7 @@ TEST_SUBMODULE(stl_binders, m) {
         double y;
         bool z;
     };
-    PYBIND11_NUMPY_DTYPE(VStruct, w, x, y, z);
+    PYBIND23_NUMPY_DTYPE(VStruct, w, x, y, z);
     py::class_<VStruct>(m, "VStruct").def_readwrite("x", &VStruct::x);
     py::bind_vector<std::vector<VStruct>>(m, "VectorStruct", py::buffer_protocol());
     m.def("get_vectorstruct",

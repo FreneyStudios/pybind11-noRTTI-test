@@ -6,33 +6,33 @@ Miscellaneous
 General notes regarding convenience macros
 ==========================================
 
-pybind11 provides a few convenience macros such as
-:func:`PYBIND11_DECLARE_HOLDER_TYPE` and ``PYBIND11_OVERRIDE_*``. Since these
+pybind23 provides a few convenience macros such as
+:func:`PYBIND23_DECLARE_HOLDER_TYPE` and ``PYBIND23_OVERRIDE_*``. Since these
 are "just" macros that are evaluated in the preprocessor (which has no concept
 of types), they *will* get confused by commas in a template argument; for
 example, consider:
 
 .. code-block:: cpp
 
-    PYBIND11_OVERRIDE(MyReturnType<T1, T2>, Class<T3, T4>, func)
+    PYBIND23_OVERRIDE(MyReturnType<T1, T2>, Class<T3, T4>, func)
 
 The limitation of the C preprocessor interprets this as five arguments (with new
 arguments beginning after each comma) rather than three.  To get around this,
 there are two alternatives: you can use a type alias, or you can wrap the type
-using the ``PYBIND11_TYPE`` macro:
+using the ``PYBIND23_TYPE`` macro:
 
 .. code-block:: cpp
 
     // Version 1: using a type alias
     using ReturnType = MyReturnType<T1, T2>;
     using ClassType = Class<T3, T4>;
-    PYBIND11_OVERRIDE(ReturnType, ClassType, func);
+    PYBIND23_OVERRIDE(ReturnType, ClassType, func);
 
-    // Version 2: using the PYBIND11_TYPE macro:
-    PYBIND11_OVERRIDE(PYBIND11_TYPE(MyReturnType<T1, T2>),
-                      PYBIND11_TYPE(Class<T3, T4>), func)
+    // Version 2: using the PYBIND23_TYPE macro:
+    PYBIND23_OVERRIDE(PYBIND23_TYPE(MyReturnType<T1, T2>),
+                      PYBIND23_TYPE(Class<T3, T4>), func)
 
-The ``PYBIND11_MAKE_OPAQUE`` macro does *not* require the above workarounds.
+The ``PYBIND23_MAKE_OPAQUE`` macro does *not* require the above workarounds.
 
 .. _gil:
 
@@ -41,7 +41,7 @@ Global Interpreter Lock (GIL)
 
 The Python C API dictates that the Global Interpreter Lock (GIL) must always
 be held by the current thread to safely access Python objects. As a result,
-when Python calls into C++ via pybind11 the GIL must be held, and pybind11
+when Python calls into C++ via pybind23 the GIL must be held, and pybind23
 will never implicitly release the GIL.
 
 .. code-block:: cpp
@@ -50,15 +50,15 @@ will never implicitly release the GIL.
         /* GIL is held when this function is called from Python */
     }
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         m.def("my_function", &my_function);
     }
 
-pybind11 will ensure that the GIL is held when it knows that it is calling
+pybind23 will ensure that the GIL is held when it knows that it is calling
 Python code. For example, if a Python callback is passed to C++ code via
 ``std::function``, when C++ code calls the function the built-in wrapper
 will acquire the GIL before calling the Python callback. Similarly, the
-``PYBIND11_OVERRIDE`` family of macros will acquire the GIL before calling
+``PYBIND23_OVERRIDE`` family of macros will acquire the GIL before calling
 back into Python.
 
 When writing C++ code that is called from other C++ code, if that code accesses
@@ -87,8 +87,8 @@ could be realized as follows (important changes highlighted):
 
         /* Trampoline (need one for each virtual function) */
         std::string go(int n_times) {
-            /* PYBIND11_OVERRIDE_PURE will acquire the GIL before accessing Python state */
-            PYBIND11_OVERRIDE_PURE(
+            /* PYBIND23_OVERRIDE_PURE will acquire the GIL before accessing Python state */
+            PYBIND23_OVERRIDE_PURE(
                 std::string, /* Return type */
                 Animal,      /* Parent class */
                 go,          /* Name of function */
@@ -97,7 +97,7 @@ could be realized as follows (important changes highlighted):
         }
     };
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         py::class_<Animal, PyAnimal, py::smart_holder> animal(m, "Animal");
         animal
             .def(py::init<>())
@@ -128,20 +128,20 @@ Common Sources Of Global Interpreter Lock Errors
 ==================================================================
 
 Failing to properly hold the Global Interpreter Lock (GIL) is one of the
-more common sources of bugs within code that uses pybind11. If you are
+more common sources of bugs within code that uses pybind23. If you are
 running into GIL related errors, we highly recommend you consult the
 following checklist.
 
-- Do you have any global variables that are pybind11 objects or invoke
-  pybind11 functions in either their constructor or destructor? You are generally
+- Do you have any global variables that are pybind23 objects or invoke
+  pybind23 functions in either their constructor or destructor? You are generally
   not allowed to invoke any Python function in a global static context. We recommend
   using lazy initialization and then intentionally leaking at the end of the program.
 
-- Do you have any pybind11 objects that are members of other C++ structures? One
-  commonly overlooked requirement is that pybind11 objects have to increase their reference count
+- Do you have any pybind23 objects that are members of other C++ structures? One
+  commonly overlooked requirement is that pybind23 objects have to increase their reference count
   whenever their copy constructor is called. Thus, you need to be holding the GIL to invoke
-  the copy constructor of any C++ class that has a pybind11 member. This can sometimes be very
-  tricky to track for complicated programs Think carefully when you make a pybind11 object
+  the copy constructor of any C++ class that has a pybind23 member. This can sometimes be very
+  tricky to track for complicated programs Think carefully when you make a pybind23 object
   a member in another struct.
 
 - C++ destructors that invoke Python functions can be particularly troublesome as
@@ -152,7 +152,7 @@ following checklist.
   cause deadlocks; see [#f8]_ for a detailed discussion.
 
 - You should try running your code in a debug build. That will enable additional assertions
-  within pybind11 that will throw exceptions on certain GIL handling errors
+  within pybind23 that will throw exceptions on certain GIL handling errors
   (reference counting operations).
 
 .. _misc_free_threading:
@@ -160,17 +160,17 @@ following checklist.
 Free-threading support
 ==================================================================
 
-pybind11 supports the experimental free-threaded builds of Python versions 3.13+.
-pybind11's internal data structures are thread safe. To enable your modules to be used with
+pybind23 supports the experimental free-threaded builds of Python versions 3.13+.
+pybind23's internal data structures are thread safe. To enable your modules to be used with
 free-threading, pass the :class:`mod_gil_not_used` tag as the third argument to
-``PYBIND11_MODULE``.
+``PYBIND23_MODULE``.
 
 For example:
 
 .. code-block:: cpp
     :emphasize-lines: 1
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Animal> animal(m, "Animal");
         // etc
     }
@@ -185,17 +185,17 @@ compatibility with non-free-threaded Python.
 Sub-interpreter support
 ==================================================================
 
-pybind11 supports isolated sub-interpreters, which are stable in Python 3.12+.  pybind11's
+pybind23 supports isolated sub-interpreters, which are stable in Python 3.12+.  pybind23's
 internal data structures are sub-interpreter safe. To enable your modules to be imported in
 isolated sub-interpreters, pass the :func:`multiple_interpreters::per_interpreter_gil()`
-tag as the third or later argument to ``PYBIND11_MODULE``.
+tag as the third or later argument to ``PYBIND23_MODULE``.
 
 For example:
 
 .. code-block:: cpp
     :emphasize-lines: 1
 
-    PYBIND11_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil()) {
+    PYBIND23_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil()) {
         py::class_<Animal> animal(m, "Animal");
         // etc
     }
@@ -220,9 +220,9 @@ Best Practices for Sub-interpreter Safety:
   program, so concurrent calls into a module from two different sub-interpreters are still
   possible. Therefore, your module still needs to consider thread safety.
 
-pybind11 also supports "legacy" sub-interpreters which shared a single global GIL. You can enable
+pybind23 also supports "legacy" sub-interpreters which shared a single global GIL. You can enable
 legacy-only behavior by using the :func:`multiple_interpreters::shared_gil()` tag in
-``PYBIND11_MODULE``.
+``PYBIND23_MODULE``.
 
 You can explicitly disable sub-interpreter support in your module by using the
 :func:`multiple_interpreters::not_supported()` tag. This is the default behavior if you do not
@@ -230,7 +230,7 @@ specify a multiple_interpreters tag.
 
 .. _misc_concurrency:
 
-Concurrency and Parallelism in Python with pybind11
+Concurrency and Parallelism in Python with pybind23
 ===================================================
 
 Sub-interpreter support does not imply free-threading support or vice versa.  Free-threading safe
@@ -243,7 +243,7 @@ of the previous calculation.
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         static size_t seed = 0;
         m.def("calc_next", []() {
             auto old = seed;
@@ -257,7 +257,7 @@ It is relatively easy to make this free-threading safe.  One way is by using ato
 .. code-block:: cpp
     :emphasize-lines: 1,2
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         static std::atomic<size_t> seed(0);
         m.def("calc_next", []() {
             size_t old, next;
@@ -280,7 +280,7 @@ member of a class. For this simple example, we will store it in :func:`globals`.
 .. code-block:: cpp
     :emphasize-lines: 1,6
 
-    PYBIND11_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil()) {
+    PYBIND23_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil()) {
         m.def("calc_next", []() {
             if (!py::globals().contains("myseed"))
                 py::globals()["myseed"] = 0;
@@ -314,10 +314,10 @@ Python. You can have it lock one or two Python objects. You cannot nest it.
 .. code-block:: cpp
     :emphasize-lines: 1,4,8
 
-    #include <pybind11/critical_section.h>
+    #include <pybind23/critical_section.h>
     // ...
 
-    PYBIND11_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil(), py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::multiple_interpreters::per_interpreter_gil(), py::mod_gil_not_used()) {
         m.def("calc_next", []() {
             size_t old;
             py::dict g = py::globals();
@@ -381,7 +381,7 @@ However, it can be acquired as follows:
 Alternatively, you can specify the base class as a template parameter option to
 ``py::class_``, which performs an automated lookup of the corresponding Python
 type. Like the above code, however, this also requires invoking the ``import``
-function once to ensure that the pybind11 binding code of the module ``basic``
+function once to ensure that the pybind23 binding code of the module ``basic``
 has been executed:
 
 .. code-block:: cpp
@@ -394,16 +394,16 @@ has been executed:
 
 Naturally, both methods will fail when there are cyclic dependencies.
 
-Note that pybind11 code compiled with hidden-by-default symbol visibility (e.g.
+Note that pybind23 code compiled with hidden-by-default symbol visibility (e.g.
 via the command line flag ``-fvisibility=hidden`` on GCC/Clang), which is
-required for proper pybind11 functionality, can interfere with the ability to
+required for proper pybind23 functionality, can interfere with the ability to
 access types defined in another extension module.  Working around this requires
 manually exporting types that are accessed by multiple extension modules;
-pybind11 provides a macro to do just this:
+pybind23 provides a macro to do just this:
 
 .. code-block:: cpp
 
-    class PYBIND11_EXPORT Dog : public Animal {
+    class PYBIND23_EXPORT Dog : public Animal {
         ...
     };
 
@@ -412,7 +412,7 @@ C++ objects between extension modules at runtime. Internal library data is share
 between modules using capsule machinery [#f6]_ which can be also utilized for
 storing, modifying and accessing user-defined data. Note that an extension module
 will "see" other extensions' data if and only if they were built with the same
-pybind11 version. Consider the following example:
+pybind23 version. Consider the following example:
 
 .. code-block:: cpp
 
@@ -430,7 +430,7 @@ would be then able to access the data behind the same pointer.
 Module Destructors
 ==================
 
-pybind11 does not provide an explicit mechanism to invoke cleanup code at
+pybind23 does not provide an explicit mechanism to invoke cleanup code at
 module destruction time. In rare cases where such functionality is required, it
 is possible to emulate it using Python capsules or weak references with a
 destruction callback.
@@ -495,7 +495,7 @@ Generating documentation using Sphinx
 =====================================
 
 Sphinx [#f4]_ has the ability to inspect the signatures and documentation
-strings in pybind11-based extension modules to automatically generate beautiful
+strings in pybind23-based extension modules to automatically generate beautiful
 documentation in a variety formats. The python_example repository [#f5]_ contains a
 simple example repository which uses this approach.
 
@@ -523,7 +523,7 @@ work, it is important that all lines are indented consistently, i.e.:
         ----------
     )mydelimiter");
 
-By default, pybind11 automatically generates and prepends a signature to the docstring of a function
+By default, pybind23 automatically generates and prepends a signature to the docstring of a function
 registered with ``module_::def()`` and ``class_::def()``. Sometimes this
 behavior is not desirable, because you want to provide your own signature or remove
 the docstring completely to exclude the function from the Sphinx documentation.
@@ -531,14 +531,14 @@ The class ``options`` allows you to selectively suppress auto-generated signatur
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         py::options options;
         options.disable_function_signatures();
 
         m.def("add", [](int a, int b) { return a + b; }, "A function which adds two numbers");
     }
 
-pybind11 also appends all members of an enum to the resulting enum docstring.
+pybind23 also appends all members of an enum to the resulting enum docstring.
 This default behavior can be disabled by using the ``disable_enum_members_docstring()``
 function of the ``options`` class.
 
@@ -560,7 +560,7 @@ Avoiding C++ types in docstrings
 ================================
 
 Docstrings are generated at the time of the declaration, e.g. when ``.def(...)`` is called.
-At this point parameter and return types should be known to pybind11.
+At this point parameter and return types should be known to pybind23.
 If a custom type is not exposed yet through a ``py::class_`` constructor or a custom type caster,
 its C++ type name will be used instead to generate the signature in the docstring:
 
@@ -571,12 +571,12 @@ its C++ type name will be used instead to generate the signature in the docstrin
                                               ^^^^^^^
 
 
-This limitation can be circumvented by ensuring that C++ classes are registered with pybind11
+This limitation can be circumvented by ensuring that C++ classes are registered with pybind23
 before they are used as a parameter or return type of a function:
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
 
         auto pyFoo = py::class_<ns::Foo>(m, "Foo");
         auto pyBar = py::class_<ns::Bar>(m, "Bar");
@@ -588,14 +588,14 @@ before they are used as a parameter or return type of a function:
 Setting inner type hints in docstrings
 ======================================
 
-When you use pybind11 wrappers for ``list``, ``dict``, and other generic python
+When you use pybind23 wrappers for ``list``, ``dict``, and other generic python
 types, the docstring will just display the generic type. You can convey the
 inner types in the docstring by using a special 'typed' version of the generic
 type.
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         m.def("pass_list_of_str", [](py::typing::List<py::str> arg) {
             // arg can be used just like py::list
         ));
@@ -603,7 +603,7 @@ type.
 
 The resulting docstring will be ``pass_list_of_str(arg0: list[str]) -> None``.
 
-The following special types are available in ``pybind11/typing.h``:
+The following special types are available in ``pybind23/typing.h``:
 
 * ``py::Tuple<Args...>``
 * ``py::Dict<K, V>``

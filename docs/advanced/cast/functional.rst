@@ -1,7 +1,7 @@
 Functional
 ##########
 
-The following features must be enabled by including :file:`pybind11/functional.h`.
+The following features must be enabled by including :file:`pybind23/functional.h`.
 
 
 Callbacks and passing anonymous functions
@@ -49,14 +49,14 @@ methods of classes:
            py::arg("number"));
     }
 
-After including the extra header file :file:`pybind11/functional.h`, it is almost
+After including the extra header file :file:`pybind23/functional.h`, it is almost
 trivial to generate binding code for all of these functions.
 
 .. code-block:: cpp
 
-    #include <pybind11/functional.h>
+    #include <pybind23/functional.h>
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         m.def("func_arg", &func_arg);
         m.def("func_ret", &func_ret);
         m.def("func_cpp", &func_cpp);
@@ -92,7 +92,7 @@ The following interactive session shows how to call them from Python.
     C++ -> Python -> C++ -> ... roundtrips can significantly decrease
     performance.
 
-    There is one exception: pybind11 detects case where a stateless function
+    There is one exception: pybind23 detects case where a stateless function
     (i.e. a function pointer or a lambda function without captured variables)
     is passed as an argument to another C++ function exposed in Python. In this
     case, there is no overhead. Pybind11 will extract the underlying C++

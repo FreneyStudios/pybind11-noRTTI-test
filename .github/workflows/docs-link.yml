@@ -37,5 +37,5 @@ jobs:
       - uses: readthedocs/actions/preview@v1
         if: steps.docs_changes.outputs.docs_changed == 'true'
         with:
-          project-slug: "pybind11"
+          project-slug: "pybind23"
           single-version: "true"

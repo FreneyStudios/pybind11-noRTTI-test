@@ -88,7 +88,7 @@ def test_independent_subinterpreters():
 
     m = pytest.importorskip("mod_per_interpreter_gil")
 
-    if not m.defined_PYBIND11_HAS_SUBINTERPRETER_SUPPORT:
+    if not m.defined_PYBIND23_HAS_SUBINTERPRETER_SUPPORT:
         pytest.skip("Does not have subinterpreter support compiled in")
 
     code = """
@@ -135,7 +135,7 @@ def test_independent_subinterpreters_modern():
 
     m = pytest.importorskip("mod_per_interpreter_gil")
 
-    if not m.defined_PYBIND11_HAS_SUBINTERPRETER_SUPPORT:
+    if not m.defined_PYBIND23_HAS_SUBINTERPRETER_SUPPORT:
         pytest.skip("Does not have subinterpreter support compiled in")
 
     from concurrent import interpreters
@@ -181,7 +181,7 @@ def test_dependent_subinterpreters():
 
     m = pytest.importorskip("mod_shared_interpreter_gil")
 
-    if not m.defined_PYBIND11_HAS_SUBINTERPRETER_SUPPORT:
+    if not m.defined_PYBIND23_HAS_SUBINTERPRETER_SUPPORT:
         pytest.skip("Does not have subinterpreter support compiled in")
 
     code = """

@@ -45,7 +45,7 @@ Normally, the binding code for these classes would look as follows:
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Animal>(m, "Animal")
             .def("go", &Animal::go);
 
@@ -71,7 +71,7 @@ helper class that is defined as follows:
 
         /* Trampoline (need one for each virtual function) */
         std::string go(int n_times) override {
-            PYBIND11_OVERRIDE_PURE(
+            PYBIND23_OVERRIDE_PURE(
                 std::string, /* Return type */
                 Animal,      /* Parent class */
                 go,          /* Name of function in C++ (must match Python name) */
@@ -83,14 +83,14 @@ helper class that is defined as follows:
 The ``py::trampoline_self_life_support`` base class is needed to ensure
 that a ``std::unique_ptr`` can safely be passed between Python and C++. To
 help you steer clear of notorious pitfalls (e.g. inheritance slicing),
-pybind11 enforces that trampoline classes inherit from
+pybind23 enforces that trampoline classes inherit from
 ``py::trampoline_self_life_support`` if used in in combination with
 ``py::smart_holder``.
 
 .. note::
     For completeness, the base class has no effect if a holder other than
     ``py::smart_holder`` used, including the default ``std::unique_ptr<T>``.
-    To avoid confusion, pybind11 will fail to compile bindings that combine
+    To avoid confusion, pybind23 will fail to compile bindings that combine
     ``py::trampoline_self_life_support`` with a holder other than
     ``py::smart_holder``.
 
@@ -98,10 +98,10 @@ pybind11 enforces that trampoline classes inherit from
     ``py::smart_holder``. The pitfalls associated with avoiding it are very
     real, and the overhead for using it is very likely in the noise.
 
-The macro :c:macro:`PYBIND11_OVERRIDE_PURE` should be used for pure virtual
-functions, and :c:macro:`PYBIND11_OVERRIDE` should be used for functions which have
+The macro :c:macro:`PYBIND23_OVERRIDE_PURE` should be used for pure virtual
+functions, and :c:macro:`PYBIND23_OVERRIDE` should be used for functions which have
 a default implementation.  There are also two alternate macros
-:c:macro:`PYBIND11_OVERRIDE_PURE_NAME` and :c:macro:`PYBIND11_OVERRIDE_NAME` which
+:c:macro:`PYBIND23_OVERRIDE_PURE_NAME` and :c:macro:`PYBIND23_OVERRIDE_NAME` which
 take a string-valued name argument between the *Parent class* and *Name of the
 function* slots, which defines the name of function in Python. This is required
 when the C++ and Python versions of the
@@ -112,7 +112,7 @@ The binding code also needs a few minor adaptations (highlighted):
 .. code-block:: cpp
     :emphasize-lines: 2,3
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Animal, PyAnimal /* <--- trampoline */, py::smart_holder>(m, "Animal")
             .def(py::init<>())
             .def("go", &Animal::go);
@@ -123,7 +123,7 @@ The binding code also needs a few minor adaptations (highlighted):
         m.def("call_go", &call_go);
     }
 
-Importantly, pybind11 is made aware of the trampoline helper class by
+Importantly, pybind23 is made aware of the trampoline helper class by
 specifying it as an extra template argument to ``py::class_``. (This can also
 be combined with other template arguments such as a custom holder type; the
 order of template types does not matter).  Following this, we are able to
@@ -168,7 +168,7 @@ will generally leave the C++ instance in an invalid state and cause undefined
 behavior if the C++ instance is subsequently used.
 
 .. versionchanged:: 2.6
-   The default pybind11 metaclass will throw a ``TypeError`` when it detects
+   The default pybind23 metaclass will throw a ``TypeError`` when it detects
    that ``__init__`` was not called by a derived class.
 
 Here is an example:
@@ -194,13 +194,13 @@ Please take a look at the :ref:`macro_notes` before using this feature.
 .. note::
 
     When the overridden type returns a reference or pointer to a type that
-    pybind11 converts from Python (for example, numeric values, std::string,
+    pybind23 converts from Python (for example, numeric values, std::string,
     and other built-in value-converting types), there are some limitations to
     be aware of:
 
     - because in these cases there is no C++ variable to reference (the value
-      is stored in the referenced Python variable), pybind11 provides one in
-      the PYBIND11_OVERRIDE macros (when needed) with static storage duration.
+      is stored in the referenced Python variable), pybind23 provides one in
+      the PYBIND23_OVERRIDE macros (when needed) with static storage duration.
       Note that this means that invoking the overridden method on *any*
       instance will change the referenced value stored in *all* instances of
       that type.
@@ -212,8 +212,8 @@ Please take a look at the :ref:`macro_notes` before using this feature.
 
 .. warning::
 
-    The :c:macro:`PYBIND11_OVERRIDE` and accompanying macros used to be called
-    ``PYBIND11_OVERLOAD`` up until pybind11 v2.5.0, and :func:`get_override`
+    The :c:macro:`PYBIND23_OVERRIDE` and accompanying macros used to be called
+    ``PYBIND23_OVERLOAD`` up until pybind23 v2.5.0, and :func:`get_override`
     used to be called ``get_overload``. This naming was corrected and the older
     macro and function names may soon be deprecated, in order to reduce
     confusion with overloaded functions and methods and ``py::overload_cast``
@@ -222,7 +222,7 @@ Please take a look at the :ref:`macro_notes` before using this feature.
 .. seealso::
 
     The file :file:`tests/test_virtual_functions.cpp` contains a complete
-    example that demonstrates how to override virtual functions using pybind11
+    example that demonstrates how to override virtual functions using pybind23
     in more detail.
 
 .. _virtual_and_inheritance:
@@ -265,25 +265,25 @@ override the ``name()`` method):
     class PyAnimal : public Animal, public py::trampoline_self_life_support {
     public:
         using Animal::Animal; // Inherit constructors
-        std::string go(int n_times) override { PYBIND11_OVERRIDE_PURE(std::string, Animal, go, n_times); }
-        std::string name() override { PYBIND11_OVERRIDE(std::string, Animal, name, ); }
+        std::string go(int n_times) override { PYBIND23_OVERRIDE_PURE(std::string, Animal, go, n_times); }
+        std::string name() override { PYBIND23_OVERRIDE(std::string, Animal, name, ); }
     };
     class PyDog : public Dog, public py::trampoline_self_life_support {
     public:
         using Dog::Dog; // Inherit constructors
-        std::string go(int n_times) override { PYBIND11_OVERRIDE(std::string, Dog, go, n_times); }
-        std::string name() override { PYBIND11_OVERRIDE(std::string, Dog, name, ); }
-        std::string bark() override { PYBIND11_OVERRIDE(std::string, Dog, bark, ); }
+        std::string go(int n_times) override { PYBIND23_OVERRIDE(std::string, Dog, go, n_times); }
+        std::string name() override { PYBIND23_OVERRIDE(std::string, Dog, name, ); }
+        std::string bark() override { PYBIND23_OVERRIDE(std::string, Dog, bark, ); }
     };
 
 .. note::
 
-    Note the trailing commas in the ``PYBIND11_OVERRIDE`` calls to ``name()``
+    Note the trailing commas in the ``PYBIND23_OVERRIDE`` calls to ``name()``
     and ``bark()``. These are needed to portably implement a trampoline for a
     function that does not take any arguments. For functions that take
     a nonzero number of arguments, the trailing comma must be omitted.
 
-A registered class derived from a pybind11-registered class with virtual
+A registered class derived from a pybind23-registered class with virtual
 methods requires a similar trampoline class, *even if* it doesn't explicitly
 declare or override any virtual methods itself:
 
@@ -293,9 +293,9 @@ declare or override any virtual methods itself:
     class PyHusky : public Husky, public py::trampoline_self_life_support {
     public:
         using Husky::Husky; // Inherit constructors
-        std::string go(int n_times) override { PYBIND11_OVERRIDE_PURE(std::string, Husky, go, n_times); }
-        std::string name() override { PYBIND11_OVERRIDE(std::string, Husky, name, ); }
-        std::string bark() override { PYBIND11_OVERRIDE(std::string, Husky, bark, ); }
+        std::string go(int n_times) override { PYBIND23_OVERRIDE_PURE(std::string, Husky, go, n_times); }
+        std::string name() override { PYBIND23_OVERRIDE(std::string, Husky, name, ); }
+        std::string bark() override { PYBIND23_OVERRIDE(std::string, Husky, bark, ); }
     };
 
 There is, however, a technique that can be used to avoid this duplication
@@ -309,16 +309,16 @@ follows:
     class PyAnimal : public AnimalBase, public py::trampoline_self_life_support {
     public:
         using AnimalBase::AnimalBase; // Inherit constructors
-        std::string go(int n_times) override { PYBIND11_OVERRIDE_PURE(std::string, AnimalBase, go, n_times); }
-        std::string name() override { PYBIND11_OVERRIDE(std::string, AnimalBase, name, ); }
+        std::string go(int n_times) override { PYBIND23_OVERRIDE_PURE(std::string, AnimalBase, go, n_times); }
+        std::string name() override { PYBIND23_OVERRIDE(std::string, AnimalBase, name, ); }
     };
     template <class DogBase = Dog>
     class PyDog : public PyAnimal<DogBase>, public py::trampoline_self_life_support {
     public:
         using PyAnimal<DogBase>::PyAnimal; // Inherit constructors
         // Override PyAnimal's pure virtual go() with a non-pure one:
-        std::string go(int n_times) override { PYBIND11_OVERRIDE(std::string, DogBase, go, n_times); }
-        std::string bark() override { PYBIND11_OVERRIDE(std::string, DogBase, bark, ); }
+        std::string go(int n_times) override { PYBIND23_OVERRIDE(std::string, DogBase, go, n_times); }
+        std::string bark() override { PYBIND23_OVERRIDE(std::string, DogBase, bark, ); }
     };
 
 This technique has the advantage of requiring just one trampoline method to be
@@ -327,7 +327,7 @@ however, require the compiler to generate at least as many methods (and
 possibly more, if both pure virtual and overridden pure virtual methods are
 exposed, as above).
 
-The classes are then registered with pybind11 using:
+The classes are then registered with pybind23 using:
 
 .. code-block:: cpp
 
@@ -379,7 +379,7 @@ For example, such a class might perform extra class initialization, extra
 destruction operations, and might define new members and methods to enable a
 more python-like interface to a class.
 
-In order to tell pybind11 that it should *always* initialize the trampoline
+In order to tell pybind23 that it should *always* initialize the trampoline
 class when creating new instances of a type, the class constructors should be
 declared using ``py::init_alias<Args, ...>()`` instead of the usual
 ``py::init<Args, ...>()``.  This forces construction via the trampoline class,
@@ -413,9 +413,9 @@ Python side by allowing the Python function to return ``None`` or an ``int``:
 
     bool MyClass::myMethod(int32_t& value)
     {
-        pybind11::gil_scoped_acquire gil;  // Acquire the GIL while in this scope.
+        pybind23::gil_scoped_acquire gil;  // Acquire the GIL while in this scope.
         // Try to look up the overridden method on the Python side.
-        pybind11::function override = pybind11::get_override(this, "myMethod");
+        pybind23::function override = pybind23::get_override(this, "myMethod");
         if (override) {  // method is found
             auto obj = override(value);  // Call the Python function.
             if (py::isinstance<py::int_>(obj)) {  // check if it returned a Python integer type
@@ -450,14 +450,14 @@ a ``shared_ptr`` that shares ownership with the original ``class_`` holder,
 usually preserving object lifetime. However, for Python classes that derive from
 a trampoline, if the Python object is destroyed, only the base C++ object may
 remain alive, leading to inheritance slicing
-(see `#1333 <https://github.com/pybind/pybind11/issues/1333>`_).
+(see `#1333 <https://github.com/pybind/pybind23/issues/1333>`_).
 
 In contrast, with ``py::smart_holder``, converting a Python object to
 a ``std::shared_ptr<T>`` returns a new ``shared_ptr`` with an independent
 control block that keeps the derived Python object alive. This avoids
 inheritance slicing but can lead to unintended behavior when creating
 ``std::weak_ptr`` instances
-(see `#5623 <https://github.com/pybind/pybind11/issues/5623>`_).
+(see `#5623 <https://github.com/pybind/pybind23/issues/5623>`_).
 
 If it is necessary to obtain a ``std::weak_ptr`` that shares the control block
 with the ``smart_holder``—at the cost of reintroducing potential inheritance
@@ -481,7 +481,7 @@ Custom constructors
 
 The syntax for binding constructors was previously introduced, but it only
 works when a constructor of the appropriate arguments actually exists on the
-C++ side.  To extend this to more general cases, pybind11 makes it possible
+C++ side.  To extend this to more general cases, pybind23 makes it possible
 to bind factory functions as constructors. For example, suppose you have a
 class like this:
 
@@ -535,7 +535,7 @@ The following example shows the different approaches:
         .def(py::init<double>())
         ;
 
-When the constructor is invoked from Python, pybind11 will call the factory
+When the constructor is invoked from Python, pybind23 will call the factory
 function and store the resulting C++ instance in the Python instance.
 
 When combining factory functions constructors with :ref:`virtual function
@@ -558,7 +558,7 @@ an alias:
 
 .. code-block:: cpp
 
-    #include <pybind11/factory.h>
+    #include <pybind23/factory.h>
     class Example {
     public:
         // ...
@@ -583,7 +583,7 @@ an alias:
 Brace initialization
 --------------------
 
-``pybind11::init<>`` internally uses C++11 brace initialization to call the
+``pybind23::init<>`` internally uses C++11 brace initialization to call the
 constructor of the target class. This means that it can be used to bind
 *implicit* constructors as well:
 
@@ -611,7 +611,7 @@ Non-public destructors
 
 If a class has a private or protected destructor (as might e.g. be the case in
 a singleton pattern), a compile error will occur when creating bindings via
-pybind11. The underlying issue is that the ``std::unique_ptr`` holder type that
+pybind23. The underlying issue is that the ``std::unique_ptr`` holder type that
 is responsible for managing the lifetime of instances will reference the
 destructor even if no deallocations ever take place. In order to expose classes
 with private or protected destructors, it is possible to override the holder
@@ -670,7 +670,7 @@ For more information, see :ref:`the documentation on exceptions <unraisable_exce
 
 .. note::
 
-    pybind11 does not support C++ destructors marked ``noexcept(false)``.
+    pybind23 does not support C++ destructors marked ``noexcept(false)``.
 
 .. versionadded:: 2.6
 
@@ -712,7 +712,7 @@ Python side:
 .. note::
 
     Implicit conversions from ``A`` to ``B`` only work when ``B`` is a custom
-    data type that is exposed to Python via pybind11.
+    data type that is exposed to Python via pybind23.
 
     To prevent runaway recursion, implicit conversions are non-reentrant: an
     implicit conversion invoked as part of another implicit conversion of the
@@ -772,9 +772,9 @@ to Python.
 
 .. code-block:: cpp
 
-    #include <pybind11/operators.h>
+    #include <pybind23/operators.h>
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Vector2>(m, "Vector2")
             .def(py::init<float, float>())
             .def(py::self + py::self)
@@ -802,14 +802,14 @@ is really just short hand notation for
 
 This can be useful for exposing additional operators that don't exist on the
 C++ side, or to perform other types of customization. The ``py::is_operator``
-flag marker is needed to inform pybind11 that this is an operator, which
+flag marker is needed to inform pybind23 that this is an operator, which
 returns ``NotImplemented`` when invoked with incompatible arguments rather than
 throwing a type error.
 
 .. note::
 
     To use the more convenient ``py::self`` notation, the additional
-    header file :file:`pybind11/operators.h` must be included.
+    header file :file:`pybind23/operators.h` must be included.
 
 .. seealso::
 
@@ -824,7 +824,7 @@ Pickling support
 
 Python's ``pickle`` module provides a powerful facility to serialize and
 de-serialize a Python object graph into a binary data stream. To pickle and
-unpickle C++ classes using pybind11, a ``py::pickle()`` definition must be
+unpickle C++ classes using pybind23, a ``py::pickle()`` definition must be
 provided. Suppose the class in question has the following signature:
 
 .. code-block:: cpp
@@ -842,7 +842,7 @@ provided. Suppose the class in question has the following signature:
     };
 
 Pickling support in Python is enabled by defining the ``__setstate__`` and
-``__getstate__`` methods [#f3]_. For pybind11 classes, use ``py::pickle()``
+``__getstate__`` methods [#f3]_. For pybind23 classes, use ``py::pickle()``
 to bind these two functions:
 
 .. code-block:: cpp
@@ -890,14 +890,14 @@ An instance can now be pickled as follows:
     If given, the second argument to ``dumps`` must be 2 or larger - 0 and 1 are
     not supported. Newer versions are also fine; for instance, specify ``-1`` to
     always use the latest available version. Beware: failure to follow these
-    instructions will cause important pybind11 memory allocation routines to be
+    instructions will cause important pybind23 memory allocation routines to be
     skipped during unpickling, which will likely lead to memory corruption
     and/or segmentation faults.
 
 .. seealso::
 
     The file :file:`tests/test_pickling.cpp` contains a complete example
-    that demonstrates how to pickle and unpickle types using pybind11 in more
+    that demonstrates how to pickle and unpickle types using pybind23 in more
     detail.
 
 .. [#f3] http://docs.python.org/3/library/pickle.html#pickling-class-instances
@@ -935,7 +935,7 @@ which should look as follows:
 Multiple Inheritance
 ====================
 
-pybind11 can create bindings for types that derive from multiple base types
+pybind23 can create bindings for types that derive from multiple base types
 (aka. *multiple inheritance*). To do so, specify all bases in the template
 arguments of the ``py::class_`` declaration:
 
@@ -946,16 +946,16 @@ arguments of the ``py::class_`` declaration:
 
 The base types can be specified in arbitrary order, and they can even be
 interspersed with alias types and holder types (discussed earlier in this
-document)---pybind11 will automatically find out which is which. The only
+document)---pybind23 will automatically find out which is which. The only
 requirement is that the first template argument is the type to be declared.
 
 It is also permitted to inherit multiply from exported C++ classes in Python,
-as well as inheriting from multiple Python and/or pybind11-exported classes.
+as well as inheriting from multiple Python and/or pybind23-exported classes.
 
 There is one caveat regarding the implementation of this feature:
 
 When only one base type is specified for a C++ type that actually has multiple
-bases, pybind11 will assume that it does not participate in multiple
+bases, pybind23 will assume that it does not participate in multiple
 inheritance, which can lead to undefined behavior. In such cases, add the tag
 ``multiple_inheritance`` to the class constructor:
 
@@ -971,7 +971,7 @@ are listed.
 Module-local class bindings
 ===========================
 
-When creating a binding for a class, pybind11 by default makes that binding
+When creating a binding for a class, pybind23 by default makes that binding
 "global" across modules.  What this means is that a type defined in one module
 can be returned from any module resulting in the same Python type.  For
 example, this allows the following:
@@ -1039,7 +1039,7 @@ because of conflicting definitions on the external type:
       File "<stdin>", line 1, in <module>
     ImportError: generic_type: type "Pet" is already registered!
 
-To get around this, you can tell pybind11 to keep the external class binding
+To get around this, you can tell pybind23 to keep the external class binding
 localized to the module by passing the ``py::module_local()`` attribute into
 the ``py::class_`` constructor:
 
@@ -1097,7 +1097,7 @@ Python type created elsewhere.
 
 .. note::
 
-    STL bindings (as provided via the optional :file:`pybind11/stl_bind.h`
+    STL bindings (as provided via the optional :file:`pybind23/stl_bind.h`
     header) apply ``py::module_local`` by default when the bound type might
     conflict with other modules; see :ref:`stl_bind` for details.
 
@@ -1105,7 +1105,7 @@ Python type created elsewhere.
 
     The localization of the bound types is actually tied to the shared object
     or binary generated by the compiler/linker.  For typical modules created
-    with ``PYBIND11_MODULE()``, this distinction is not significant.  It is
+    with ``PYBIND23_MODULE()``, this distinction is not significant.  It is
     possible, however, when :ref:`embedding` to embed multiple modules in the
     same binary (see :ref:`embedding_modules`).  In such a case, the
     localization will apply across all embedded modules within the same binary.
@@ -1172,7 +1172,7 @@ described trampoline:
 
     class Trampoline : public A, public py::trampoline_self_life_support {
     public:
-        int foo() const override { PYBIND11_OVERRIDE(int, A, foo, ); }
+        int foo() const override { PYBIND23_OVERRIDE(int, A, foo, ); }
     };
 
     class Publicist : public A {
@@ -1215,7 +1215,7 @@ error:
 Binding classes with template parameters
 ========================================
 
-pybind11 can also wrap classes that have template parameters. Consider these classes:
+pybind23 can also wrap classes that have template parameters. Consider these classes:
 
 .. code-block:: cpp
 
@@ -1228,7 +1228,7 @@ pybind11 can also wrap classes that have template parameters. Consider these cla
         PetType& get();
     };
 
-C++ templates may only be instantiated at compile time, so pybind11 can only
+C++ templates may only be instantiated at compile time, so pybind23 can only
 wrap instantiated templated classes. You cannot wrap a non-instantiated template:
 
 .. code-block:: cpp
@@ -1267,16 +1267,16 @@ but once again each instantiation must be explicitly specified:
 Custom automatic downcasters
 ============================
 
-As explained in :ref:`inheritance`, pybind11 comes with built-in
+As explained in :ref:`inheritance`, pybind23 comes with built-in
 understanding of the dynamic type of polymorphic objects in C++; that
 is, returning a Pet to Python produces a Python object that knows it's
-wrapping a Dog, if Pet has virtual methods and pybind11 knows about
+wrapping a Dog, if Pet has virtual methods and pybind23 knows about
 Dog and this Pet is in fact a Dog. Sometimes, you might want to
 provide this automatic downcasting behavior when creating bindings for
 a class hierarchy that does not use standard C++ polymorphism, such as
 LLVM [#f4]_. As long as there's some way to determine at runtime
 whether a downcast is safe, you can proceed by specializing the
-``pybind11::polymorphic_type_hook`` template:
+``pybind23::polymorphic_type_hook`` template:
 
 .. code-block:: cpp
 
@@ -1293,7 +1293,7 @@ whether a downcast is safe, you can proceed by specializing the
         std::string bark() const { return sound; }
     };
 
-    namespace PYBIND11_NAMESPACE {
+    namespace PYBIND23_NAMESPACE {
         template<> struct polymorphic_type_hook<Pet> {
             static const void *get(const Pet *src, const std::type_info*& type) {
                 // note that src may be nullptr
@@ -1304,9 +1304,9 @@ whether a downcast is safe, you can proceed by specializing the
                 return src;
             }
         };
-    } // namespace PYBIND11_NAMESPACE
+    } // namespace PYBIND23_NAMESPACE
 
-When pybind11 wants to convert a C++ pointer of type ``Base*`` to a
+When pybind23 wants to convert a C++ pointer of type ``Base*`` to a
 Python object, it calls ``polymorphic_type_hook<Base>::get()`` to
 determine if a downcast is possible. The ``get()`` function should use
 whatever runtime information is available to determine if its ``src``
@@ -1315,7 +1315,7 @@ inherits from ``Base``. If it finds such a ``Derived``, it sets ``type
 = &typeid(Derived)`` and returns a pointer to the ``Derived`` object
 that contains ``src``. Otherwise, it just returns ``src``, leaving
 ``type`` at its default value of nullptr. If you set ``type`` to a
-type that pybind11 doesn't know about, no downcasting will occur, and
+type that pybind23 doesn't know about, no downcasting will occur, and
 the original ``src`` pointer will be used with its static type
 ``Base*``.
 
@@ -1333,7 +1333,7 @@ appropriate derived-class pointer (e.g. using
 
 .. note::
 
-    pybind11's standard support for downcasting objects whose types
+    pybind23's standard support for downcasting objects whose types
     have virtual methods is implemented using
     ``polymorphic_type_hook`` too, using the standard C++ ability to
     determine the most-derived type of a polymorphic object using

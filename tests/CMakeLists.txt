@@ -1,4 +1,4 @@
-# CMakeLists.txt -- Build system for the pybind11 test suite
+# CMakeLists.txt -- Build system for the pybind23 test suite
 #
 # Copyright (c) 2015 Wenzel Jakob <wenzel@inf.ethz.ch>
 #
@@ -10,11 +10,11 @@ cmake_minimum_required(VERSION 3.15...4.0)
 # Filter out items; print an optional message if any items filtered. This ignores extensions.
 #
 # Usage:
-#   pybind11_filter_tests(LISTNAME file1.cpp file2.cpp ... MESSAGE "")
+#   pybind23_filter_tests(LISTNAME file1.cpp file2.cpp ... MESSAGE "")
 #
-macro(pybind11_filter_tests LISTNAME)
+macro(pybind23_filter_tests LISTNAME)
   cmake_parse_arguments(ARG "" "MESSAGE" "" ${ARGN})
-  set(PYBIND11_FILTER_TESTS_FOUND OFF)
+  set(PYBIND23_FILTER_TESTS_FOUND OFF)
   # Make a list of the test without any extensions, for easier filtering.
   set(_TMP_ACTUAL_LIST "${${LISTNAME}};") # enforce ';' at the end to allow matching last item.
   string(REGEX REPLACE "\\.[^.;]*;" ";" LIST_WITHOUT_EXTENSIONS "${_TMP_ACTUAL_LIST}")
@@ -26,10 +26,10 @@ macro(pybind11_filter_tests LISTNAME)
       list(REMOVE_AT ${LISTNAME} ${_FILE_FOUND}) # And remove from the list with extensions.
       list(REMOVE_AT LIST_WITHOUT_EXTENSIONS ${_FILE_FOUND}
       )# And our search list, to ensure it is in sync.
-      set(PYBIND11_FILTER_TESTS_FOUND ON)
+      set(PYBIND23_FILTER_TESTS_FOUND ON)
     endif()
   endforeach()
-  if(PYBIND11_FILTER_TESTS_FOUND AND ARG_MESSAGE)
+  if(PYBIND23_FILTER_TESTS_FOUND AND ARG_MESSAGE)
     message(STATUS "${ARG_MESSAGE}")
   endif()
 endmacro()
@@ -47,11 +47,11 @@ endmacro()
 # Additions; Specifies the additional test targets to add when any of the needles are found.
 macro(tests_extra_targets needles additions)
   # Add the index for this relation to the index extra targets map.
-  list(LENGTH PYBIND11_TEST_EXTRA_TARGETS PYBIND11_TEST_EXTRA_TARGETS_LEN)
-  list(APPEND PYBIND11_TEST_EXTRA_TARGETS ${PYBIND11_TEST_EXTRA_TARGETS_LEN})
+  list(LENGTH PYBIND23_TEST_EXTRA_TARGETS PYBIND23_TEST_EXTRA_TARGETS_LEN)
+  list(APPEND PYBIND23_TEST_EXTRA_TARGETS ${PYBIND23_TEST_EXTRA_TARGETS_LEN})
   # Add the test names to look for, and the associated test target additions.
-  set(PYBIND11_TEST_EXTRA_TARGETS_NEEDLES_${PYBIND11_TEST_EXTRA_TARGETS_LEN} ${needles})
-  set(PYBIND11_TEST_EXTRA_TARGETS_ADDITION_${PYBIND11_TEST_EXTRA_TARGETS_LEN} ${additions})
+  set(PYBIND23_TEST_EXTRA_TARGETS_NEEDLES_${PYBIND23_TEST_EXTRA_TARGETS_LEN} ${needles})
+  set(PYBIND23_TEST_EXTRA_TARGETS_ADDITION_${PYBIND23_TEST_EXTRA_TARGETS_LEN} ${additions})
 endmacro()
 
 # New Python support
@@ -61,30 +61,30 @@ if(DEFINED Python_EXECUTABLE)
 endif()
 
 # There's no harm in including a project in a project
-project(pybind11_tests CXX)
+project(pybind23_tests CXX)
 
 # Access FindCatch and more
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../tools")
 
-option(PYBIND11_WERROR "Report all warnings as errors" OFF)
+option(PYBIND23_WERROR "Report all warnings as errors" OFF)
 option(DOWNLOAD_EIGEN "Download EIGEN" OFF)
-option(PYBIND11_CUDA_TESTS "Enable building CUDA tests" OFF)
-option(PYBIND11_TEST_SMART_HOLDER "Change the default to smart holder" OFF)
-set(PYBIND11_TEST_OVERRIDE
+option(PYBIND23_CUDA_TESTS "Enable building CUDA tests" OFF)
+option(PYBIND23_TEST_SMART_HOLDER "Change the default to smart holder" OFF)
+set(PYBIND23_TEST_OVERRIDE
     ""
     CACHE STRING "Tests from ;-separated list of *.cpp files will be built instead of all tests")
-set(PYBIND11_TEST_FILTER
+set(PYBIND23_TEST_FILTER
     ""
     CACHE STRING "Tests from ;-separated list of *.cpp files will be removed from all tests")
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   # We're being loaded directly, i.e. not via add_subdirectory, so make this
-  # work as its own project and load the pybind11Config to get the tools we need
+  # work as its own project and load the pybind23Config to get the tools we need
 
   if(SKBUILD)
-    add_subdirectory(.. pybind11_src)
+    add_subdirectory(.. pybind23_src)
   else()
-    find_package(pybind11 REQUIRED CONFIG)
+    find_package(pybind23 REQUIRED CONFIG)
   endif()
 endif()
 
@@ -97,7 +97,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
                                                "RelWithDebInfo")
 endif()
 
-if(PYBIND11_CUDA_TESTS)
+if(PYBIND23_CUDA_TESTS)
   enable_language(CUDA)
   if(DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CUDA_STANDARD ${CMAKE_CXX_STANDARD})
@@ -108,7 +108,7 @@ endif()
 # Full set of test files (you can override these; see below, overrides ignore extension)
 # Any test that has no extension is both .py and .cpp, so 'foo' will add 'foo.cpp' and 'foo.py'.
 # Any test that has an extension is exclusively that and handled as such.
-set(PYBIND11_TEST_FILES
+set(PYBIND23_TEST_FILES
     test_async
     test_buffers
     test_builtin_casters
@@ -184,89 +184,89 @@ set(PYBIND11_TEST_FILES
     test_warnings)
 
 # Invoking cmake with something like:
-#     cmake -DPYBIND11_TEST_OVERRIDE="test_callbacks.cpp;test_pickling.cpp" ..
+#     cmake -DPYBIND23_TEST_OVERRIDE="test_callbacks.cpp;test_pickling.cpp" ..
 # lets you override the tests that get compiled and run.  You can restore to all tests with:
-#     cmake -DPYBIND11_TEST_OVERRIDE= ..
-if(PYBIND11_TEST_OVERRIDE)
+#     cmake -DPYBIND23_TEST_OVERRIDE= ..
+if(PYBIND23_TEST_OVERRIDE)
   # Instead of doing a direct override here, we iterate over the overrides without extension and
-  # match them against entries from the PYBIND11_TEST_FILES, anything that not matches goes into the filter list.
-  string(REGEX REPLACE "\\.[^.;]*;" ";" TEST_OVERRIDE_NO_EXT "${PYBIND11_TEST_OVERRIDE};")
-  string(REGEX REPLACE "\\.[^.;]*;" ";" TEST_FILES_NO_EXT "${PYBIND11_TEST_FILES};")
+  # match them against entries from the PYBIND23_TEST_FILES, anything that not matches goes into the filter list.
+  string(REGEX REPLACE "\\.[^.;]*;" ";" TEST_OVERRIDE_NO_EXT "${PYBIND23_TEST_OVERRIDE};")
+  string(REGEX REPLACE "\\.[^.;]*;" ";" TEST_FILES_NO_EXT "${PYBIND23_TEST_FILES};")
   # This allows the override to be done with extensions, preserving backwards compatibility.
   foreach(test_name ${TEST_FILES_NO_EXT})
     if(NOT ${test_name} IN_LIST TEST_OVERRIDE_NO_EXT
     )# If not in the allowlist, add to be filtered out.
-      list(APPEND PYBIND11_TEST_FILTER ${test_name})
+      list(APPEND PYBIND23_TEST_FILTER ${test_name})
     endif()
   endforeach()
 endif()
 
 # You can also filter tests:
-if(PYBIND11_TEST_FILTER)
-  pybind11_filter_tests(PYBIND11_TEST_FILES ${PYBIND11_TEST_FILTER})
+if(PYBIND23_TEST_FILTER)
+  pybind23_filter_tests(PYBIND23_TEST_FILES ${PYBIND23_TEST_FILTER})
 endif()
 
 # Skip tests for CUDA check:
-# /pybind11/tests/test_constants_and_functions.cpp(125):
+# /pybind23/tests/test_constants_and_functions.cpp(125):
 #   error: incompatible exception specifications
-if(PYBIND11_CUDA_TESTS)
-  pybind11_filter_tests(
-    PYBIND11_TEST_FILES test_constants_and_functions.cpp MESSAGE
+if(PYBIND23_CUDA_TESTS)
+  pybind23_filter_tests(
+    PYBIND23_TEST_FILES test_constants_and_functions.cpp MESSAGE
     "Skipping test_constants_and_functions due to incompatible exception specifications")
 endif()
 
 # Now that the test filtering is complete, we need to split the list into the test for PYTEST
 # and the list for the cpp targets.
-set(PYBIND11_CPPTEST_FILES "")
-set(PYBIND11_PYTEST_FILES "")
+set(PYBIND23_CPPTEST_FILES "")
+set(PYBIND23_PYTEST_FILES "")
 
-foreach(test_name ${PYBIND11_TEST_FILES})
+foreach(test_name ${PYBIND23_TEST_FILES})
   if(test_name MATCHES "\\.py$") # Ends in .py, purely python test.
-    list(APPEND PYBIND11_PYTEST_FILES ${test_name})
+    list(APPEND PYBIND23_PYTEST_FILES ${test_name})
   elseif(test_name MATCHES "\\.cpp$") # Ends in .cpp, purely cpp test.
-    list(APPEND PYBIND11_CPPTEST_FILES ${test_name})
+    list(APPEND PYBIND23_CPPTEST_FILES ${test_name})
   elseif(NOT test_name MATCHES "\\.") # No extension specified, assume both, add extension.
-    list(APPEND PYBIND11_PYTEST_FILES ${test_name}.py)
-    list(APPEND PYBIND11_CPPTEST_FILES ${test_name}.cpp)
+    list(APPEND PYBIND23_PYTEST_FILES ${test_name}.py)
+    list(APPEND PYBIND23_CPPTEST_FILES ${test_name}.cpp)
   else()
     message(WARNING "Unhanded test extension in test: ${test_name}")
   endif()
 endforeach()
-set(PYBIND11_TEST_FILES ${PYBIND11_CPPTEST_FILES})
-list(SORT PYBIND11_PYTEST_FILES)
+set(PYBIND23_TEST_FILES ${PYBIND23_CPPTEST_FILES})
+list(SORT PYBIND23_PYTEST_FILES)
 
-# Contains the set of test files that require pybind11_cross_module_tests to be
+# Contains the set of test files that require pybind23_cross_module_tests to be
 # built; if none of these are built (i.e. because TEST_OVERRIDE is used and
 # doesn't include them) the second module doesn't get built.
 tests_extra_targets("test_exceptions.py;test_local_bindings.py;test_stl.py;test_stl_binders.py"
-                    "pybind11_cross_module_tests")
+                    "pybind23_cross_module_tests")
 
 # And add additional targets for other tests.
 tests_extra_targets("test_exceptions.py" "cross_module_interleaved_error_already_set")
 tests_extra_targets("test_gil_scoped.py" "cross_module_gil_utils")
 tests_extra_targets("test_cpp_conduit.py"
-                    "exo_planet_pybind11;exo_planet_c_api;home_planet_very_lonely_traveler")
+                    "exo_planet_pybind23;exo_planet_c_api;home_planet_very_lonely_traveler")
 
-set(PYBIND11_EIGEN_REPO
+set(PYBIND23_EIGEN_REPO
     "https://gitlab.com/libeigen/eigen.git"
     CACHE STRING "Eigen repository to use for tests")
 # Always use a hash for reconfigure speed and security reasons
 # Include the version number for pretty printing (keep in sync)
-set(PYBIND11_EIGEN_VERSION_AND_HASH
+set(PYBIND23_EIGEN_VERSION_AND_HASH
     "3.4.0;929bc0e191d0927b1735b9a1ddc0e8b77e3a25ec"
     CACHE STRING "Eigen version to use for tests, format: VERSION;HASH")
 
-list(GET PYBIND11_EIGEN_VERSION_AND_HASH 0 PYBIND11_EIGEN_VERSION_STRING)
-list(GET PYBIND11_EIGEN_VERSION_AND_HASH 1 PYBIND11_EIGEN_VERSION_HASH)
+list(GET PYBIND23_EIGEN_VERSION_AND_HASH 0 PYBIND23_EIGEN_VERSION_STRING)
+list(GET PYBIND23_EIGEN_VERSION_AND_HASH 1 PYBIND23_EIGEN_VERSION_HASH)
 
-# Check if Eigen is available; if not, remove from PYBIND11_TEST_FILES (but
-# keep it in PYBIND11_PYTEST_FILES, so that we get the "eigen is not installed"
+# Check if Eigen is available; if not, remove from PYBIND23_TEST_FILES (but
+# keep it in PYBIND23_PYTEST_FILES, so that we get the "eigen is not installed"
 # skip message).
-list(FIND PYBIND11_TEST_FILES test_eigen_matrix.cpp PYBIND11_TEST_FILES_EIGEN_I)
-if(PYBIND11_TEST_FILES_EIGEN_I EQUAL -1)
-  list(FIND PYBIND11_TEST_FILES test_eigen_tensor.cpp PYBIND11_TEST_FILES_EIGEN_I)
+list(FIND PYBIND23_TEST_FILES test_eigen_matrix.cpp PYBIND23_TEST_FILES_EIGEN_I)
+if(PYBIND23_TEST_FILES_EIGEN_I EQUAL -1)
+  list(FIND PYBIND23_TEST_FILES test_eigen_tensor.cpp PYBIND23_TEST_FILES_EIGEN_I)
 endif()
-if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
+if(PYBIND23_TEST_FILES_EIGEN_I GREATER -1)
   # Try loading via newer Eigen's Eigen3Config first (bypassing tools/FindEigen3.cmake).
   # Eigen 3.3.1+ exports a cmake 3.0+ target for handling dependency requirements, but also
   if(DOWNLOAD_EIGEN)
@@ -278,8 +278,8 @@ if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
     include(FetchContent)
     FetchContent_Declare(
       eigen
-      GIT_REPOSITORY "${PYBIND11_EIGEN_REPO}"
-      GIT_TAG "${PYBIND11_EIGEN_VERSION_HASH}"
+      GIT_REPOSITORY "${PYBIND23_EIGEN_REPO}"
+      GIT_TAG "${PYBIND23_EIGEN_VERSION_HASH}"
       ${_opts})
     FetchContent_MakeAvailable(eigen)
     if(NOT CMAKE_VERSION VERSION_LESS 3.18)
@@ -290,7 +290,7 @@ if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
     set(EIGEN3_FOUND TRUE)
     # When getting locally, the version is not visible from a superprojet,
     # so just force it.
-    set(EIGEN3_VERSION "${PYBIND11_EIGEN_VERSION_STRING}")
+    set(EIGEN3_VERSION "${PYBIND23_EIGEN_VERSION_STRING}")
 
   else()
     find_package(Eigen3 3.2.7 QUIET CONFIG)
@@ -322,14 +322,14 @@ if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
     endif()
 
   else()
-    list(FIND PYBIND11_TEST_FILES test_eigen_matrix.cpp PYBIND11_TEST_FILES_EIGEN_I)
-    if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
-      list(REMOVE_AT PYBIND11_TEST_FILES ${PYBIND11_TEST_FILES_EIGEN_I})
+    list(FIND PYBIND23_TEST_FILES test_eigen_matrix.cpp PYBIND23_TEST_FILES_EIGEN_I)
+    if(PYBIND23_TEST_FILES_EIGEN_I GREATER -1)
+      list(REMOVE_AT PYBIND23_TEST_FILES ${PYBIND23_TEST_FILES_EIGEN_I})
     endif()
 
-    list(FIND PYBIND11_TEST_FILES test_eigen_tensor.cpp PYBIND11_TEST_FILES_EIGEN_I)
-    if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
-      list(REMOVE_AT PYBIND11_TEST_FILES ${PYBIND11_TEST_FILES_EIGEN_I})
+    list(FIND PYBIND23_TEST_FILES test_eigen_tensor.cpp PYBIND23_TEST_FILES_EIGEN_I)
+    if(PYBIND23_TEST_FILES_EIGEN_I GREATER -1)
+      list(REMOVE_AT PYBIND23_TEST_FILES ${PYBIND23_TEST_FILES_EIGEN_I})
     endif()
     message(STATUS "Building tests WITHOUT Eigen, use -DDOWNLOAD_EIGEN=ON to download")
   endif()
@@ -337,9 +337,9 @@ endif()
 
 # Some code doesn't support gcc 4
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-  list(FIND PYBIND11_TEST_FILES test_eigen_tensor.cpp PYBIND11_TEST_FILES_EIGEN_I)
-  if(PYBIND11_TEST_FILES_EIGEN_I GREATER -1)
-    list(REMOVE_AT PYBIND11_TEST_FILES ${PYBIND11_TEST_FILES_EIGEN_I})
+  list(FIND PYBIND23_TEST_FILES test_eigen_tensor.cpp PYBIND23_TEST_FILES_EIGEN_I)
+  if(PYBIND23_TEST_FILES_EIGEN_I GREATER -1)
+    list(REMOVE_AT PYBIND23_TEST_FILES ${PYBIND23_TEST_FILES_EIGEN_I})
   endif()
 endif()
 
@@ -398,10 +398,10 @@ else()
 endif()
 
 # Compile with compiler warnings turned on
-function(pybind11_enable_warnings target_name)
+function(pybind23_enable_warnings target_name)
   if(MSVC)
     target_compile_options(${target_name} PRIVATE /W4 /wd4189)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Intel|Clang)" AND NOT PYBIND11_CUDA_TESTS)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Intel|Clang)" AND NOT PYBIND23_CUDA_TESTS)
     target_compile_options(
       ${target_name}
       PRIVATE -Wall
@@ -416,7 +416,7 @@ function(pybind11_enable_warnings target_name)
     endif()
   endif()
 
-  if(PYBIND11_WERROR)
+  if(PYBIND23_WERROR)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
       if(CMAKE_CXX_STANDARD EQUAL 17) # See PR #3570
         target_compile_options(${target_name} PRIVATE -Wno-conversion)
@@ -428,7 +428,7 @@ function(pybind11_enable_warnings target_name)
     if(CMAKE_VERSION VERSION_LESS "3.24")
       if(MSVC)
         target_compile_options(${target_name} PRIVATE /WX)
-      elseif(PYBIND11_CUDA_TESTS)
+      elseif(PYBIND23_CUDA_TESTS)
         target_compile_options(${target_name} PRIVATE "SHELL:-Werror all-warnings")
       elseif(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang|IntelLLVM)")
         target_compile_options(${target_name} PRIVATE -Werror)
@@ -441,14 +441,14 @@ function(pybind11_enable_warnings target_name)
   endif()
 endfunction()
 
-set(test_targets pybind11_tests)
+set(test_targets pybind23_tests)
 
 # Check if any tests need extra targets by iterating through the mappings registered.
-foreach(i ${PYBIND11_TEST_EXTRA_TARGETS})
-  foreach(needle ${PYBIND11_TEST_EXTRA_TARGETS_NEEDLES_${i}})
-    if(needle IN_LIST PYBIND11_PYTEST_FILES)
+foreach(i ${PYBIND23_TEST_EXTRA_TARGETS})
+  foreach(needle ${PYBIND23_TEST_EXTRA_TARGETS_NEEDLES_${i}})
+    if(needle IN_LIST PYBIND23_PYTEST_FILES)
       # Add all the additional targets to the test list. List join in newer cmake.
-      foreach(extra_target ${PYBIND11_TEST_EXTRA_TARGETS_ADDITION_${i}})
+      foreach(extra_target ${PYBIND23_TEST_EXTRA_TARGETS_ADDITION_${i}})
         list(APPEND test_targets ${extra_target})
       endforeach()
       break() # Breaks out of the needle search, continues with the next mapping.
@@ -457,24 +457,24 @@ foreach(i ${PYBIND11_TEST_EXTRA_TARGETS})
 endforeach()
 
 # Support CUDA testing by forcing the target file to compile with NVCC
-if(PYBIND11_CUDA_TESTS)
-  set_property(SOURCE ${PYBIND11_TEST_FILES} PROPERTY LANGUAGE CUDA)
+if(PYBIND23_CUDA_TESTS)
+  set_property(SOURCE ${PYBIND23_TEST_FILES} PROPERTY LANGUAGE CUDA)
 endif()
 
 foreach(target ${test_targets})
-  set(test_files ${PYBIND11_TEST_FILES})
-  if(NOT "${target}" STREQUAL "pybind11_tests")
+  set(test_files ${PYBIND23_TEST_FILES})
+  if(NOT "${target}" STREQUAL "pybind23_tests")
     set(test_files "")
   endif()
 
   # Support CUDA testing by forcing the target file to compile with NVCC
-  if(PYBIND11_CUDA_TESTS)
+  if(PYBIND23_CUDA_TESTS)
     set_property(SOURCE ${target}.cpp PROPERTY LANGUAGE CUDA)
   endif()
 
   # Create the binding library
-  pybind11_add_module(${target} THIN_LTO ${target}.cpp ${test_files} ${PYBIND11_HEADERS})
-  pybind11_enable_warnings(${target})
+  pybind23_add_module(${target} THIN_LTO ${target}.cpp ${test_files} ${PYBIND23_HEADERS})
+  pybind23_enable_warnings(${target})
 
   if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     get_property(
@@ -494,18 +494,18 @@ foreach(target ${test_targets})
 
   if(EIGEN3_FOUND)
     target_link_libraries(${target} PRIVATE Eigen3::Eigen)
-    target_compile_definitions(${target} PRIVATE -DPYBIND11_TEST_EIGEN)
+    target_compile_definitions(${target} PRIVATE -DPYBIND23_TEST_EIGEN)
   endif()
 
   if(Boost_FOUND)
     target_link_libraries(${target} PRIVATE Boost::headers)
-    target_compile_definitions(${target} PRIVATE -DPYBIND11_TEST_BOOST)
+    target_compile_definitions(${target} PRIVATE -DPYBIND23_TEST_BOOST)
   endif()
 
-  if(PYBIND11_TEST_SMART_HOLDER)
+  if(PYBIND23_TEST_SMART_HOLDER)
     target_compile_definitions(
       ${target}
-      PUBLIC -DPYBIND11_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
+      PUBLIC -DPYBIND23_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
     )
   endif()
 
@@ -539,10 +539,10 @@ endforeach()
 source_group(
   TREE "${CMAKE_CURRENT_SOURCE_DIR}/../include"
   PREFIX "Header Files"
-  FILES ${PYBIND11_HEADERS})
+  FILES ${PYBIND23_HEADERS})
 
 # Make sure pytest is found or produce a warning
-pybind11_find_import(pytest VERSION 3.1)
+pybind23_find_import(pytest VERSION 3.1)
 
 if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
   # This is not used later in the build, so it's okay to regenerate each time.
@@ -554,53 +554,53 @@ if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 endif()
 
 # Convert relative to full file names
-list(TRANSFORM PYBIND11_PYTEST_FILES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/"
-                                             OUTPUT_VARIABLE PYBIND11_ABS_PYTEST_FILES)
+list(TRANSFORM PYBIND23_PYTEST_FILES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/"
+                                             OUTPUT_VARIABLE PYBIND23_ABS_PYTEST_FILES)
 
-set(PYBIND11_TEST_PREFIX_COMMAND
+set(PYBIND23_TEST_PREFIX_COMMAND
     ""
     CACHE STRING "Put this before pytest, use for checkers and such")
 
-set(PYBIND11_PYTEST_ARGS
+set(PYBIND23_PYTEST_ARGS
     ""
     CACHE STRING "Extra arguments for pytest")
 
 # A single command to compile and run the tests
 add_custom_target(
   pytest
-  COMMAND ${PYBIND11_TEST_PREFIX_COMMAND} ${PYTHON_EXECUTABLE} -m pytest
-          ${PYBIND11_ABS_PYTEST_FILES} ${PYBIND11_PYTEST_ARGS}
+  COMMAND ${PYBIND23_TEST_PREFIX_COMMAND} ${PYTHON_EXECUTABLE} -m pytest
+          ${PYBIND23_ABS_PYTEST_FILES} ${PYBIND23_PYTEST_ARGS}
   DEPENDS ${test_targets}
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   USES_TERMINAL)
 
-if(NOT PYBIND11_CUDA_TESTS)
+if(NOT PYBIND23_CUDA_TESTS)
   # This module doesn't get mixed with other test modules because those aren't subinterpreter safe.
-  pybind11_add_module(mod_per_interpreter_gil THIN_LTO mod_per_interpreter_gil.cpp)
-  pybind11_add_module(mod_shared_interpreter_gil THIN_LTO mod_shared_interpreter_gil.cpp)
+  pybind23_add_module(mod_per_interpreter_gil THIN_LTO mod_per_interpreter_gil.cpp)
+  pybind23_add_module(mod_shared_interpreter_gil THIN_LTO mod_shared_interpreter_gil.cpp)
   set_target_properties(mod_per_interpreter_gil PROPERTIES LIBRARY_OUTPUT_DIRECTORY
                                                            "$<1:${CMAKE_CURRENT_BINARY_DIR}>")
   set_target_properties(mod_shared_interpreter_gil PROPERTIES LIBRARY_OUTPUT_DIRECTORY
                                                               "$<1:${CMAKE_CURRENT_BINARY_DIR}>")
-  if(PYBIND11_TEST_SMART_HOLDER)
+  if(PYBIND23_TEST_SMART_HOLDER)
     target_compile_definitions(
       mod_per_interpreter_gil
-      PUBLIC -DPYBIND11_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
+      PUBLIC -DPYBIND23_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
     )
     target_compile_definitions(
       mod_shared_interpreter_gil
-      PUBLIC -DPYBIND11_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
+      PUBLIC -DPYBIND23_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
     )
   endif()
   add_dependencies(pytest mod_per_interpreter_gil mod_shared_interpreter_gil)
 endif()
 
-if(PYBIND11_TEST_OVERRIDE)
+if(PYBIND23_TEST_OVERRIDE)
   add_custom_command(
     TARGET pytest
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo
-            "Note: not all tests run: -DPYBIND11_TEST_OVERRIDE is in effect")
+            "Note: not all tests run: -DPYBIND23_TEST_OVERRIDE is in effect")
 endif()
 
 # cmake-format: off
@@ -618,7 +618,7 @@ add_custom_target(
     --suppressions="${CMAKE_CURRENT_SOURCE_DIR}/valgrind-python.supp"
     --suppressions="${CMAKE_CURRENT_SOURCE_DIR}/valgrind-numpy-scipy.supp"
     --gen-suppressions=all
-    ${PYTHON_EXECUTABLE} -m pytest ${PYBIND11_ABS_PYTEST_FILES}
+    ${PYTHON_EXECUTABLE} -m pytest ${PYBIND23_ABS_PYTEST_FILES}
   DEPENDS ${test_targets}
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   USES_TERMINAL)
@@ -627,7 +627,7 @@ add_custom_target(
 # Add a check target to run all the tests, starting with pytest (we add dependencies to this below)
 add_custom_target(check DEPENDS pytest)
 
-# The remaining tests only apply when being built as part of the pybind11 project, but not if the
+# The remaining tests only apply when being built as part of the pybind23 project, but not if the
 # tests are being built independently.
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   return()
@@ -635,14 +635,14 @@ endif()
 
 # Add a post-build comment to show the primary test suite .so size and, if a previous size, compare it:
 add_custom_command(
-  TARGET pybind11_tests
+  TARGET pybind23_tests
   POST_BUILD
   COMMAND
     ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../tools/libsize.py
-    $<TARGET_FILE:pybind11_tests>
-    ${CMAKE_CURRENT_BINARY_DIR}/sosize-$<TARGET_FILE_NAME:pybind11_tests>.txt)
+    $<TARGET_FILE:pybind23_tests>
+    ${CMAKE_CURRENT_BINARY_DIR}/sosize-$<TARGET_FILE_NAME:pybind23_tests>.txt)
 
-if(NOT PYBIND11_CUDA_TESTS)
+if(NOT PYBIND23_CUDA_TESTS)
   # Test pure C++ code (not depending on Python). Provides the `test_pure_cpp` target.
   add_subdirectory(pure_cpp)
 

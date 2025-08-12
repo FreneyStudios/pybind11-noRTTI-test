@@ -65,7 +65,7 @@ def test_simple_setup_py(monkeypatch, tmpdir, parallel, std):
             int f(int x) {
                 return x * 3;
             }
-            PYBIND11_MODULE(simple_setup, m) {
+            PYBIND23_MODULE(simple_setup, m) {
                 m.def("f", &f);
             }
             """

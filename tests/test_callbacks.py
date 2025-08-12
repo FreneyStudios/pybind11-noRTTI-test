@@ -77,7 +77,7 @@ def test_keyword_args_and_generalized_unpacking():
     assert str(excinfo.value) == "Unable to convert call argument " + (
         "'1' of type 'UnregisteredType' to Python object"
         if detailed_error_messages_enabled
-        else "'1' to Python object (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+        else "'1' to Python object (#define PYBIND23_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
     )
 
     with pytest.raises(RuntimeError) as excinfo:
@@ -86,7 +86,7 @@ def test_keyword_args_and_generalized_unpacking():
         "'expected_name' of type 'UnregisteredType' to Python object"
         if detailed_error_messages_enabled
         else "'expected_name' to Python object "
-        "(#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+        "(#define PYBIND23_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
     )
 
 

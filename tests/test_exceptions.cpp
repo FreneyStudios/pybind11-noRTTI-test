@@ -126,7 +126,7 @@ TEST_SUBMODULE(exceptions, m) {
           []() { throw std::runtime_error("This exception was intentionally thrown."); });
 
     // PLEASE KEEP IN SYNC with docs/advanced/exceptions.rst
-    PYBIND11_CONSTINIT static py::gil_safe_call_once_and_store<py::object> ex_storage;
+    PYBIND23_CONSTINIT static py::gil_safe_call_once_and_store<py::object> ex_storage;
     ex_storage.call_once_and_store_result(
         [&]() { return py::exception<MyException>(m, "MyException"); });
     py::register_exception_translator([](std::exception_ptr p) {
@@ -155,12 +155,12 @@ TEST_SUBMODULE(exceptions, m) {
             // Falling back to the recommended approach to keep the test code simple.
             py::set_error(*exd, e.what());
 #else
-            PYBIND11_WARNING_PUSH
-            PYBIND11_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-            PYBIND11_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
-            PYBIND11_WARNING_DISABLE_MSVC(4996)
+            PYBIND23_WARNING_PUSH
+            PYBIND23_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+            PYBIND23_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+            PYBIND23_WARNING_DISABLE_MSVC(4996)
             (*exd)(e.what());
-            PYBIND11_WARNING_POP
+            PYBIND23_WARNING_POP
 #endif
         }
     });
@@ -405,7 +405,7 @@ TEST_SUBMODULE(exceptions, m) {
         .def(py::init<const std::string &>())
         .def_readwrite("a", &CustomData::a);
 
-    PYBIND11_CONSTINIT static py::gil_safe_call_once_and_store<py::object>
+    PYBIND23_CONSTINIT static py::gil_safe_call_once_and_store<py::object>
         PythonMyException7_storage;
     PythonMyException7_storage.call_once_and_store_result([&]() {
         auto mod = py::module_::import("custom_exceptions");

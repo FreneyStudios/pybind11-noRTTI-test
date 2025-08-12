@@ -41,7 +41,7 @@ value constructor) for all of the above methods which will be included in the ou
 For testing, each of these also keeps track the created instances and allows you to check how many
 of the various constructors have been invoked from the Python side via code such as:
 
-    from pybind11_tests import ConstructorStats
+    from pybind23_tests import ConstructorStats
     cstats = ConstructorStats.get(MyClass)
     print(cstats.alive())
     print(cstats.default_constructions)
@@ -53,7 +53,7 @@ For everything except copy and move constructors and destructors, any extra valu
 print_...() function is stored in a class-specific values list which you can retrieve and inspect
 from the ConstructorStats instance `.values()` method.
 
-In some cases, when you need to track instances of a C++ class not registered with pybind11, you
+In some cases, when you need to track instances of a C++ class not registered with pybind23, you
 need to add a function returning the ConstructorStats for the C++ class; this can be done with:
 
     m.def("get_special_cstats", &ConstructorStats::get<SpecialClass>,
@@ -65,7 +65,7 @@ inspection/testing in python) by using the functions with `print_` replaced with
 
 */
 
-#include "pybind11_tests.h"
+#include "pybind23_tests.h"
 
 #include <list>
 #include <sstream>

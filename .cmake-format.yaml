@@ -1,6 +1,6 @@
 parse:
   additional_commands:
-    pybind11_add_module:
+    pybind23_add_module:
       flags:
         - THIN_LTO
         - MODULE

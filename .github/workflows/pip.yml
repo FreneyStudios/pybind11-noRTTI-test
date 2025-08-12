@@ -75,7 +75,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: standard
-        path: dist/pybind11-*
+        path: dist/pybind23-*
 
     - name: Save global package
       uses: actions/upload-artifact@v4
@@ -93,7 +93,7 @@ jobs:
     needs: [packaging]
     environment:
       name: pypi
-      url: https://pypi.org/p/pybind11
+      url: https://pypi.org/p/pybind23
     permissions:
       id-token: write
       attestations: write
@@ -105,7 +105,7 @@ jobs:
     - name: Generate artifact attestation for sdist and wheel
       uses: actions/attest-build-provenance@v2
       with:
-        subject-path: "*/pybind11*"
+        subject-path: "*/pybind23*"
 
     - name: Publish standard package
       uses: pypa/gh-action-pypi-publish@release/v1

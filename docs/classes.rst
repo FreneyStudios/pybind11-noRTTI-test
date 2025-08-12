@@ -23,11 +23,11 @@ The binding code for ``Pet`` looks as follows:
 
 .. code-block:: cpp
 
-    #include <pybind11/pybind11.h>
+    #include <pybind23/pybind23.h>
 
-    namespace py = pybind11;
+    namespace py = pybind23;
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Pet>(m, "Pet")
             .def(py::init<const std::string &>())
             .def("setName", &Pet::setName)
@@ -41,7 +41,7 @@ constructor (see the :ref:`custom_constructors` section for details).
 
 .. note::
 
-    Starting with pybind11v3, it is recommended to include `py::smart_holder`
+    Starting with pybind23v3, it is recommended to include `py::smart_holder`
     in most situations for safety, especially if you plan to support conversions
     to C++ smart pointers. See :ref:`smart_holder` for more information.
 
@@ -70,7 +70,7 @@ An interactive Python session demonstrating this example is shown below:
     Binding C++ types in unnamed namespaces (also known as anonymous namespaces)
     works reliably on many platforms, but not all. The `XFAIL_CONDITION` in
     tests/test_unnamed_namespace_a.py encodes the currently known conditions.
-    For background see `#4319 <https://github.com/pybind/pybind11/pull/4319>`_.
+    For background see `#4319 <https://github.com/pybind/pybind23/pull/4319>`_.
     If portability is a concern, it is therefore not recommended to bind C++
     types in unnamed namespaces. It will be safest to manually pick unique
     namespace names.
@@ -109,7 +109,7 @@ Lambda function instead:
                 }
             );
 
-Both stateless [#f1]_ and stateful lambda closures are supported by pybind11.
+Both stateless [#f1]_ and stateful lambda closures are supported by pybind23.
 With the above change, the same Python code now produces the following output:
 
 .. code-block:: pycon
@@ -239,7 +239,7 @@ Note that there is a small runtime cost for a class with dynamic attributes.
 Not only because of the addition of a ``__dict__``, but also because of more
 expensive garbage collection tracking which must be activated to resolve
 possible circular references. Native Python classes incur this same cost by
-default, so this is not anything to worry about. By default, pybind11 classes
+default, so this is not anything to worry about. By default, pybind23 classes
 are more efficient than native Python classes. Enabling dynamic attributes
 just brings them on par.
 
@@ -264,7 +264,7 @@ inheritance relationship:
     };
 
 There are two different ways of indicating a hierarchical relationship to
-pybind11: the first specifies the C++ base class as an extra template
+pybind23: the first specifies the C++ base class as an extra template
 parameter of the ``py::class_``:
 
 .. code-block:: cpp
@@ -321,7 +321,7 @@ inheritance relationship. This is reflected in Python:
 
 The function returned a ``Dog`` instance, but because it's a non-polymorphic
 type behind a base pointer, Python only sees a ``Pet``. In C++, a type is only
-considered polymorphic if it has at least one virtual function and pybind11
+considered polymorphic if it has at least one virtual function and pybind23
 will automatically recognize this:
 
 .. code-block:: cpp
@@ -351,7 +351,7 @@ will automatically recognize this:
     >>> p.bark()
     'woof!'
 
-Given a pointer to a polymorphic base, pybind11 performs automatic downcasting
+Given a pointer to a polymorphic base, pybind23 performs automatic downcasting
 to the actual derived type. Note that this goes beyond the usual situation in
 C++: we don't just get access to the virtual functions of the base, we get the
 concrete derived type including functions and attributes that the base type may
@@ -445,7 +445,7 @@ you can use ``py::detail::overload_cast_impl`` with an additional set of parenth
 .. code-block:: cpp
 
     template <typename... Args>
-    using overload_cast_ = pybind11::detail::overload_cast_impl<Args...>;
+    using overload_cast_ = pybind23::detail::overload_cast_impl<Args...>;
 
     py::class_<Pet>(m, "Pet")
         .def("set", overload_cast_<int>()(&Pet::set), "Set the pet's age")
@@ -480,7 +480,7 @@ management. For example, ownership is inadvertently transferred here:
         std::shared_ptr<Child> child;
     };
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         py::class_<Child, std::shared_ptr<Child>>(m, "Child");
 
         py::class_<Parent, std::shared_ptr<Parent>>(m, "Parent")
@@ -497,10 +497,10 @@ a segmentation fault.
 
    print(Parent().get_child())
 
-Part of the ``/* PROBLEM */`` here is that pybind11 falls back to using
+Part of the ``/* PROBLEM */`` here is that pybind23 falls back to using
 ``return_value_policy::take_ownership`` as the default (see
 :ref:`return_value_policies`). The fact that the ``Child`` instance is
-already managed by ``std::shared_ptr<Child>`` is lost. Therefore pybind11
+already managed by ``std::shared_ptr<Child>`` is lost. Therefore pybind23
 will create a second independent ``std::shared_ptr<Child>`` that also
 claims ownership of the pointer, eventually leading to heap-use-after-free
 or double-free errors.
@@ -547,7 +547,7 @@ The binding code for this example looks as follows:
 
 .. code-block:: cpp
 
-    #include <pybind11/native_enum.h> // Not already included with pybind11.h
+    #include <pybind23/native_enum.h> // Not already included with pybind23.h
 
     py::class_<Pet> pet(m, "Pet");
 
@@ -573,13 +573,13 @@ supplied to the ``py::native_enum`` and ``py::class_`` constructors. The
 ``.export_values()`` function is available for exporting the enum entries
 into the parent scope, if desired.
 
-``py::native_enum`` was introduced with pybind11v3. It binds C++ enum types
+``py::native_enum`` was introduced with pybind23v3. It binds C++ enum types
 to native Python enum types, typically types in Python's
 `stdlib enum <https://docs.python.org/3/library/enum.html>`_ module,
 which are `PEP 435 compatible <https://peps.python.org/pep-0435/>`_.
 This is the recommended way to bind C++ enums.
 The older ``py::enum_`` is not PEP 435 compatible
-(see `issue #2332 <https://github.com/pybind/pybind11/issues/2332>`_)
+(see `issue #2332 <https://github.com/pybind/pybind23/issues/2332>`_)
 but remains supported indefinitely for backward compatibility.
 New bindings should prefer ``py::native_enum``.
 
@@ -637,8 +637,8 @@ As of Python 3.13, the compatible `types in the stdlib enum module
 
     .. code-block:: cpp
 
-        #if defined(PYBIND11_HAS_NATIVE_ENUM)
-        namespace pybind11::detail {
+        #if defined(PYBIND23_HAS_NATIVE_ENUM)
+        namespace pybind23::detail {
         template <typename FancyEnum>
         struct type_caster_enum_type_enabled<
             FancyEnum,
@@ -648,5 +648,5 @@ As of Python 3.13, the compatible `types in the stdlib enum module
 
     This specialization is needed only if the custom type caster is templated.
 
-    The ``PYBIND11_HAS_NATIVE_ENUM`` guard is needed only if backward
-    compatibility with pybind11v2 is required.
+    The ``PYBIND23_HAS_NATIVE_ENUM`` guard is needed only if backward
+    compatibility with pybind23v2 is required.

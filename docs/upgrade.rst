@@ -13,16 +13,16 @@ modernization and other useful information.
 v3.0
 ====
 
-pybind11 v3.0 introduces major new features, but the vast majority of
+pybind23 v3.0 introduces major new features, but the vast majority of
 existing extensions are expected to build and run without modification. Minor
 adjustments may be needed in rare cases, and any such changes can be easily
 wrapped in preprocessor conditionals to maintain compatibility with the
 2.x series.
 
 However, due to new features and modernizations, extensions built with
-pybind11 v3.0 are not ABI-compatible with those built using v2.13. To ensure
+pybind23 v3.0 are not ABI-compatible with those built using v2.13. To ensure
 cross-extension-module compatibility, it is recommended to rebuild all
-pybind11-based extensions with v3.0.
+pybind23-based extensions with v3.0.
 
 CMake support now defaults to the modern FindPython module. If you haven't
 updated yet, we provide some backward compatibility for ``PYTHON_*`` variables,
@@ -40,19 +40,19 @@ This release includes a major modernization of cross-extension-module
 ABI compatibility handling. The new implementation reflects actual ABI
 compatibility much more accurately than in previous versions. The details
 are subtle and complex; see
-`#4953 <https://github.com/pybind/pybind11/pull/4953>`_ and
-`#5439 <https://github.com/pybind/pybind11/pull/5439>`_.
+`#4953 <https://github.com/pybind/pybind23/pull/4953>`_ and
+`#5439 <https://github.com/pybind/pybind23/pull/5439>`_.
 
 Also new in v3.0 is ``py::native_enum``, a modern API for exposing
 C++ enumerations as native Python types — typically standard-library
 ``enum.Enum`` or related subclasses. This provides improved integration with
 Python's enum system, compared to the older (now deprecated) ``py::enum_``.
-See `#5555 <https://github.com/pybind/pybind11/pull/5555>`_ for details.
+See `#5555 <https://github.com/pybind/pybind23/pull/5555>`_ for details.
 
-Functions exposed with pybind11 are now pickleable. This removes a
-long-standing obstacle when using pybind11-bound functions with Python features
+Functions exposed with pybind23 are now pickleable. This removes a
+long-standing obstacle when using pybind23-bound functions with Python features
 that rely on pickling, such as multiprocessing and caching tools.
-See `#5580 <https://github.com/pybind/pybind11/pull/5580>`_ for details.
+See `#5580 <https://github.com/pybind/pybind23/pull/5580>`_ for details.
 
 Anything producing a deprecation warning in the 2.x series may be removed in a
 future minor release of 3.x. Most of these are still present in 3.0 in order to ease
@@ -61,9 +61,9 @@ transition. The new :ref:`deprecated` page details deprecations.
 Migration Recommendations
 -------------------------
 
-We recommend migrating to pybind11 v3.0 promptly, while keeping initial
+We recommend migrating to pybind23 v3.0 promptly, while keeping initial
 changes to a minimum. Most projects can upgrade simply by updating the
-pybind11 version, without altering existing binding code.
+pybind23 version, without altering existing binding code.
 
 After a short stabilization period — enough to surface any subtle issues —
 you may incrementally adopt new features where appropriate:
@@ -79,7 +79,7 @@ you may incrementally adopt new features where appropriate:
   removed. Runtime failures (assuming good unit test coverage) will highlight
   base-and-derived class situations that require coordinated changes.
 
-  Note that ``py::bind_vector`` and ``py::bind_map`` (in pybind11/stl_bind.h)
+  Note that ``py::bind_vector`` and ``py::bind_map`` (in pybind23/stl_bind.h)
   have a ``holder_type`` template parameter that defaults to
   ``std::unique_ptr``. If ``py::smart_holder`` functionality is desired or
   required, use e.g. ``py::bind_vector<VecType, py::smart_holder>``.
@@ -92,7 +92,7 @@ features as the need arises or as part of ongoing maintenance efforts.
 
 If you are using CMake, update to FindPython variables (mostly changing
 variables from ``PYTHON_*`` -> ``Python_*``). You should see if you can use
-``set(PYBIND11_FINDPYTHON ON)``, which has been supported for years and will
+``set(PYBIND23_FINDPYTHON ON)``, which has been supported for years and will
 avoid setting the compatibility mode variables (and will avoid a warning).
 
 Potential stumbling blocks when migrating to v3.0
@@ -106,8 +106,8 @@ The following issues are very unlikely to arise, and easy to work around:
 
   .. code-block:: cpp
 
-      #if defined(PYBIND11_HAS_NATIVE_ENUM)
-      namespace pybind11::detail {
+      #if defined(PYBIND23_HAS_NATIVE_ENUM)
+      namespace pybind23::detail {
       template <typename FancyEnum>
       struct type_caster_enum_type_enabled<
           FancyEnum,
@@ -117,23 +117,23 @@ The following issues are very unlikely to arise, and easy to work around:
 
   This specialization is needed only if the custom type caster is templated.
 
-  The ``PYBIND11_HAS_NATIVE_ENUM`` guard is needed only
-  if backward compatibility with pybind11v2 is required.
+  The ``PYBIND23_HAS_NATIVE_ENUM`` guard is needed only
+  if backward compatibility with pybind23v2 is required.
 
 * Similarly, template specializations like the following may be required
   if there are custom
 
-  * ``pybind11::detail::copyable_holder_caster`` or
+  * ``pybind23::detail::copyable_holder_caster`` or
 
-  * ``pybind11::detail::move_only_holder_caster``
+  * ``pybind23::detail::move_only_holder_caster``
 
   implementations that are used for ``std::shared_ptr`` or ``std::unique_ptr``
   conversions:
 
   .. code-block:: cpp
 
-      #if defined(PYBIND11_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
-      namespace pybind11::detail {
+      #if defined(PYBIND23_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
+      namespace pybind23::detail {
       template <typename ExampleType>
       struct copyable_holder_caster_shared_ptr_with_smart_holder_support_enabled<
           ExampleType,
@@ -143,8 +143,8 @@ The following issues are very unlikely to arise, and easy to work around:
 
   .. code-block:: cpp
 
-      #if defined(PYBIND11_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
-      namespace pybind11::detail {
+      #if defined(PYBIND23_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
+      namespace pybind23::detail {
       template <typename ExampleType>
       struct move_only_holder_caster_unique_ptr_with_smart_holder_support_enabled<
           ExampleType,
@@ -152,8 +152,8 @@ The following issues are very unlikely to arise, and easy to work around:
       }
       #endif
 
-  The ``PYBIND11_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT`` guard is needed only
-  if backward compatibility with pybind11v2 is required.
+  The ``PYBIND23_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT`` guard is needed only
+  if backward compatibility with pybind23v2 is required.
 
   (Note that ``copyable_holder_caster`` and ``move_only_holder_caster`` are not
   documented, although they existed since 2017.)
@@ -182,8 +182,8 @@ For example, a more direct change could be that the default integer ``"int_"``
 
 If you want to only support NumPy 1.x for now and are having problems due to
 the two internal changes listed above, you can define
-``PYBIND11_NUMPY_1_ONLY`` to disable the new support for now. Make sure you
-define this on all pybind11 compile units, since it could be a source of ODR
+``PYBIND23_NUMPY_1_ONLY`` to disable the new support for now. Make sure you
+define this on all pybind23 compile units, since it could be a source of ODR
 violations if used inconsistently. This option will be removed in the future,
 so adapting your code is highly recommended.
 
@@ -197,8 +197,8 @@ v2.11
   requiring something like CMake 3.15. Note that CMake 3.27 is removing the
   long-deprecated support for ``FindPythonInterp`` if you set 3.27 as the
   minimum or maximum supported version. To prepare for that future, CMake 3.15+
-  using ``FindPython`` or setting ``PYBIND11_FINDPYTHON`` is highly recommended,
-  otherwise pybind11 will automatically switch to using ``FindPython`` if
+  using ``FindPython`` or setting ``PYBIND23_FINDPYTHON`` is highly recommended,
+  otherwise pybind23 will automatically switch to using ``FindPython`` if
   ``FindPythonInterp`` is not available.
 
 
@@ -224,9 +224,9 @@ v2.7
 *Before* v2.7, ``py::str`` can hold ``PyUnicodeObject`` or ``PyBytesObject``,
 and ``py::isinstance<str>()`` is ``true`` for both ``py::str`` and
 ``py::bytes``. Starting with v2.7, ``py::str`` exclusively holds
-``PyUnicodeObject`` (`#2409 <https://github.com/pybind/pybind11/pull/2409>`_),
+``PyUnicodeObject`` (`#2409 <https://github.com/pybind/pybind23/pull/2409>`_),
 and ``py::isinstance<str>()`` is ``true`` only for ``py::str``. To help in
-the transition of user code, the ``PYBIND11_STR_LEGACY_PERMISSIVE`` macro
+the transition of user code, the ``PYBIND23_STR_LEGACY_PERMISSIVE`` macro
 is provided as an escape hatch to go back to the legacy behavior. This macro
 will be removed in future releases. Two types of required fixes are expected
 to be common:
@@ -247,8 +247,8 @@ to be common:
 v2.6
 ====
 
-Usage of the ``PYBIND11_OVERLOAD*`` macros and ``get_overload`` function should
-be replaced by ``PYBIND11_OVERRIDE*`` and ``get_override``. In the future, the
+Usage of the ``PYBIND23_OVERLOAD*`` macros and ``get_overload`` function should
+be replaced by ``PYBIND23_OVERRIDE*`` and ``get_override``. In the future, the
 old macros may be deprecated and removed.
 
 ``py::module`` has been renamed ``py::module_``, but a backward compatible
@@ -258,7 +258,7 @@ line. Qualified usage is unaffected and the typedef will remain unless the
 C++ language rules change again.
 
 The public constructors of ``py::module_`` have been deprecated. Use
-``PYBIND11_MODULE`` or ``module_::create_extension_module`` instead.
+``PYBIND23_MODULE`` or ``module_::create_extension_module`` instead.
 
 An error is now thrown when ``__init__`` is forgotten on subclasses. This was
 incorrect before, but was not checked. Add a call to ``__init__`` if it is
@@ -284,17 +284,17 @@ for consistency. This may lead to compiler warnings on some systems. Cast to
 ``py::ssize_t`` instead of ``std::size_t``.
 
 The ``tools/clang`` submodule and ``tools/mkdoc.py`` have been moved to a
-standalone package, `pybind11-mkdoc`_. If you were using those tools, please
+standalone package, `pybind23-mkdoc`_. If you were using those tools, please
 use them via a pip install from the new location.
 
-The ``pybind11`` package on PyPI no longer fills the wheel "headers" slot - if
+The ``pybind23`` package on PyPI no longer fills the wheel "headers" slot - if
 you were using the headers from this slot, they are available by requesting the
-``global`` extra, that is, ``pip install "pybind11[global]"``. (Most users will
-be unaffected, as the ``pybind11/include`` location is reported by ``python -m
-pybind11 --includes`` and ``pybind11.get_include()`` is still correct and has
+``global`` extra, that is, ``pip install "pybind23[global]"``. (Most users will
+be unaffected, as the ``pybind23/include`` location is reported by ``python -m
+pybind23 --includes`` and ``pybind23.get_include()`` is still correct and has
 not changed since 2.5).
 
-.. _pybind11-mkdoc: https://github.com/pybind/pybind11-mkdoc
+.. _pybind23-mkdoc: https://github.com/pybind/pybind23-mkdoc
 
 CMake support:
 --------------
@@ -303,21 +303,21 @@ The minimum required version of CMake is now 3.4.  Several details of the CMake
 support have been deprecated; warnings will be shown if you need to change
 something. The changes are:
 
-* ``PYBIND11_CPP_STANDARD=<platform-flag>`` is deprecated, please use
+* ``PYBIND23_CPP_STANDARD=<platform-flag>`` is deprecated, please use
   ``CMAKE_CXX_STANDARD=<number>`` instead, or any other valid CMake CXX or CUDA
   standard selection method, like ``target_compile_features``.
 
-* If you do not request a standard, pybind11 targets will compile with the
+* If you do not request a standard, pybind23 targets will compile with the
   compiler default, but not less than C++11, instead of forcing C++14 always.
   If you depend on the old behavior, please use ``set(CMAKE_CXX_STANDARD 14 CACHE STRING "")``
   instead.
 
-* Direct ``pybind11::module`` usage should always be accompanied by at least
+* Direct ``pybind23::module`` usage should always be accompanied by at least
   ``set(CMAKE_CXX_VISIBILITY_PRESET hidden)`` or similar - it used to try to
   manually force this compiler flag (but not correctly on all compilers or with
   CUDA).
 
-* ``pybind11_add_module``'s ``SYSTEM`` argument is deprecated and does nothing;
+* ``pybind23_add_module``'s ``SYSTEM`` argument is deprecated and does nothing;
   linking now behaves like other imported libraries consistently in both
   config and submodule mode, and behaves like a ``SYSTEM`` library by
   default.
@@ -329,11 +329,11 @@ something. The changes are:
 In addition, the following changes may be of interest:
 
 * ``CMAKE_INTERPROCEDURAL_OPTIMIZATION`` will be respected by
-  ``pybind11_add_module`` if set instead of linking to ``pybind11::lto`` or
-  ``pybind11::thin_lto``.
+  ``pybind23_add_module`` if set instead of linking to ``pybind23::lto`` or
+  ``pybind23::thin_lto``.
 
 * Using ``find_package(Python COMPONENTS Interpreter Development)`` before
-  pybind11 will cause pybind11 to use the new Python mechanisms instead of its
+  pybind23 will cause pybind23 to use the new Python mechanisms instead of its
   own custom search, based on a patched version of classic ``FindPythonInterp``
   / ``FindPythonLibs``. In the future, this may become the default. A recent
   (3.15+ or 3.18.2+) version of CMake is recommended.
@@ -344,9 +344,9 @@ v2.5
 ====
 
 The Python package now includes the headers as data in the package itself, as
-well as in the "headers" wheel slot. ``pybind11 --includes`` and
-``pybind11.get_include()`` report the new location, which is always correct
-regardless of how pybind11 was installed, making the old ``user=`` argument
+well as in the "headers" wheel slot. ``pybind23 --includes`` and
+``pybind23.get_include()`` report the new location, which is always correct
+regardless of how pybind23 was installed, making the old ``user=`` argument
 meaningless. If you are not using the function to get the location already, you
 are encouraged to switch to the package location.
 
@@ -354,16 +354,16 @@ are encouraged to switch to the package location.
 v2.2
 ====
 
-Deprecation of the ``PYBIND11_PLUGIN`` macro
+Deprecation of the ``PYBIND23_PLUGIN`` macro
 --------------------------------------------
 
-``PYBIND11_MODULE`` is now the preferred way to create module entry points.
+``PYBIND23_MODULE`` is now the preferred way to create module entry points.
 The old macro emits a compile-time deprecation warning.
 
 .. code-block:: cpp
 
     // old
-    PYBIND11_PLUGIN(example) {
+    PYBIND23_PLUGIN(example) {
         py::module m("example", "documentation string");
 
         m.def("add", [](int a, int b) { return a + b; });
@@ -372,7 +372,7 @@ The old macro emits a compile-time deprecation warning.
     }
 
     // new
-    PYBIND11_MODULE(example, m) {
+    PYBIND23_MODULE(example, m) {
         m.doc() = "documentation string"; // optional
 
         m.def("add", [](int a, int b) { return a + b; });
@@ -441,41 +441,41 @@ They're only visible when compiled in debug mode. Sample warning:
 
 .. code-block:: none
 
-    pybind11-bound class 'mymodule.Foo' is using an old-style placement-new '__init__'
-    which has been deprecated. See the upgrade guide in pybind11's docs.
+    pybind23-bound class 'mymodule.Foo' is using an old-style placement-new '__init__'
+    which has been deprecated. See the upgrade guide in pybind23's docs.
 
 
-Stricter enforcement of hidden symbol visibility for pybind11 modules
+Stricter enforcement of hidden symbol visibility for pybind23 modules
 ---------------------------------------------------------------------
 
-pybind11 now tries to actively enforce hidden symbol visibility for modules.
-If you're using either one of pybind11's :doc:`CMake or Python build systems
+pybind23 now tries to actively enforce hidden symbol visibility for modules.
+If you're using either one of pybind23's :doc:`CMake or Python build systems
 <compiling>` (the two example repositories) and you haven't been exporting any
 symbols, there's nothing to be concerned about. All the changes have been done
 transparently in the background. If you were building manually or relied on
 specific default visibility, read on.
 
 Setting default symbol visibility to *hidden* has always been recommended for
-pybind11 (see :ref:`faq:symhidden`). On Linux and macOS, hidden symbol
+pybind23 (see :ref:`faq:symhidden`). On Linux and macOS, hidden symbol
 visibility (in conjunction with the ``strip`` utility) yields much smaller
 module binaries. `CPython's extension docs`_ also recommend hiding symbols
 by default, with the goal of avoiding symbol name clashes between modules.
-Starting with v2.2, pybind11 enforces this more strictly: (1) by declaring
-all symbols inside the ``pybind11`` namespace as hidden and (2) by including
+Starting with v2.2, pybind23 enforces this more strictly: (1) by declaring
+all symbols inside the ``pybind23`` namespace as hidden and (2) by including
 the ``-fvisibility=hidden`` flag on Linux and macOS (only for extension
 modules, not for embedding the interpreter).
 
 .. _CPython's extension docs: https://docs.python.org/3/extending/extending.html#providing-a-c-api-for-an-extension-module
 
-The namespace-scope hidden visibility is done automatically in pybind11's
+The namespace-scope hidden visibility is done automatically in pybind23's
 headers and it's generally transparent to users. It ensures that:
 
-* Modules compiled with different pybind11 versions don't clash with each other.
+* Modules compiled with different pybind23 versions don't clash with each other.
 
 * Some new features, like ``py::module_local`` bindings, can work as intended.
 
 The ``-fvisibility=hidden`` flag applies the same visibility to user bindings
-outside of the ``pybind11`` namespace. It's now set automatic by pybind11's
+outside of the ``pybind23`` namespace. It's now set automatic by pybind23's
 CMake and Python build systems, but this needs to be done manually by users
 of other build systems. Adding this flag:
 
@@ -486,13 +486,13 @@ of other build systems. Adding this flag:
 
 * Produces smaller binaries on Linux and macOS, as pointed out previously.
 
-Within pybind11's CMake build system, ``pybind11_add_module`` has always been
+Within pybind23's CMake build system, ``pybind23_add_module`` has always been
 setting the ``-fvisibility=hidden`` flag in release mode. From now on, it's
 being applied unconditionally, even in debug mode and it can no longer be opted
-out of with the ``NO_EXTRAS`` option. The ``pybind11::module`` target now also
-adds this flag to its interface. The ``pybind11::embed`` target is unchanged.
+out of with the ``NO_EXTRAS`` option. The ``pybind23::module`` target now also
+adds this flag to its interface. The ``pybind23::embed`` target is unchanged.
 
-The most significant change here is for the ``pybind11::module`` target. If you
+The most significant change here is for the ``pybind23::module`` target. If you
 were previously relying on default visibility, i.e. if your Python module was
 doubling as a shared library with dependents, you'll need to either export
 symbols manually (recommended for cross-platform libraries) or factor out the
@@ -502,7 +502,7 @@ using the CMake code below, but this is not recommended in the long run:
 
 .. code-block:: cmake
 
-    target_link_libraries(mymodule PRIVATE pybind11::module)
+    target_link_libraries(mymodule PRIVATE pybind23::module)
 
     add_library(restore_default_visibility INTERFACE)
     target_compile_options(restore_default_visibility INTERFACE -fvisibility=default)
@@ -512,7 +512,7 @@ using the CMake code below, but this is not recommended in the long run:
 Local STL container bindings
 ----------------------------
 
-Previous pybind11 versions could only bind types globally -- all pybind11
+Previous pybind23 versions could only bind types globally -- all pybind23
 modules, even unrelated ones, would have access to the same exported types.
 However, this would also result in a conflict if two modules exported the
 same C++ type, which is especially problematic for very common types, e.g.
@@ -557,14 +557,14 @@ Deprecation of some ``py::object`` APIs
 
 To compare ``py::object`` instances by pointer, you should now use
 ``obj1.is(obj2)`` which is equivalent to ``obj1 is obj2`` in Python.
-Previously, pybind11 used ``operator==`` for this (``obj1 == obj2``), but
+Previously, pybind23 used ``operator==`` for this (``obj1 == obj2``), but
 that could be confusing and is now deprecated (so that it can eventually
 be replaced with proper rich object comparison in a future release).
 
 For classes which inherit from ``py::object``, ``borrowed`` and ``stolen``
 were previously available as protected constructor tags. Now the types
 should be used directly instead: ``borrowed_t{}`` and ``stolen_t{}``
-(`#771 <https://github.com/pybind/pybind11/pull/771>`_).
+(`#771 <https://github.com/pybind/pybind23/pull/771>`_).
 
 
 Stricter compile-time error checking
@@ -615,7 +615,7 @@ The ``py::metaclass`` attribute is not required for static properties
 Binding classes with static properties is now possible by default. The
 zero-parameter version of ``py::metaclass()`` is deprecated. However, a new
 one-parameter ``py::metaclass(python_type)`` version was added for rare
-cases when a custom metaclass is needed to override pybind11's default.
+cases when a custom metaclass is needed to override pybind23's default.
 
 .. code-block:: cpp
 
@@ -627,7 +627,7 @@ cases when a custom metaclass is needed to override pybind11's default.
     py::class_<Foo>(m, "Foo")
         .def_property_readonly_static("foo", ...);
 
-    // new -- advanced feature, override pybind11's default metaclass
+    // new -- advanced feature, override pybind23's default metaclass
     py::class_<Bar>(m, "Bar", py::metaclass(custom_python_type))
         ...
 
@@ -638,10 +638,10 @@ v2.0
 Breaking changes in ``py::class_``
 ----------------------------------
 
-These changes were necessary to make type definitions in pybind11
+These changes were necessary to make type definitions in pybind23
 future-proof, to support PyPy via its ``cpyext`` mechanism (`#527
-<https://github.com/pybind/pybind11/pull/527>`_), and to improve efficiency
-(`rev. 86d825 <https://github.com/pybind/pybind11/commit/86d825>`_).
+<https://github.com/pybind/pybind23/pull/527>`_), and to improve efficiency
+(`rev. 86d825 <https://github.com/pybind/pybind23/commit/86d825>`_).
 
 1. Declarations of types that provide access via the buffer protocol must
    now include the ``py::buffer_protocol()`` annotation as an argument to
@@ -658,7 +658,7 @@ future-proof, to support PyPy via its ``cpyext`` mechanism (`#527
    has since been removed in v2.1. If you're upgrading from 1.x, it's
    recommended to skip directly to v2.1 or newer.
 
-3. This version of pybind11 uses a redesigned mechanism for instantiating
+3. This version of pybind23 uses a redesigned mechanism for instantiating
    trampoline classes that are used to override virtual methods from within
    Python. This led to the following user-visible syntax change:
 
@@ -677,7 +677,7 @@ future-proof, to support PyPy via its ``cpyext`` mechanism (`#527
    as arguments to the ``py::class_`` template, and the ``alias<..>()`` call
    is gone. The new scheme has zero overhead in cases when Python doesn't
    override any functions of the underlying C++ class.
-   `rev. 86d825 <https://github.com/pybind/pybind11/commit/86d825>`_.
+   `rev. 86d825 <https://github.com/pybind/pybind23/commit/86d825>`_.
 
    The class type must be the first template argument given to ``py::class_``
    while the trampoline can be mixed in arbitrary order with other arguments
@@ -716,7 +716,7 @@ include a declaration of the form:
 
 .. code-block:: cpp
 
-    PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>)
+    PYBIND23_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>)
 
 Continuing to do so won't cause an error or even a deprecation warning,
 but it's completely redundant.

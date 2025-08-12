@@ -23,26 +23,26 @@ TEST_SUBMODULE(buffers, m) {
               static auto *equiv_table
                   = new std::map<std::string, bool (py::buffer_info::*)() const>;
               if (format_table->empty()) {
-#define PYBIND11_ASSIGN_HELPER(...)                                                               \
+#define PYBIND23_ASSIGN_HELPER(...)                                                               \
     (*format_table)[#__VA_ARGS__] = py::format_descriptor<__VA_ARGS__>::format();                 \
     (*equiv_table)[#__VA_ARGS__] = &py::buffer_info::item_type_is_equivalent_to<__VA_ARGS__>;
-                  PYBIND11_ASSIGN_HELPER(PyObject *)
-                  PYBIND11_ASSIGN_HELPER(bool)
-                  PYBIND11_ASSIGN_HELPER(std::int8_t)
-                  PYBIND11_ASSIGN_HELPER(std::uint8_t)
-                  PYBIND11_ASSIGN_HELPER(std::int16_t)
-                  PYBIND11_ASSIGN_HELPER(std::uint16_t)
-                  PYBIND11_ASSIGN_HELPER(std::int32_t)
-                  PYBIND11_ASSIGN_HELPER(std::uint32_t)
-                  PYBIND11_ASSIGN_HELPER(std::int64_t)
-                  PYBIND11_ASSIGN_HELPER(std::uint64_t)
-                  PYBIND11_ASSIGN_HELPER(float)
-                  PYBIND11_ASSIGN_HELPER(double)
-                  PYBIND11_ASSIGN_HELPER(long double)
-                  PYBIND11_ASSIGN_HELPER(std::complex<float>)
-                  PYBIND11_ASSIGN_HELPER(std::complex<double>)
-                  PYBIND11_ASSIGN_HELPER(std::complex<long double>)
-#undef PYBIND11_ASSIGN_HELPER
+                  PYBIND23_ASSIGN_HELPER(PyObject *)
+                  PYBIND23_ASSIGN_HELPER(bool)
+                  PYBIND23_ASSIGN_HELPER(std::int8_t)
+                  PYBIND23_ASSIGN_HELPER(std::uint8_t)
+                  PYBIND23_ASSIGN_HELPER(std::int16_t)
+                  PYBIND23_ASSIGN_HELPER(std::uint16_t)
+                  PYBIND23_ASSIGN_HELPER(std::int32_t)
+                  PYBIND23_ASSIGN_HELPER(std::uint32_t)
+                  PYBIND23_ASSIGN_HELPER(std::int64_t)
+                  PYBIND23_ASSIGN_HELPER(std::uint64_t)
+                  PYBIND23_ASSIGN_HELPER(float)
+                  PYBIND23_ASSIGN_HELPER(double)
+                  PYBIND23_ASSIGN_HELPER(long double)
+                  PYBIND23_ASSIGN_HELPER(std::complex<float>)
+                  PYBIND23_ASSIGN_HELPER(std::complex<double>)
+                  PYBIND23_ASSIGN_HELPER(std::complex<long double>)
+#undef PYBIND23_ASSIGN_HELPER
               }
               return std::pair<std::string, bool>(
                   (*format_table)[cpp_name], (buffer.request().*((*equiv_table)[cpp_name]))());

@@ -4,7 +4,7 @@ Frequently asked questions
 "ImportError: dynamic module does not define init function"
 ===========================================================
 
-1. Make sure that the name specified in PYBIND11_MODULE is identical to the
+1. Make sure that the name specified in PYBIND23_MODULE is identical to the
 filename of the extension library (without suffixes such as ``.so``).
 
 2. If the above did not fix the issue, you are likely using an incompatible
@@ -54,7 +54,7 @@ provided by the caller -- in fact, it does nothing at all.
     def increment(i):
         i += 1  # nope..
 
-pybind11 is also affected by such language-level conventions, which means that
+pybind23 is also affected by such language-level conventions, which means that
 binding ``increment`` or ``increment_ptr`` will also create Python functions
 that don't modify their arguments.
 
@@ -90,7 +90,7 @@ following example:
     void init_ex2(py::module_ &);
     /* ... */
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         init_ex1(m);
         init_ex2(m);
         /* ... */
@@ -149,7 +149,7 @@ using C++14 template metaprogramming.
 ============================================================================================================
 
 This error typically indicates that you are compiling without the required
-``-fvisibility`` flag.  pybind11 code internally forces hidden visibility on
+``-fvisibility`` flag.  pybind23 code internally forces hidden visibility on
 all internal code, but if non-hidden (and thus *exported*) code attempts to
 include a pybind type (for example, ``py::object`` or ``py::list``) you can run
 into this warning.
@@ -176,7 +176,7 @@ savings. (See the following section for more details.)
 How can I create smaller binaries?
 ==================================
 
-To do its job, pybind11 extensively relies on a programming technique known as
+To do its job, pybind23 extensively relies on a programming technique known as
 *template metaprogramming*, which is a way of performing computation at compile
 time using type information. Template metaprogramming usually instantiates code
 involving significant numbers of deeply nested types that are either completely
@@ -195,13 +195,13 @@ the included test suite contains the following symbol:
 
     .. code-block:: cpp
 
-        __ZN8pybind1112cpp_functionC1Iv8Example2JRNSt3__16vectorINS3_12basic_stringIwNS3_11char_traitsIwEENS3_9allocatorIwEEEENS8_ISA_EEEEEJNS_4nameENS_7siblingENS_9is_methodEA28_cEEEMT0_FT_DpT1_EDpRKT2_
+        __ZN8pybind2312cpp_functionC1Iv8Example2JRNSt3__16vectorINS3_12basic_stringIwNS3_11char_traitsIwEENS3_9allocatorIwEEEENS8_ISA_EEEEEJNS_4nameENS_7siblingENS_9is_methodEA28_cEEEMT0_FT_DpT1_EDpRKT2_
 
 which is the mangled form of the following function type:
 
 .. code-block:: cpp
 
-    pybind11::cpp_function::cpp_function<void, Example2, std::__1::vector<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> >, std::__1::allocator<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> > > >&, pybind11::name, pybind11::sibling, pybind11::is_method, char [28]>(void (Example2::*)(std::__1::vector<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> >, std::__1::allocator<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> > > >&), pybind11::name const&, pybind11::sibling const&, pybind11::is_method const&, char const (&) [28])
+    pybind23::cpp_function::cpp_function<void, Example2, std::__1::vector<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> >, std::__1::allocator<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> > > >&, pybind23::name, pybind23::sibling, pybind23::is_method, char [28]>(void (Example2::*)(std::__1::vector<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> >, std::__1::allocator<std::__1::basic_string<wchar_t, std::__1::char_traits<wchar_t>, std::__1::allocator<wchar_t> > > >&), pybind23::name const&, pybind23::sibling const&, pybind23::is_method const&, char const (&) [28])
 
 The memory needed to store just the mangled name of this function (196 bytes)
 is larger than the actual piece of code (111 bytes) it represents! On the other
@@ -235,7 +235,7 @@ been received, you must either explicitly interrupt execution by throwing
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         m.def("long running_func", []()
         {
             for (;;) {
@@ -246,7 +246,7 @@ been received, you must either explicitly interrupt execution by throwing
         });
     }
 
-What is a highly conclusive and simple way to find memory leaks (e.g. in pybind11 bindings)?
+What is a highly conclusive and simple way to find memory leaks (e.g. in pybind23 bindings)?
 ============================================================================================
 
 Use ``while True`` & ``top`` (Linux, macOS).
@@ -300,19 +300,19 @@ multiple versions of Python and it finds the wrong one, delete
 CMake configure line. (Replace ``$(which python)`` with a path to python if
 your prefer.)
 
-You can alternatively try ``-DPYBIND11_FINDPYTHON=ON``, which will activate the
-new CMake FindPython support instead of pybind11's custom search. Newer CMake,
+You can alternatively try ``-DPYBIND23_FINDPYTHON=ON``, which will activate the
+new CMake FindPython support instead of pybind23's custom search. Newer CMake,
 like, 3.18.2+, is recommended. You can set this in your ``CMakeLists.txt``
-before adding or finding pybind11, as well.
+before adding or finding pybind23, as well.
 
-Inconsistent detection of Python version in CMake and pybind11
+Inconsistent detection of Python version in CMake and pybind23
 ==============================================================
 
 The functions ``find_package(PythonInterp)`` and ``find_package(PythonLibs)``
-provided by CMake for Python version detection are modified by pybind11 due to
-unreliability and limitations that make them unsuitable for pybind11's needs.
-Instead pybind11 provides its own, more reliable Python detection CMake code.
-Conflicts can arise, however, when using pybind11 in a project that *also* uses
+provided by CMake for Python version detection are modified by pybind23 due to
+unreliability and limitations that make them unsuitable for pybind23's needs.
+Instead pybind23 provides its own, more reliable Python detection CMake code.
+Conflicts can arise, however, when using pybind23 in a project that *also* uses
 the CMake Python detection in a system with several Python versions installed.
 
 This difference may cause inconsistencies and errors if *both* mechanisms are
@@ -321,31 +321,31 @@ used in the same project.
 There are three possible solutions:
 
 1. Avoid using ``find_package(PythonInterp)`` and ``find_package(PythonLibs)``
-   from CMake and rely on pybind11 in detecting Python version. If this is not
-   possible, the CMake machinery should be called *before* including pybind11.
-2. Set ``PYBIND11_FINDPYTHON`` to ``True`` or use ``find_package(Python
+   from CMake and rely on pybind23 in detecting Python version. If this is not
+   possible, the CMake machinery should be called *before* including pybind23.
+2. Set ``PYBIND23_FINDPYTHON`` to ``True`` or use ``find_package(Python
    COMPONENTS Interpreter Development)`` on modern CMake ( 3.18.2+ best).
    Pybind11 in these cases uses the new CMake FindPython instead of the old,
    deprecated search tools, and these modules are much better at finding the
    correct Python. If FindPythonLibs/Interp are not available (CMake 3.27+),
    then this will be ignored and FindPython will be used.
-3. Set ``PYBIND11_NOPYTHON`` to ``TRUE``. Pybind11 will not search for Python.
+3. Set ``PYBIND23_NOPYTHON`` to ``TRUE``. Pybind11 will not search for Python.
    However, you will have to use the target-based system, and do more setup
    yourself, because it does not know about or include things that depend on
-   Python, like ``pybind11_add_module``. This might be ideal for integrating
+   Python, like ``pybind23_add_module``. This might be ideal for integrating
    into an existing system, like scikit-build's Python helpers.
 
 How to cite this project?
 =========================
 
-We suggest the following BibTeX template to cite pybind11 in scientific
+We suggest the following BibTeX template to cite pybind23 in scientific
 discourse:
 
 .. code-block:: bash
 
-    @misc{pybind11,
+    @misc{pybind23,
        author = {Wenzel Jakob and Jason Rhinelander and Dean Moldovan},
        year = {2017},
-       note = {https://github.com/pybind/pybind11},
-       title = {pybind11 -- Seamless operability between C++11 and Python}
+       note = {https://github.com/pybind/pybind23},
+       title = {pybind23 -- Seamless operability between C++11 and Python}
     }

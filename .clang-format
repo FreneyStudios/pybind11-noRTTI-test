@@ -21,9 +21,9 @@ Standard: Cpp11
 StatementMacros: ['PyObject_HEAD']
 TabWidth: 4
 IncludeCategories:
-  - Regex:           '<pybind11/.*'
+  - Regex:           '<pybind23/.*'
     Priority:        -1
-  - Regex:           'pybind11.h"$'
+  - Regex:           'pybind23.h"$'
     Priority:        1
   - Regex:           '^".*/?detail/'
     Priority:        1

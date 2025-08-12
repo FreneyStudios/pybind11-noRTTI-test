@@ -77,4 +77,4 @@ CheckOptions:
 - key:             readability-implicit-bool-conversion.AllowPointerConditions
   value:           true
 
-HeaderFilterRegex: 'pybind11/.*h'
+HeaderFilterRegex: 'pybind23/.*h'

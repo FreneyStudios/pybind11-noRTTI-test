@@ -41,7 +41,7 @@ def test_premium_traveler_getattr_actually_exists():
 def test_call_cpp_conduit_success():
     t_h = home_planet.Traveler("home")
     cap = t_h._pybind11_conduit_v1_(
-        home_planet.PYBIND11_PLATFORM_ABI_ID,
+        home_planet.PYBIND23_PLATFORM_ABI_ID,
         home_planet.cpp_type_info_capsule_Traveler,
         b"raw_pointer_ephemeral",
     )
@@ -54,7 +54,7 @@ def test_call_cpp_conduit_success():
 def test_call_cpp_conduit_platform_abi_id_mismatch():
     t_h = home_planet.Traveler("home")
     cap = t_h._pybind11_conduit_v1_(
-        home_planet.PYBIND11_PLATFORM_ABI_ID + b"MISMATCH",
+        home_planet.PYBIND23_PLATFORM_ABI_ID + b"MISMATCH",
         home_planet.cpp_type_info_capsule_Traveler,
         b"raw_pointer_ephemeral",
     )
@@ -64,7 +64,7 @@ def test_call_cpp_conduit_platform_abi_id_mismatch():
 def test_call_cpp_conduit_cpp_type_info_capsule_mismatch():
     t_h = home_planet.Traveler("home")
     cap = t_h._pybind11_conduit_v1_(
-        home_planet.PYBIND11_PLATFORM_ABI_ID,
+        home_planet.PYBIND23_PLATFORM_ABI_ID,
         home_planet.cpp_type_info_capsule_int,
         b"raw_pointer_ephemeral",
     )
@@ -77,7 +77,7 @@ def test_call_cpp_conduit_pointer_kind_invalid():
         RuntimeError, match='^Invalid pointer_kind: "raw_pointer_ephemreal"$'
     ):
         t_h._pybind11_conduit_v1_(
-            home_planet.PYBIND11_PLATFORM_ABI_ID,
+            home_planet.PYBIND23_PLATFORM_ABI_ID,
             home_planet.cpp_type_info_capsule_Traveler,
             b"raw_pointer_ephemreal",
         )
@@ -154,7 +154,7 @@ def test_home_planet_wrap_very_lonely_traveler():
     # demonstrate that the cpp_conduit feature does not solve
     # cross-extension base-and-derived class interoperability issues.
     # Here is the proof that the following works for extensions with
-    # matching `PYBIND11_INTERNALS_ID`s:
+    # matching `PYBIND23_INTERNALS_ID`s:
     #     test_cpp_conduit.cpp:
     #         py::class_<LonelyTraveler>
     #     home_planet_very_lonely_traveler.cpp:
@@ -169,7 +169,7 @@ def test_home_planet_wrap_very_lonely_traveler():
 
 def test_exo_planet_pybind11_wrap_very_lonely_traveler():
     # See comment under test_home_planet_wrap_very_lonely_traveler() first.
-    # Here the `PYBIND11_INTERNALS_ID`s don't match between:
+    # Here the `PYBIND23_INTERNALS_ID`s don't match between:
     #     test_cpp_conduit.cpp:
     #         py::class_<LonelyTraveler>
     #     exo_planet_pybind11.cpp:

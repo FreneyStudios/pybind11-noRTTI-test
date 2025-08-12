@@ -40,16 +40,16 @@
 
 CONST_NAME_TESTS(const_name_tests, py::detail::const_name)
 
-#ifdef PYBIND11_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY
+#ifdef PYBIND23_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY
 CONST_NAME_TESTS(underscore_tests, py::detail::_)
 #endif
 
 TEST_SUBMODULE(const_name, m) {
     m.def("const_name_tests", const_name_tests);
 
-#if defined(PYBIND11_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY)
+#if defined(PYBIND23_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY)
     m.def("underscore_tests", underscore_tests);
 #else
-    m.attr("underscore_tests") = "PYBIND11_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY not defined.";
+    m.attr("underscore_tests") = "PYBIND23_DETAIL_UNDERSCORE_BACKWARD_COMPATIBILITY not defined.";
 #endif
 }

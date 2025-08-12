@@ -4,13 +4,13 @@ STL containers
 Automatic conversion
 ====================
 
-When including the additional header file :file:`pybind11/stl.h`, conversions
+When including the additional header file :file:`pybind23/stl.h`, conversions
 between ``std::vector<>``/``std::deque<>``/``std::list<>``/``std::array<>``/``std::valarray<>``,
 ``std::set<>``/``std::unordered_set<>``, and
 ``std::map<>``/``std::unordered_map<>`` and the Python ``list``, ``set`` and
 ``dict`` data structures are automatically enabled. The types ``std::pair<>``
 and ``std::tuple<>`` are already supported out of the box with just the core
-:file:`pybind11/pybind11.h` header.
+:file:`pybind23/pybind23.h` header.
 
 The major downside of these implicit conversions is that containers must be
 converted (i.e. copied) on every Python->C++ and C++->Python transition, which
@@ -31,18 +31,18 @@ next sections for more details and alternative approaches that avoid this.
 C++17 library containers
 ========================
 
-The :file:`pybind11/stl.h` header also includes support for ``std::optional<>``
+The :file:`pybind23/stl.h` header also includes support for ``std::optional<>``
 and ``std::variant<>``. These require a C++17 compiler and standard library.
 In C++14 mode, ``std::experimental::optional<>`` is supported if available.
 
 Various versions of these containers also exist for C++11 (e.g. in Boost).
-pybind11 provides an easy way to specialize the ``type_caster`` for such
+pybind23 provides an easy way to specialize the ``type_caster`` for such
 types:
 
 .. code-block:: cpp
 
     // `boost::optional` as an example -- can be any `std::optional`-like container
-    namespace PYBIND11_NAMESPACE { namespace detail {
+    namespace PYBIND23_NAMESPACE { namespace detail {
         template <typename T>
         struct type_caster<boost::optional<T>> : optional_caster<boost::optional<T>> {};
     }}
@@ -54,7 +54,7 @@ for custom variant types:
 .. code-block:: cpp
 
     // `boost::variant` as an example -- can be any `std::variant`-like container
-    namespace PYBIND11_NAMESPACE { namespace detail {
+    namespace PYBIND23_NAMESPACE { namespace detail {
         template <typename... Ts>
         struct type_caster<boost::variant<Ts...>> : variant_caster<boost::variant<Ts...>> {};
 
@@ -66,18 +66,18 @@ for custom variant types:
                 return boost::apply_visitor(args...);
             }
         };
-    }} // namespace PYBIND11_NAMESPACE::detail
+    }} // namespace PYBIND23_NAMESPACE::detail
 
 The ``visit_helper`` specialization is not required if your ``name::variant`` provides
 a ``name::visit()`` function. For any other function name, the specialization must be
-included to tell pybind11 how to visit the variant.
+included to tell pybind23 how to visit the variant.
 
 .. warning::
 
-    When converting a ``variant`` type, pybind11 follows the same rules as when
+    When converting a ``variant`` type, pybind23 follows the same rules as when
     determining which function overload to call (:ref:`overload_resolution`), and
     so the same caveats hold. In particular, the order in which the ``variant``'s
-    alternatives are listed is important, since pybind11 will try conversions in
+    alternatives are listed is important, since pybind23 will try conversions in
     this order. This means that, for example, when converting ``variant<int, bool>``,
     the ``bool`` variant will never be selected, as any Python ``bool`` is already
     an ``int`` and is convertible to a C++ ``int``. Changing the order of alternatives
@@ -85,7 +85,7 @@ included to tell pybind11 how to visit the variant.
 
 .. note::
 
-    pybind11 only supports the modern implementation of ``boost::variant``
+    pybind23 only supports the modern implementation of ``boost::variant``
     which makes use of variadic templates. This requires Boost 1.56 or newer.
 
 .. _opaque:
@@ -93,7 +93,7 @@ included to tell pybind11 how to visit the variant.
 Making opaque types
 ===================
 
-pybind11 heavily relies on a template matching mechanism to convert parameters
+pybind23 heavily relies on a template matching mechanism to convert parameters
 and return values that are constructed from STL data types such as vectors,
 linked lists, hash tables, etc. This even works in a recursive manner, for
 instance to deal with lists of hash maps of pairs of elementary and custom
@@ -153,8 +153,8 @@ In this case, properties can be read and written in their entirety. However, an
    [5, 6]
 
 Finally, the involved copy operations can be costly when dealing with very
-large lists. To deal with all of the above situations, pybind11 provides a
-macro named ``PYBIND11_MAKE_OPAQUE(T)`` that disables the template-based
+large lists. To deal with all of the above situations, pybind23 provides a
+macro named ``PYBIND23_MAKE_OPAQUE(T)`` that disables the template-based
 conversion machinery of types, thus rendering them *opaque*. The contents of
 opaque objects are never inspected or extracted, hence they *can* be passed by
 reference. For instance, to turn ``std::vector<int>`` into an opaque type, add
@@ -162,7 +162,7 @@ the declaration
 
 .. code-block:: cpp
 
-    PYBIND11_MAKE_OPAQUE(std::vector<int>)
+    PYBIND23_MAKE_OPAQUE(std::vector<int>)
 
 before any binding code (e.g. invocations to ``class_::def()``, etc.). This
 macro must be specified at the top level (and outside of any namespaces), since
@@ -188,7 +188,7 @@ name in Python, and to define a set of available operations, e.g.:
 
     The file :file:`tests/test_opaque_types.cpp` contains a complete
     example that demonstrates how to create and expose opaque types using
-    pybind11 in more detail.
+    pybind23 in more detail.
 
 .. _stl_bind:
 
@@ -196,19 +196,19 @@ Binding STL containers
 ======================
 
 The ability to expose STL containers as native Python objects is a fairly
-common request, hence pybind11 also provides an optional header file named
-:file:`pybind11/stl_bind.h` that does exactly this. The mapped containers try
+common request, hence pybind23 also provides an optional header file named
+:file:`pybind23/stl_bind.h` that does exactly this. The mapped containers try
 to match the behavior of their native Python counterparts as much as possible.
 
-The following example showcases usage of :file:`pybind11/stl_bind.h`:
+The following example showcases usage of :file:`pybind23/stl_bind.h`:
 
 .. code-block:: cpp
 
     // Don't forget this
-    #include <pybind11/stl_bind.h>
+    #include <pybind23/stl_bind.h>
 
-    PYBIND11_MAKE_OPAQUE(std::vector<int>)
-    PYBIND11_MAKE_OPAQUE(std::map<std::string, double>)
+    PYBIND23_MAKE_OPAQUE(std::vector<int>)
+    PYBIND23_MAKE_OPAQUE(std::map<std::string, double>)
 
     // ...
 
@@ -216,7 +216,7 @@ The following example showcases usage of :file:`pybind11/stl_bind.h`:
     py::bind_vector<std::vector<int>>(m, "VectorInt");
     py::bind_map<std::map<std::string, double>>(m, "MapStringDouble");
 
-When binding STL containers pybind11 considers the types of the container's
+When binding STL containers pybind23 considers the types of the container's
 elements to decide whether the container should be confined to the local module
 (via the :ref:`module_local` feature).  If the container element types are
 anything other than already-bound custom types bound without

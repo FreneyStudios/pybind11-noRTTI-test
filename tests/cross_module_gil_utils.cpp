@@ -6,27 +6,27 @@
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE file.
 */
-#if defined(PYBIND11_INTERNALS_VERSION)
-#    undef PYBIND11_INTERNALS_VERSION
+#if defined(PYBIND23_INTERNALS_VERSION)
+#    undef PYBIND23_INTERNALS_VERSION
 #endif
-#define PYBIND11_INTERNALS_VERSION 21814642 // Ensure this module has its own `internals` instance.
-#include <pybind11/pybind11.h>
+#define PYBIND23_INTERNALS_VERSION 21814642 // Ensure this module has its own `internals` instance.
+#include <pybind23/pybind23.h>
 
 #include <cstdint>
 #include <string>
 #include <thread>
 
-// This file mimics a DSO that makes pybind11 calls but does not define a
-// PYBIND11_MODULE. The purpose is to test that such a DSO can create a
+// This file mimics a DSO that makes pybind23 calls but does not define a
+// PYBIND23_MODULE. The purpose is to test that such a DSO can create a
 // py::gil_scoped_acquire when the running thread is in a GIL-released state.
 //
 // Note that we define a Python module here for convenience, but in general
 // this need not be the case. The typical scenario would be a DSO that implements
-// shared logic used internally by multiple pybind11 modules.
+// shared logic used internally by multiple pybind23 modules.
 
 namespace {
 
-namespace py = pybind11;
+namespace py = pybind23;
 
 void gil_acquire() { py::gil_scoped_acquire gil; }
 
@@ -43,7 +43,7 @@ std::string gil_multi_acquire_release(unsigned bits) {
     if ((bits & 0x8u) != 0u) {
         py::gil_scoped_release gil;
     }
-    return PYBIND11_INTERNALS_ID;
+    return PYBIND23_INTERNALS_ID;
 }
 
 struct CustomAutoGIL {
@@ -85,7 +85,7 @@ struct PyModuleDef moduledef = {
 #define ADD_FUNCTION(Name, ...)                                                                   \
     PyModule_AddObject(m, Name, PyLong_FromVoidPtr(reinterpret_cast<void *>(&__VA_ARGS__)));
 
-extern "C" PYBIND11_EXPORT PyObject *PyInit_cross_module_gil_utils() {
+extern "C" PYBIND23_EXPORT PyObject *PyInit_cross_module_gil_utils() {
 
     PyObject *m = PyModule_Create(&moduledef);
 
@@ -101,9 +101,9 @@ extern "C" PYBIND11_EXPORT PyObject *PyInit_cross_module_gil_utils() {
                      gil_acquire_inner<CustomAutoGIL, CustomAutoNoGIL>)
         ADD_FUNCTION("gil_acquire_nested_custom_funcaddr",
                      gil_acquire_nested<CustomAutoGIL, CustomAutoNoGIL>)
-        ADD_FUNCTION("gil_acquire_inner_pybind11_funcaddr",
+        ADD_FUNCTION("gil_acquire_inner_pybind23_funcaddr",
                      gil_acquire_inner<py::gil_scoped_acquire, py::gil_scoped_release>)
-        ADD_FUNCTION("gil_acquire_nested_pybind11_funcaddr",
+        ADD_FUNCTION("gil_acquire_nested_pybind23_funcaddr",
                      gil_acquire_nested<py::gil_scoped_acquire, py::gil_scoped_release>)
     }
 

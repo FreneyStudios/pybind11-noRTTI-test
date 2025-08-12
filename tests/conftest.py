@@ -1,6 +1,6 @@
 """pytest configuration
 
-Extends output capture as needed by pybind11: ignore constructors, optional unordered lines.
+Extends output capture as needed by pybind23: ignore constructors, optional unordered lines.
 Adds docstring and exceptions message sanitizers.
 """
 
@@ -22,7 +22,7 @@ import pytest
 
 # Early diagnostic for failed imports
 try:
-    import pybind11_tests
+    import pybind23_tests
 except Exception:
     # pytest does not show the traceback without this.
     traceback.print_exc()
@@ -35,7 +35,7 @@ def use_multiprocessing_forkserver_on_linux():
         # The default on Windows, macOS and GraalPy is "spawn": If it's not broken, don't fix it.
         return
 
-    # Full background: https://github.com/pybind/pybind11/issues/4105#issuecomment-1301004592
+    # Full background: https://github.com/pybind/pybind23/issues/4105#issuecomment-1301004592
     # In a nutshell: fork() after starting threads == flakiness in the form of deadlocks.
     # It is actually a well-known pitfall, unfortunately without guard rails.
     # "forkserver" is more performant than "spawn" (~9s vs ~13s for tests/test_gil_scoped.py,
@@ -174,7 +174,7 @@ class SanitizedString:
 
 def _sanitize_general(s):
     s = s.strip()
-    s = s.replace("pybind11_tests.", "m.")
+    s = s.replace("pybind23_tests.", "m.")
     return _long_marker.sub(r"\1", s)
 
 
@@ -224,10 +224,10 @@ def pytest_configure():
 
 
 def pytest_report_header():
-    assert pybind11_tests.compiler_info is not None, (
-        "Please update pybind11_tests.cpp if this assert fails."
+    assert pybind23_tests.compiler_info is not None, (
+        "Please update pybind23_tests.cpp if this assert fails."
     )
-    interesting_packages = ("pybind11", "numpy", "scipy", "build")
+    interesting_packages = ("pybind23", "numpy", "scipy", "build")
     valid = []
     for package in sorted(interesting_packages):
         with contextlib.suppress(ModuleNotFoundError):
@@ -236,10 +236,10 @@ def pytest_report_header():
 
     cpp_info = [
         "C++ Info:",
-        f"{pybind11_tests.compiler_info}",
-        f"{pybind11_tests.cpp_std}",
-        f"{pybind11_tests.PYBIND11_INTERNALS_ID}",
-        f"PYBIND11_SIMPLE_GIL_MANAGEMENT={pybind11_tests.PYBIND11_SIMPLE_GIL_MANAGEMENT}",
+        f"{pybind23_tests.compiler_info}",
+        f"{pybind23_tests.cpp_std}",
+        f"{pybind23_tests.PYBIND23_INTERNALS_ID}",
+        f"PYBIND23_SIMPLE_GIL_MANAGEMENT={pybind23_tests.PYBIND23_SIMPLE_GIL_MANAGEMENT}",
     ]
     if "__graalpython__" in sys.modules:
         cpp_info.append(
