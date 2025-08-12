@@ -128,7 +128,7 @@ limitations), refer to the section on :doc:`/advanced/cast/eigen`.
 .. seealso::
 
     The file :file:`tests/test_buffers.cpp` contains a complete example
-    that demonstrates using the buffer protocol with pybind11 in more detail.
+    that demonstrates using the buffer protocol with pybind23 in more detail.
 
 .. [#f2] http://docs.python.org/3/c-api/buffer.html
 
@@ -150,8 +150,8 @@ NumPy array containing double precision values.
 
 When it is invoked with a different type (e.g. an integer or a list of
 integers), the binding code will attempt to cast the input into a NumPy array
-of the requested type. This feature requires the :file:`pybind11/numpy.h`
-header to be included. Note that :file:`pybind11/numpy.h` does not depend on
+of the requested type. This feature requires the :file:`pybind23/numpy.h`
+header to be included. Note that :file:`pybind23/numpy.h` does not depend on
 the NumPy headers, and thus can be used without declaring a build-time
 dependency on NumPy; NumPy>=1.7.0 is a runtime dependency.
 
@@ -201,7 +201,7 @@ Structured types
 
 In order for ``py::array_t`` to work with structured (record) types, we first
 need to register the memory layout of the type. This can be done via
-``PYBIND11_NUMPY_DTYPE`` macro, called in the plugin definition code, which
+``PYBIND23_NUMPY_DTYPE`` macro, called in the plugin definition code, which
 expects the type followed by field names:
 
 .. code-block:: cpp
@@ -217,11 +217,11 @@ expects the type followed by field names:
     };
 
     // ...
-    PYBIND11_MODULE(test, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(test, m, py::mod_gil_not_used()) {
         // ...
 
-        PYBIND11_NUMPY_DTYPE(A, x, y);
-        PYBIND11_NUMPY_DTYPE(B, z, a);
+        PYBIND23_NUMPY_DTYPE(A, x, y);
+        PYBIND23_NUMPY_DTYPE(B, z, a);
         /* now both A and B can be used as template arguments to py::array_t */
     }
 
@@ -283,7 +283,7 @@ N-D arrays) in addition to its normal arguments:
 
     double my_func(int x, float y, double z);
 
-After including the ``pybind11/numpy.h`` header, this is extremely simple:
+After including the ``pybind23/numpy.h`` header, this is extremely simple:
 
 .. code-block:: cpp
 
@@ -322,10 +322,10 @@ simply using ``vectorize``).
 
 .. code-block:: cpp
 
-    #include <pybind11/pybind11.h>
-    #include <pybind11/numpy.h>
+    #include <pybind23/pybind23.h>
+    #include <pybind23/numpy.h>
 
-    namespace py = pybind11;
+    namespace py = pybind23;
 
     py::array_t<double> add_arrays(py::array_t<double> input1, py::array_t<double> input2) {
         py::buffer_info buf1 = input1.request(), buf2 = input2.request();
@@ -351,7 +351,7 @@ simply using ``vectorize``).
         return result;
     }
 
-    PYBIND11_MODULE(test, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(test, m, py::mod_gil_not_used()) {
         m.def("add_arrays", &add_arrays, "Add two NumPy arrays");
     }
 

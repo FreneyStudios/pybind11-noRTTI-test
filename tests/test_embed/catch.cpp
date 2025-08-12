@@ -1,11 +1,11 @@
 // The Catch implementation is compiled here. This is a standalone
 // translation unit to avoid recompiling it for every test change.
 
-#include <pybind11/embed.h>
+#include <pybind23/embed.h>
 
 // Silence MSVC C++17 deprecation warning from Catch regarding std::uncaught_exceptions (up to
 // catch 2.0.1; this should be fixed in the next catch release after 2.0.1).
-PYBIND11_WARNING_DISABLE_MSVC(4996)
+PYBIND23_WARNING_DISABLE_MSVC(4996)
 
 // Catch uses _ internally, which breaks gettext style defines
 #ifdef _
@@ -15,11 +15,11 @@ PYBIND11_WARNING_DISABLE_MSVC(4996)
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
-namespace py = pybind11;
+namespace py = pybind23;
 
 int main(int argc, char *argv[]) {
     // Setup for TEST_CASE in test_interpreter.cpp, tagging on a large random number:
-    std::string updated_pythonpath("pybind11_test_embed_PYTHONPATH_2099743835476552");
+    std::string updated_pythonpath("pybind23_test_embed_PYTHONPATH_2099743835476552");
     const char *preexisting_pythonpath = getenv("PYTHONPATH");
     if (preexisting_pythonpath != nullptr) {
 #if defined(_WIN32)

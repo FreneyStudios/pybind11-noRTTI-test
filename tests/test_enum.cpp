@@ -102,7 +102,7 @@ TEST_SUBMODULE(enums, m) {
             std::is_same<py::enum_<ScopedChar32Enum>::Scalar, std::uint_least32_t>,
             std::is_same<py::enum_<ScopedChar16Enum>::Scalar, std::uint_least16_t>>::value,
         "char32_t, char16_t (and char8_t)'s size, signedness, and alignment is determined");
-#if defined(PYBIND11_HAS_U8STRING)
+#if defined(PYBIND23_HAS_U8STRING)
     enum class ScopedChar8Enum : char8_t { Zero, Positive };
     static_assert(std::is_same<py::enum_<ScopedChar8Enum>::Scalar, unsigned char>::value);
 #endif

@@ -30,7 +30,7 @@ struct WithPyObjectPtrReturn {
 
 struct WithPyObjectPtrReturnTrampoline : WithPyObjectPtrReturn {
     PyObject *return_pyobject_ptr() const override {
-        PYBIND11_OVERRIDE_PURE(PyObject *, WithPyObjectPtrReturn, return_pyobject_ptr,
+        PYBIND23_OVERRIDE_PURE(PyObject *, WithPyObjectPtrReturn, return_pyobject_ptr,
                                /* no arguments */);
     }
 };
@@ -40,7 +40,7 @@ std::string call_return_pyobject_ptr(const WithPyObjectPtrReturn *base_class_ptr
 // It is not worth the trouble doing something special for PyPy/GraalPy
 #if !defined(PYPY_VERSION) && !defined(GRAALVM_PYTHON)
     if (Py_REFCNT(returned_obj) != 1) {
-        py::pybind11_fail(__FILE__ ":" PYBIND11_TOSTRING(__LINE__));
+        py::pybind11_fail(__FILE__ ":" PYBIND23_TOSTRING(__LINE__));
     }
 #endif
     auto ret_val = py::repr(returned_obj).cast<std::string>();
@@ -153,7 +153,7 @@ TEST_SUBMODULE(type_caster_pyobject_ptr, m) {
 
     m.def("pass_pyobject_ptr_and_int", [](PyObject *, int) {});
 
-#ifdef PYBIND11_NO_COMPILE_SECTION // Change to ifndef for manual testing.
+#ifdef PYBIND23_NO_COMPILE_SECTION // Change to ifndef for manual testing.
     {
         PyObject *ptr = nullptr;
         (void) py::cast(*ptr);

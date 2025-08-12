@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# pybind11 documentation build configuration file, created by
+# pybind23 documentation build configuration file, created by
 # sphinx-quickstart on Sun Oct 11 19:23:48 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -42,8 +42,8 @@ extensions = [
     "sphinxcontrib.moderncmakedomain",
 ]
 
-breathe_projects = {"pybind11": ".build/doxygenxml/"}
-breathe_default_project = "pybind11"
+breathe_projects = {"pybind23": ".build/doxygenxml/"}
+breathe_default_project = "pybind23"
 breathe_domain_by_extension = {"h": "cpp"}
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,7 +59,7 @@ source_suffix = [".rst", ".md"]
 master_doc = "index"
 
 # General information about the project.
-project = "pybind11"
+project = "pybind23"
 copyright = "2017, Wenzel Jakob"
 author = "Wenzel Jakob"
 
@@ -68,7 +68,7 @@ author = "Wenzel Jakob"
 # built documents.
 
 # Read the listed version
-version_file = DIR.parent / "pybind11/_version.py"
+version_file = DIR.parent / "pybind23/_version.py"
 with version_file.open(encoding="utf-8") as f:
     code = compile(f.read(), version_file, "exec")
 loc = {"__file__": str(version_file)}
@@ -146,7 +146,7 @@ html_theme = "furo"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = None
+html_logo = "freney-studios-logo.svg"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -223,7 +223,7 @@ html_css_files = [
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pybind11doc"
+htmlhelp_basename = "pybind23doc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -258,12 +258,12 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pybind11.tex", "pybind11 Documentation", "Wenzel Jakob", "manual"),
+    (master_doc, "pybind23.tex", "pybind23 Documentation", "Wenzel Jakob", "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-# latex_logo = 'pybind11-logo.png'
+latex_logo = 'freney-studios-logo.svg'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
@@ -286,7 +286,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pybind11", "pybind11 Documentation", [author], 1)]
+man_pages = [(master_doc, "pybind23", "pybind23 Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -300,10 +300,10 @@ man_pages = [(master_doc, "pybind11", "pybind11 Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "pybind11",
-        "pybind11 Documentation",
+        "pybind23",
+        "pybind23 Documentation",
         author,
-        "pybind11",
+        "pybind23",
         "One line description of project.",
         "Miscellaneous",
     ),

@@ -7,11 +7,11 @@
 
 #include <pybind11/eigen/tensor.h>
 
-PYBIND11_NAMESPACE_BEGIN(eigen_tensor_test)
+PYBIND23_NAMESPACE_BEGIN(eigen_tensor_test)
 
 namespace py = pybind11;
 
-PYBIND11_WARNING_DISABLE_MSVC(4127)
+PYBIND23_WARNING_DISABLE_MSVC(4127)
 
 template <typename M>
 void reset_tensor(M &x) {
@@ -335,4 +335,4 @@ void test_module(py::module_ &m) {
     init_tensor_module<Eigen::RowMajor>(c_style);
 }
 
-PYBIND11_NAMESPACE_END(eigen_tensor_test)
+PYBIND23_NAMESPACE_END(eigen_tensor_test)

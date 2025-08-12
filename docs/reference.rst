@@ -2,9 +2,9 @@
 
 .. warning::
 
-    Please be advised that the reference documentation discussing pybind11
+    Please be advised that the reference documentation discussing pybind23
     internals is currently incomplete. Please refer to the previous sections
-    and the pybind11 header files for the nitty gritty details.
+    and the pybind23 header files for the nitty gritty details.
 
 Reference
 #########
@@ -14,7 +14,7 @@ Reference
 Macros
 ======
 
-.. doxygendefine:: PYBIND11_MODULE
+.. doxygendefine:: PYBIND23_MODULE
 
 .. _core_types:
 
@@ -77,7 +77,7 @@ Passing extra arguments to ``def`` or ``py::class_``
 Embedding the interpreter
 =========================
 
-.. doxygendefine:: PYBIND11_EMBEDDED_MODULE
+.. doxygendefine:: PYBIND23_EMBEDDED_MODULE
 
 .. doxygenfunction:: initialize_interpreter
 
@@ -105,13 +105,13 @@ Inheritance
 
 See :doc:`/classes` and :doc:`/advanced/classes` for more detail.
 
-.. doxygendefine:: PYBIND11_OVERRIDE
+.. doxygendefine:: PYBIND23_OVERRIDE
 
-.. doxygendefine:: PYBIND11_OVERRIDE_PURE
+.. doxygendefine:: PYBIND23_OVERRIDE_PURE
 
-.. doxygendefine:: PYBIND11_OVERRIDE_NAME
+.. doxygendefine:: PYBIND23_OVERRIDE_NAME
 
-.. doxygendefine:: PYBIND11_OVERRIDE_PURE_NAME
+.. doxygendefine:: PYBIND23_OVERRIDE_PURE_NAME
 
 .. doxygenfunction:: get_override
 

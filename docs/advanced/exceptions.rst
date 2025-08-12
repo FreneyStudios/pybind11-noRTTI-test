@@ -4,15 +4,15 @@ Exceptions
 Built-in C++ to Python exception translation
 ============================================
 
-When Python calls C++ code through pybind11, pybind11 provides a C++ exception handler
+When Python calls C++ code through pybind23, pybind23 provides a C++ exception handler
 that will trap C++ exceptions, translate them to the corresponding Python exception,
 and raise them so that Python code can handle them.
 
-pybind11 defines translations for ``std::exception`` and its standard
+pybind23 defines translations for ``std::exception`` and its standard
 subclasses, and several special exception classes that translate to specific
 Python exceptions. Note that these are not actually Python exceptions, so they
 cannot be examined using the Python C API. Instead, they are pure C++ objects
-that pybind11 will translate the corresponding Python exception when they arrive
+that pybind23 will translate the corresponding Python exception when they arrive
 at its exception handler.
 
 .. tabularcolumns:: |p{0.5\textwidth}|p{0.45\textwidth}|
@@ -36,36 +36,36 @@ at its exception handler.
 +--------------------------------------+--------------------------------------+
 | :class:`std::overflow_error`         | ``OverflowError``                    |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::stop_iteration`    | ``StopIteration`` (used to implement |
+| :class:`pybind23::stop_iteration`    | ``StopIteration`` (used to implement |
 |                                      | custom iterators)                    |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::index_error`       | ``IndexError`` (used to indicate out |
+| :class:`pybind23::index_error`       | ``IndexError`` (used to indicate out |
 |                                      | of bounds access in ``__getitem__``, |
 |                                      | ``__setitem__``, etc.)               |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::key_error`         | ``KeyError`` (used to indicate out   |
+| :class:`pybind23::key_error`         | ``KeyError`` (used to indicate out   |
 |                                      | of bounds access in ``__getitem__``, |
 |                                      | ``__setitem__`` in dict-like         |
 |                                      | objects, etc.)                       |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::value_error`       | ``ValueError`` (used to indicate     |
+| :class:`pybind23::value_error`       | ``ValueError`` (used to indicate     |
 |                                      | wrong value passed in                |
 |                                      | ``container.remove(...)``)           |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::type_error`        | ``TypeError``                        |
+| :class:`pybind23::type_error`        | ``TypeError``                        |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::buffer_error`      | ``BufferError``                      |
+| :class:`pybind23::buffer_error`      | ``BufferError``                      |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::import_error`      | ``ImportError``                      |
+| :class:`pybind23::import_error`      | ``ImportError``                      |
 +--------------------------------------+--------------------------------------+
-| :class:`pybind11::attribute_error`   | ``AttributeError``                   |
+| :class:`pybind23::attribute_error`   | ``AttributeError``                   |
 +--------------------------------------+--------------------------------------+
 | Any other exception                  | ``RuntimeError``                     |
 +--------------------------------------+--------------------------------------+
 
 Exception translation is not bidirectional. That is, *catching* the C++
 exceptions defined above will not trap exceptions that originate from
-Python. For that, catch :class:`pybind11::error_already_set`. See :ref:`below
+Python. For that, catch :class:`pybind23::error_already_set`. See :ref:`below
 <handling_python_exceptions_cpp>` for further details.
 
 There is also a special exception :class:`cast_error` that is thrown by
@@ -76,8 +76,8 @@ Registering custom translators
 ==============================
 
 If the default exception conversion policy described above is insufficient,
-pybind11 also provides support for registering custom exception translators.
-Similar to pybind11 classes, exception translators can be local to the module
+pybind23 also provides support for registering custom exception translators.
+Similar to pybind23 classes, exception translators can be local to the module
 they are defined in or global to the entire python session.  To register a simple
 exception conversion that translates a C++ exception into a new Python exception
 using the C++ exception's ``what()`` method, a helper function is available:
@@ -141,7 +141,7 @@ standard python RuntimeError:
 
 .. code-block:: cpp
 
-    PYBIND11_CONSTINIT static py::gil_safe_call_once_and_store<py::object> exc_storage;
+    PYBIND23_CONSTINIT static py::gil_safe_call_once_and_store<py::object> exc_storage;
     exc_storage.call_once_and_store_result(
         [&]() { return py::exception<MyCustomException>(m, "MyCustomError"); });
     py::register_exception_translator([](std::exception_ptr p) {
@@ -221,7 +221,7 @@ order that module1 and module2 are imported. Since exception translators are
 applied in the reverse order of registration, which ever module was imported
 last will "win" and that translator will be applied.
 
-If there are multiple pybind11 modules that share exception types (either
+If there are multiple pybind23 modules that share exception types (either
 standard built-in or custom) loaded into a single python instance and
 consistent error handling behavior is needed, then local translators should be
 used.
@@ -237,9 +237,9 @@ Handling exceptions from Python in C++
 ======================================
 
 When C++ calls Python functions, such as in a callback function or when
-manipulating Python objects, and Python raises an ``Exception``, pybind11
+manipulating Python objects, and Python raises an ``Exception``, pybind23
 converts the Python exception into a C++ exception of type
-:class:`pybind11::error_already_set` whose payload contains a C++ string textual
+:class:`pybind23::error_already_set` whose payload contains a C++ string textual
 summary and the actual Python exception. ``error_already_set`` is used to
 propagate Python exception back to Python (or possibly, handle them in C++).
 
@@ -248,7 +248,7 @@ propagate Python exception back to Python (or possibly, handle them in C++).
 +--------------------------------------+--------------------------------------+
 |  Exception raised in Python          |  Thrown as C++ exception type        |
 +======================================+======================================+
-| Any Python ``Exception``             | :class:`pybind11::error_already_set` |
+| Any Python ``Exception``             | :class:`pybind23::error_already_set` |
 +--------------------------------------+--------------------------------------+
 
 For example:
@@ -289,7 +289,7 @@ This example illustrates this behavior:
     }
 
     try {
-        // py::value_error is a request for pybind11 to raise a Python exception
+        // py::value_error is a request for pybind23 to raise a Python exception
         throw py::value_error("The ball");
     } catch (py::error_already_set &cat) {
         // cat won't catch the ball since
@@ -298,19 +298,19 @@ This example illustrates this behavior:
     } catch (py::value_error &dog) {
         // dog will catch the ball
         py::print("Run Spot run");
-        throw;  // Throw it again (pybind11 will raise ValueError)
+        throw;  // Throw it again (pybind23 will raise ValueError)
     }
 
 Handling errors from the Python C API
 =====================================
 
-Where possible, use :ref:`pybind11 wrappers <wrappers>` instead of calling
+Where possible, use :ref:`pybind23 wrappers <wrappers>` instead of calling
 the Python C API directly. When calling the Python C API directly, in
-addition to manually managing reference counts, one must follow the pybind11
+addition to manually managing reference counts, one must follow the pybind23
 error protocol, which is outlined here.
 
 After calling the Python C API, if Python returns an error,
-``throw py::error_already_set();``, which allows pybind11 to deal with the
+``throw py::error_already_set();``, which allows pybind23 to deal with the
 exception and pass it back to the Python interpreter. This includes calls to
 the error setting functions such as ``py::set_error()``.
 
@@ -320,20 +320,20 @@ the error setting functions such as ``py::set_error()``.
     throw py::error_already_set();
 
     // But it would be easier to simply...
-    throw py::type_error("pybind11 wrapper type error");
+    throw py::type_error("pybind23 wrapper type error");
 
 Alternately, to ignore the error, call `PyErr_Clear
 <https://docs.python.org/3/c-api/exceptions.html#c.PyErr_Clear>`_.
 
-Any Python error must be thrown or cleared, or Python/pybind11 will be left in
+Any Python error must be thrown or cleared, or Python/pybind23 will be left in
 an invalid state.
 
 Handling warnings from the Python C API
 =======================================
 
-Wrappers for handling Python warnings are provided in ``pybind11/warnings.h``.
+Wrappers for handling Python warnings are provided in ``pybind23/warnings.h``.
 This header must be included explicitly; it is not transitively included via
-``pybind11/pybind11.h``.
+``pybind23/pybind23.h``.
 
 Warnings can be raised with the ``warn`` function:
 
@@ -363,7 +363,7 @@ exceptions:
     except Exception as exc:
         raise RuntimeError("could not divide by zero") from exc
 
-To do a similar thing in pybind11, you can use the ``py::raise_from`` function. It
+To do a similar thing in pybind23, you can use the ``py::raise_from`` function. It
 sets the current python error indicator, so to continue propagating the exception
 you should ``throw py::error_already_set()``.
 
@@ -396,9 +396,9 @@ and an auditing event is logged.
 
 Any noexcept function should have a try-catch block that traps
 class:`error_already_set` (or any other exception that can occur). Note that
-pybind11 wrappers around Python exceptions such as
-:class:`pybind11::value_error` are *not* Python exceptions; they are C++
-exceptions that pybind11 catches and converts to Python exceptions. Noexcept
+pybind23 wrappers around Python exceptions such as
+:class:`pybind23::value_error` are *not* Python exceptions; they are C++
+exceptions that pybind23 catches and converts to Python exceptions. Noexcept
 functions cannot propagate these exceptions either. A useful approach is to
 convert them to Python exceptions and then ``discard_as_unraisable`` as shown
 below.

@@ -6,7 +6,7 @@ Using Python's print function in C++
 
 The usual way to write output in C++ is using ``std::cout`` while in Python one
 would use ``print``. Since these methods use different buffers, mixing them can
-lead to output order issues. To resolve this, pybind11 modules can use the
+lead to output order issues. To resolve this, pybind23 modules can use the
 :func:`py::print` function which writes to Python's ``sys.stdout`` for consistency.
 
 Python's ``print`` function is replicated in the C++ API including optional
@@ -34,7 +34,7 @@ redirects output to the corresponding Python streams:
 
 .. code-block:: cpp
 
-    #include <pybind11/iostream.h>
+    #include <pybind23/iostream.h>
 
     ...
 
@@ -49,14 +49,14 @@ redirects output to the corresponding Python streams:
 
 .. warning::
 
-    The implementation in ``pybind11/iostream.h`` is NOT thread safe. Multiple
+    The implementation in ``pybind23/iostream.h`` is NOT thread safe. Multiple
     threads writing to a redirected ostream concurrently cause data races
     and potentially buffer overflows. Therefore it is currently a requirement
     that all (possibly) concurrent redirected ostream writes are protected by
     a mutex. #HelpAppreciated: Work on iostream.h thread safety. For more
     background see the discussions under
-    `PR #2982 <https://github.com/pybind/pybind11/pull/2982>`_ and
-    `PR #2995 <https://github.com/pybind/pybind11/pull/2995>`_.
+    `PR #2982 <https://github.com/pybind/pybind23/pull/2982>`_ and
+    `PR #2995 <https://github.com/pybind/pybind23/pull/2995>`_.
 
 This method respects flushes on the output streams and will flush if needed
 when the scoped guard is destroyed. This allows the output to be redirected in
@@ -103,14 +103,14 @@ arguments to disable one of the streams if needed.
 Evaluating Python expressions from strings and files
 ====================================================
 
-pybind11 provides the ``eval``, ``exec`` and ``eval_file`` functions to evaluate
+pybind23 provides the ``eval``, ``exec`` and ``eval_file`` functions to evaluate
 Python expressions and statements. The following example illustrates how they
 can be used.
 
 .. code-block:: cpp
 
     // At beginning of file
-    #include <pybind11/eval.h>
+    #include <pybind23/eval.h>
 
     ...
 

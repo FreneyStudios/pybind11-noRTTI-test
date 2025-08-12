@@ -3,7 +3,7 @@
 First steps
 ###########
 
-This sections demonstrates the basic features of pybind11. Before getting
+This sections demonstrates the basic features of pybind23. Before getting
 started, make sure that development environment is set up to compile the
 included set of test cases.
 
@@ -36,7 +36,7 @@ On Windows, only **Visual Studio 2017** and newer are supported.
 
 .. Note::
 
-    To use the C++17 in Visual Studio 2017 (MSVC 14.1), pybind11 requires the flag
+    To use the C++17 in Visual Studio 2017 (MSVC 14.1), pybind23 requires the flag
     ``/permissive-`` to be passed to the compiler `to enforce standard conformance`_. When
     building with Visual Studio 2019, this is not strictly necessary, but still advised.
 
@@ -65,7 +65,7 @@ command line.
 
     Advanced users who are already familiar with Boost.Python may want to skip
     the tutorial and look at the test cases in the :file:`tests` directory,
-    which exercise all features of pybind11.
+    which exercise all features of pybind23.
 
 Header and namespace conventions
 ================================
@@ -74,13 +74,13 @@ For brevity, all code examples assume that the following two lines are present:
 
 .. code-block:: cpp
 
-    #include <pybind11/pybind11.h>
+    #include <pybind23/pybind23.h>
 
-    namespace py = pybind11;
+    namespace py = pybind23;
 
 .. note::
 
-    ``pybind11/pybind11.h`` includes ``Python.h``, as such it must be the first file
+    ``pybind23/pybind23.h`` includes ``Python.h``, as such it must be the first file
     included in any source file or header for `the same reasons as Python.h`_.
 
 .. _`the same reasons as Python.h`: https://docs.python.org/3/extending/extending.html#a-simple-example
@@ -106,14 +106,14 @@ a file named :file:`example.cpp` with the following contents:
 
 .. code-block:: cpp
 
-    #include <pybind11/pybind11.h>
+    #include <pybind23/pybind23.h>
 
     int add(int i, int j) {
         return i + j;
     }
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
-        m.doc() = "pybind11 example plugin"; // optional module docstring
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
+        m.doc() = "pybind23 example plugin"; // optional module docstring
 
         m.def("add", &add, "A function that adds two numbers");
     }
@@ -121,7 +121,7 @@ a file named :file:`example.cpp` with the following contents:
 .. [#f1] In practice, implementation and binding code will generally be located
          in separate files.
 
-The :func:`PYBIND11_MODULE` macro creates a function that will be called when an
+The :func:`PYBIND23_MODULE` macro creates a function that will be called when an
 ``import`` statement is issued from within Python. The module name (``example``)
 is given as the first macro argument (it should not be in quotes). The second
 argument (``m``) defines a variable of type :class:`py::module_ <module>` which
@@ -136,19 +136,19 @@ generates binding code that exposes the ``add()`` function to Python.
     approach and the used syntax are borrowed from Boost.Python, though the
     underlying implementation is very different.
 
-pybind11 is a header-only library, hence it is not necessary to link against
+pybind23 is a header-only library, hence it is not necessary to link against
 any special libraries and there are no intermediate (magic) translation steps.
 On Linux, the above example can be compiled using the following command:
 
 .. code-block:: bash
 
-    $ c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind11 --includes) example.cpp -o example$(python3 -m pybind11 --extension-suffix)
+    $ c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind23 --includes) example.cpp -o example$(python3 -m pybind23 --extension-suffix)
 
 .. note::
 
-    If you used :ref:`include_as_a_submodule` to get the pybind11 source, then
-    use ``$(python3-config --includes) -Iextern/pybind11/include`` instead of
-    ``$(python3 -m pybind11 --includes)`` in the above compilation, as
+    If you used :ref:`include_as_a_submodule` to get the pybind23 source, then
+    use ``$(python3-config --includes) -Iextern/pybind23/include`` instead of
+    ``$(python3 -m pybind23 --includes)`` in the above compilation, as
     explained in :ref:`building_manually`.
 
 For more details on the required compiler flags on Linux and macOS, see
@@ -225,13 +225,13 @@ A shorter notation for named arguments is also available:
     // regular notation
     m.def("add1", &add, py::arg("i"), py::arg("j"));
     // shorthand
-    using namespace pybind11::literals;
+    using namespace pybind23::literals;
     m.def("add2", &add, "i"_a, "j"_a);
 
 The :var:`_a` suffix forms a C++11 literal which is equivalent to :class:`arg`.
 Note that the literal operator must first be made visible with the directive
-``using namespace pybind11::literals``. This does not bring in anything else
-from the ``pybind11`` namespace except for literals.
+``using namespace pybind23::literals``. This does not bring in anything else
+from the ``pybind23`` namespace except for literals.
 
 .. _default_args:
 
@@ -246,7 +246,7 @@ Suppose now that the function to be bound has default arguments, e.g.:
         return i + j;
     }
 
-Unfortunately, pybind11 cannot automatically extract these parameters, since they
+Unfortunately, pybind23 cannot automatically extract these parameters, since they
 are not part of the function's type information. However, they are simple to specify
 using an extension of :class:`arg`:
 
@@ -288,7 +288,7 @@ converted using the function ``py::cast``.
 
 .. code-block:: cpp
 
-    PYBIND11_MODULE(example, m, py::mod_gil_not_used()) {
+    PYBIND23_MODULE(example, m, py::mod_gil_not_used()) {
         m.attr("the_answer") = 42;
         py::object world = py::cast("World");
         m.attr("what") = world;

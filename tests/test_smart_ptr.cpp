@@ -11,8 +11,8 @@
 #include "object.h"
 #include "pybind11_tests.h"
 
-// This breaks on PYBIND11_DECLARE_HOLDER_TYPE
-PYBIND11_WARNING_DISABLE_GCC("-Wpedantic")
+// This breaks on PYBIND23_DECLARE_HOLDER_TYPE
+PYBIND23_WARNING_DISABLE_GCC("-Wpedantic")
 
 namespace {
 
@@ -300,34 +300,34 @@ struct ElementList {
 // It is always possible to construct a ref<T> from an Object* pointer without
 // possible inconsistencies, hence the 'true' argument at the end.
 // Make pybind11 aware of the non-standard getter member function
-namespace PYBIND11_NAMESPACE {
+namespace PYBIND23_NAMESPACE {
 namespace detail {
 template <typename T>
 struct holder_helper<ref<T>> {
     static const T *get(const ref<T> &p) { return p.get_ptr(); }
 };
 } // namespace detail
-} // namespace PYBIND11_NAMESPACE
+} // namespace PYBIND23_NAMESPACE
 
 // Make pybind aware of the ref-counted wrapper type (s):
-PYBIND11_DECLARE_HOLDER_TYPE(T, ref<T>, true)
-PYBIND11_DECLARE_HOLDER_TYPE(T, const_only_shared_ptr<T>, true)
+PYBIND23_DECLARE_HOLDER_TYPE(T, ref<T>, true)
+PYBIND23_DECLARE_HOLDER_TYPE(T, const_only_shared_ptr<T>, true)
 // The following is not required anymore for std::shared_ptr, but it should compile without error:
-PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>)
-PYBIND11_DECLARE_HOLDER_TYPE(T, huge_unique_ptr<T>)
-PYBIND11_DECLARE_HOLDER_TYPE(T, custom_unique_ptr<T>)
-PYBIND11_DECLARE_HOLDER_TYPE(T, shared_ptr_with_addressof_operator<T>)
-PYBIND11_DECLARE_HOLDER_TYPE(T, unique_ptr_with_addressof_operator<T>)
+PYBIND23_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>)
+PYBIND23_DECLARE_HOLDER_TYPE(T, huge_unique_ptr<T>)
+PYBIND23_DECLARE_HOLDER_TYPE(T, custom_unique_ptr<T>)
+PYBIND23_DECLARE_HOLDER_TYPE(T, shared_ptr_with_addressof_operator<T>)
+PYBIND23_DECLARE_HOLDER_TYPE(T, unique_ptr_with_addressof_operator<T>)
 
 namespace holder_caster_traits_test {
 struct example_base {};
 } // namespace holder_caster_traits_test
 
-PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
-PYBIND11_NAMESPACE_BEGIN(detail)
+PYBIND23_NAMESPACE_BEGIN(PYBIND23_NAMESPACE)
+PYBIND23_NAMESPACE_BEGIN(detail)
 
 // Negate this condition to demonstrate "ambiguous template instantiation" compilation error:
-#if defined(PYBIND11_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
+#if defined(PYBIND23_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
 template <typename ExampleType>
 struct copyable_holder_caster_shared_ptr_with_smart_holder_support_enabled<
     ExampleType,
@@ -348,7 +348,7 @@ struct copyable_holder_caster<
 };
 
 // Negate this condition to demonstrate "ambiguous template instantiation" compilation error:
-#if defined(PYBIND11_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
+#if defined(PYBIND23_HAS_INTERNALS_WITH_SMART_HOLDER_SUPPORT)
 template <typename ExampleType>
 struct move_only_holder_caster_unique_ptr_with_smart_holder_support_enabled<
     ExampleType,
@@ -368,8 +368,8 @@ struct move_only_holder_caster<
     }
 };
 
-PYBIND11_NAMESPACE_END(detail)
-PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)
+PYBIND23_NAMESPACE_END(detail)
+PYBIND23_NAMESPACE_END(PYBIND23_NAMESPACE)
 
 namespace holder_caster_traits_test {
 

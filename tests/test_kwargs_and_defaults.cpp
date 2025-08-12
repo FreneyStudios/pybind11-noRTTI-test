@@ -87,13 +87,13 @@ TEST_SUBMODULE(kwargs_and_defaults, m) {
 
     // test_args_and_kwargs
     m.def("args_function", [](py::args args) -> py::tuple {
-        PYBIND11_WARNING_PUSH
+        PYBIND23_WARNING_PUSH
 
-#ifdef PYBIND11_DETECTED_CLANG_WITH_MISLEADING_CALL_STD_MOVE_EXPLICITLY_WARNING
-        PYBIND11_WARNING_DISABLE_CLANG("-Wreturn-std-move")
+#ifdef PYBIND23_DETECTED_CLANG_WITH_MISLEADING_CALL_STD_MOVE_EXPLICITLY_WARNING
+        PYBIND23_WARNING_DISABLE_CLANG("-Wreturn-std-move")
 #endif
         return args;
-        PYBIND11_WARNING_POP
+        PYBIND23_WARNING_POP
     });
     m.def("args_kwargs_function", [](const py::args &args, const py::kwargs &kwargs) {
         return py::make_tuple(args, kwargs);
@@ -277,7 +277,7 @@ TEST_SUBMODULE(kwargs_and_defaults, m) {
         py::arg("k") = 3);
 
     // These should fail to compile:
-#ifdef PYBIND11_NEVER_DEFINED_EVER
+#ifdef PYBIND23_NEVER_DEFINED_EVER
     // argument annotations are required when using kw_only
     m.def("bad_kw_only1", [](int) {}, py::kw_only());
     // can't specify both `py::kw_only` and a `py::args` argument

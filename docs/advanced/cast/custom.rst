@@ -5,9 +5,9 @@ Custom type casters
 
 Some applications may prefer custom type casters that convert between existing
 Python types and C++ types, similar to the ``list`` ↔ ``std::vector``
-and ``dict`` ↔ ``std::map`` conversions which are built into pybind11.
+and ``dict`` ↔ ``std::map`` conversions which are built into pybind23.
 Implementing custom type casters is fairly advanced usage.
-While it is recommended to use the pybind11 API as much as possible, more complex examples may
+While it is recommended to use the pybind23 API as much as possible, more complex examples may
 require familiarity with the intricacies of the Python C API.
 You can refer to the `Python/C API Reference Manual <https://docs.python.org/3/c-api/index.html>`_
 for more information.
@@ -25,7 +25,7 @@ in C++ (here demonstrated by a simple ``negate`` function).
         tests/test_docs_advanced_cast_custom.py
     Ideally, change the test, run pre-commit (incl. clang-format),
     then copy the changed code back here.
-    Also use TEST_SUBMODULE in tests, but PYBIND11_MODULE in docs.
+    Also use TEST_SUBMODULE in tests, but PYBIND23_MODULE in docs.
 
 .. code-block:: cpp
 
@@ -52,13 +52,13 @@ The following Python snippet demonstrates the intended usage of ``negate`` from 
     assert point2 == (-1.0, 1.0)
 
 To register the necessary conversion routines, it is necessary to add an
-instantiation of the ``pybind11::detail::type_caster<T>`` template.
+instantiation of the ``pybind23::detail::type_caster<T>`` template.
 Although this is an implementation detail, adding an instantiation of this
 type is explicitly allowed.
 
 .. code-block:: cpp
 
-    namespace pybind11 {
+    namespace pybind23 {
     namespace detail {
 
     template <>
@@ -67,7 +67,7 @@ type is explicitly allowed.
         // `io_name` is used to specify different type hints for arguments and return values.
         // The signature of our negate function would then look like:
         // `negate(Sequence[float]) -> tuple[float, float]`
-        PYBIND11_TYPE_CASTER(user_space::Point2D, io_name("Sequence[float]", "tuple[float, float]"));
+        PYBIND23_TYPE_CASTER(user_space::Point2D, io_name("Sequence[float]", "tuple[float, float]"));
 
         // C++ -> Python: convert `Point2D` to `tuple[float, float]`. The second and third arguments
         // are used to indicate the return value policy and parent object (for
@@ -105,14 +105,14 @@ type is explicitly allowed.
     };
 
     } // namespace detail
-    } // namespace pybind11
+    } // namespace pybind23
 
     // Bind the negate function
-    PYBIND11_MODULE(docs_advanced_cast_custom, m, py::mod_gil_not_used()) { m.def("negate", user_space::negate); }
+    PYBIND23_MODULE(docs_advanced_cast_custom, m, py::mod_gil_not_used()) { m.def("negate", user_space::negate); }
 
 .. note::
 
-    A ``type_caster<T>`` defined with ``PYBIND11_TYPE_CASTER(T, ...)`` requires
+    A ``type_caster<T>`` defined with ``PYBIND23_TYPE_CASTER(T, ...)`` requires
     that ``T`` is default-constructible (``value`` is first default constructed
     and then ``load()`` assigns to it).
 

@@ -1,9 +1,9 @@
-#include <pybind11/critical_section.h>
-#include <pybind11/embed.h>
+#include <pybind23/critical_section.h>
+#include <pybind23/embed.h>
 
 // Silence MSVC C++17 deprecation warning from Catch regarding std::uncaught_exceptions (up to
 // catch 2.0.1; this should be fixed in the next catch release after 2.0.1).
-PYBIND11_WARNING_DISABLE_MSVC(4996)
+PYBIND23_WARNING_DISABLE_MSVC(4996)
 
 #include <catch.hpp>
 #include <cstdlib>
@@ -12,7 +12,7 @@ PYBIND11_WARNING_DISABLE_MSVC(4996)
 #include <thread>
 #include <utility>
 
-namespace py = pybind11;
+namespace py = pybind23;
 using namespace py::literals;
 
 size_t get_sys_path_size() {
@@ -22,7 +22,7 @@ size_t get_sys_path_size() {
 
 bool has_state_dict_internals_obj() {
     py::dict state = py::detail::get_python_state_dict();
-    return state.contains(PYBIND11_INTERNALS_ID);
+    return state.contains(PYBIND23_INTERNALS_ID);
 }
 
 uintptr_t get_details_as_uintptr() {
@@ -45,8 +45,8 @@ private:
 class PyWidget final : public Widget {
     using Widget::Widget;
 
-    int the_answer() const override { PYBIND11_OVERRIDE_PURE(int, Widget, the_answer); }
-    std::string argv0() const override { PYBIND11_OVERRIDE_PURE(std::string, Widget, argv0); }
+    int the_answer() const override { PYBIND23_OVERRIDE_PURE(int, Widget, the_answer); }
+    std::string argv0() const override { PYBIND23_OVERRIDE_PURE(std::string, Widget, argv0); }
 };
 
 class test_override_cache_helper {
@@ -62,10 +62,10 @@ public:
 };
 
 class test_override_cache_helper_trampoline : public test_override_cache_helper {
-    int func() override { PYBIND11_OVERRIDE(int, test_override_cache_helper, func); }
+    int func() override { PYBIND23_OVERRIDE(int, test_override_cache_helper, func); }
 };
 
-PYBIND11_EMBEDDED_MODULE(widget_module, m, py::multiple_interpreters::per_interpreter_gil()) {
+PYBIND23_EMBEDDED_MODULE(widget_module, m, py::multiple_interpreters::per_interpreter_gil()) {
     py::class_<Widget, PyWidget>(m, "Widget")
         .def(py::init<std::string>())
         .def_property_readonly("the_message", &Widget::the_message);
@@ -76,7 +76,7 @@ PYBIND11_EMBEDDED_MODULE(widget_module, m, py::multiple_interpreters::per_interp
     sub.def("add", [](int i, int j) { return i + j; });
 }
 
-PYBIND11_EMBEDDED_MODULE(trampoline_module, m) {
+PYBIND23_EMBEDDED_MODULE(trampoline_module, m) {
     py::class_<test_override_cache_helper,
                test_override_cache_helper_trampoline,
                std::shared_ptr<test_override_cache_helper>>(m, "test_override_cache_helper")
@@ -84,9 +84,9 @@ PYBIND11_EMBEDDED_MODULE(trampoline_module, m) {
         .def("func", &test_override_cache_helper::func);
 }
 
-PYBIND11_EMBEDDED_MODULE(throw_exception, ) { throw std::runtime_error("C++ Error"); }
+PYBIND23_EMBEDDED_MODULE(throw_exception, ) { throw std::runtime_error("C++ Error"); }
 
-PYBIND11_EMBEDDED_MODULE(throw_error_already_set, ) {
+PYBIND23_EMBEDDED_MODULE(throw_error_already_set, ) {
     auto d = py::dict();
     d["missing"].cast<py::object>();
 }
@@ -95,7 +95,7 @@ TEST_CASE("PYTHONPATH is used to update sys.path") {
     // The setup for this TEST_CASE is in catch.cpp!
     auto sys_path = py::str(py::module_::import("sys").attr("path")).cast<std::string>();
     REQUIRE_THAT(sys_path,
-                 Catch::Matchers::Contains("pybind11_test_embed_PYTHONPATH_2099743835476552"));
+                 Catch::Matchers::Contains("pybind23_test_embed_PYTHONPATH_2099743835476552"));
 }
 
 TEST_CASE("Pass classes and data between modules defined in C++ and Python") {
@@ -184,7 +184,7 @@ TEST_CASE("There can be only one interpreter") {
     py::initialize_interpreter();
 }
 
-#if PY_VERSION_HEX >= PYBIND11_PYCONFIG_SUPPORT_PY_VERSION_HEX
+#if PY_VERSION_HEX >= PYBIND23_PYCONFIG_SUPPORT_PY_VERSION_HEX
 TEST_CASE("Custom PyConfig") {
     py::finalize_interpreter();
     PyConfig config;
@@ -263,7 +263,7 @@ TEST_CASE("Add program dir to path pre-PyConfig") {
     py::initialize_interpreter();
 }
 
-#if PY_VERSION_HEX >= PYBIND11_PYCONFIG_SUPPORT_PY_VERSION_HEX
+#if PY_VERSION_HEX >= PYBIND23_PYCONFIG_SUPPORT_PY_VERSION_HEX
 TEST_CASE("Add program dir to path using PyConfig") {
     py::finalize_interpreter();
     size_t path_size_add_program_dir_to_path_false = 0;
@@ -304,7 +304,7 @@ TEST_CASE("Restart the interpreter") {
     // Internals are deleted after a restart.
     REQUIRE_FALSE(has_state_dict_internals_obj());
     REQUIRE(get_details_as_uintptr() == 0);
-    pybind11::detail::get_internals();
+    pybind23::detail::get_internals();
     REQUIRE(has_state_dict_internals_obj());
     REQUIRE(get_details_as_uintptr() != 0);
     REQUIRE(get_details_as_uintptr()
@@ -464,18 +464,18 @@ TEST_CASE("sys.argv gets initialized properly") {
 }
 
 TEST_CASE("make_iterator can be called before then after finalizing an interpreter") {
-    // Reproduction of issue #2101 (https://github.com/pybind/pybind11/issues/2101)
+    // Reproduction of issue #2101 (https://github.com/pybind/pybind23/issues/2101)
     py::finalize_interpreter();
 
     std::vector<int> container;
     {
-        pybind11::scoped_interpreter g;
-        auto iter = pybind11::make_iterator(container.begin(), container.end());
+        pybind23::scoped_interpreter g;
+        auto iter = pybind23::make_iterator(container.begin(), container.end());
     }
 
     REQUIRE_NOTHROW([&]() {
-        pybind11::scoped_interpreter g;
-        auto iter = pybind11::make_iterator(container.begin(), container.end());
+        pybind23::scoped_interpreter g;
+        auto iter = pybind23::make_iterator(container.begin(), container.end());
     }());
 
     py::initialize_interpreter();

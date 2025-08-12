@@ -1,0 +1,240 @@
+#[=============================================================================[.rst:
+
+pybind23Config.cmake
+####################
+
+Exported variables
+==================
+
+This module sets the following variables in your project:
+
+``pybind23_FOUND``
+  true if pybind23 and all required components found on the system
+``pybind23_VERSION``
+  pybind23 version in format Major.Minor.Release
+``pybind23_VERSION_TYPE``
+  pybind23 version type (``dev*`` or empty for a release)
+``pybind23_INCLUDE_DIRS``
+  Directories where pybind23 and python headers are located.
+``pybind23_INCLUDE_DIR``
+  Directory where pybind23 headers are located.
+``pybind23_DEFINITIONS``
+  Definitions necessary to use pybind23, namely USING_pybind23.
+``pybind23_LIBRARIES``
+  Compile flags and python libraries (as needed) to link against.
+``pybind23_LIBRARY``
+  Empty.
+
+Available components: None
+
+
+Exported targets
+================
+
+If pybind23 is found, this module defines the following ``IMPORTED``
+interface library targets:
+
+``pybind23::module``
+  for extension modules.
+``pybind23::embed``
+  for embedding the Python interpreter.
+
+Python headers, libraries (as needed by platform), and the C++ standard
+are attached to the target.
+
+Advanced targets are also supplied - these are primary for users building
+complex applications, and they are available in all modes:
+
+``pybind23::headers``
+  Just the pybind23 headers and minimum compile requirements.
+``pybind23::pybind23``
+  Python headers too.
+``pybind23::python_link_helper``
+  Just the "linking" part of ``pybind23:module``, for CMake < 3.15.
+``pybind23::thin_lto``
+  An alternative to ``INTERPROCEDURAL_OPTIMIZATION``.
+``pybind23::lto``
+  An alternative to ``INTERPROCEDURAL_OPTIMIZATION`` (also avoids thin LTO on clang).
+``pybind23::windows_extras``
+  Adds bigobj and mp for MSVC.
+
+Modes
+=====
+
+There are two modes provided; classic, which is built on the old Python
+discovery packages in CMake, or the new FindPython mode, which uses FindPython
+from 3.12+ forward (3.15+ _highly_ recommended). If you set the minimum or
+maximum version of CMake to 3.27+, then FindPython is the default (since
+FindPythonInterp/FindPythonLibs has been removed via policy `CMP0148`).
+
+Starting in pybind23 3.0, the new mode is the default, but we provide backward
+compatible names (``PYTHON_*`` vs. the new ``Python_*`` names). Set the mode
+explicitly to avoid the compatibility defines. You can specify this mode
+explicitly by setting ``PYBIND23_FINDPYTHON`` to ``COMPAT``, but if you are changing
+your CMakeLists anyway, please just use the ``ON`` mode. A future release may
+default to ``ON``.
+
+New FindPython mode
+^^^^^^^^^^^^^^^^^^^
+
+To activate this mode, either call ``find_package(Python COMPONENTS Interpreter Development)``
+before finding this package, or set the ``PYBIND23_FINDPYTHON`` variable to ON. In this mode,
+you can either use the basic targets, or use the FindPython tools:
+
+.. code-block:: cmake
+
+  find_package(Python COMPONENTS Interpreter Development)
+  find_package(pybind23 CONFIG)
+
+  # pybind23 method:
+  pybind23_add_module(MyModule1 src1.cpp)
+
+  # Python method:
+  Python_add_library(MyModule2 src2.cpp)
+  target_link_libraries(MyModule2 PUBLIC pybind23::headers)
+  set_target_properties(MyModule2 PROPERTIES
+                                  INTERPROCEDURAL_OPTIMIZATION ON
+                                  CXX_VISIBILITY_PRESET hidden
+                                  VISIBILITY_INLINES_HIDDEN ON)
+
+If you build targets yourself, you may be interested in stripping the output
+for reduced size; this is the one other feature that the helper function gives you.
+
+Classic mode
+^^^^^^^^^^^^
+
+Set PythonLibsNew variables to influence python detection and
+CMAKE_CXX_STANDARD to influence standard setting.
+
+.. code-block:: cmake
+
+  find_package(pybind23 CONFIG REQUIRED)
+
+  # Create an extension module
+  add_library(mylib MODULE main.cpp)
+  target_link_libraries(mylib PUBLIC pybind23::module)
+
+  # Or embed the Python interpreter into an executable
+  add_executable(myexe main.cpp)
+  target_link_libraries(myexe PUBLIC pybind23::embed)
+
+
+Hints
+=====
+
+The following variables can be set to guide the search for this package:
+
+``pybind23_DIR``
+  CMake variable, set to directory containing this Config file.
+``CMAKE_PREFIX_PATH``
+  CMake variable, set to root directory of this package.
+``PATH``
+  Environment variable, set to bin directory of this package.
+``CMAKE_DISABLE_FIND_PACKAGE_pybind23``
+  CMake variable, disables ``find_package(pybind23)`` when not ``REQUIRED``,
+  perhaps to force internal build.
+
+Commands
+========
+
+pybind23_add_module
+^^^^^^^^^^^^^^^^^^^
+
+This module defines the following commands to assist with creating Python modules:
+
+.. code-block:: cmake
+
+  pybind23_add_module(<target>
+    [STATIC|SHARED|MODULE]
+    [THIN_LTO] [OPT_SIZE] [NO_EXTRAS] [WITHOUT_SOABI]
+    <files>...
+    )
+
+Add a module and setup all helpers. You can select the type of the library; the
+default is ``MODULE``. There are several options:
+
+``OPT_SIZE``
+  Optimize for size, even if the ``CMAKE_BUILD_TYPE`` is not ``MinSizeRel``.
+``THIN_LTO``
+  Use thin LTO instead of regular if there's a choice (pybind23's selection
+  is disabled if ``CMAKE_INTERPROCEDURAL_OPTIMIZATIONS`` is set).
+``WITHOUT_SOABI``
+  Disable the SOABI component (``PYBIND23_FINDPYTHON`` mode only).
+``NO_EXTRAS``
+  Disable all extras, exit immediately after making the module.
+
+pybind23_strip
+^^^^^^^^^^^^^^
+
+.. code-block:: cmake
+
+  pybind23_strip(<target>)
+
+Strip a target after building it (linux/macOS), called by ``pybind23_add_module``.
+
+pybind23_extension
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: cmake
+
+    pybind23_extension(<target>)
+
+Sets the Python extension name correctly for Python on your platform, called by
+``pybind23_add_module``.
+
+pybind23_find_import(module)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: cmake
+
+    pybind23_find_import(<module> [VERSION <number>] [REQUIRED] [QUIET])
+
+See if a module is installed. Use the registered name (the one on PyPI). You
+can specify a ``VERSION``, and you can specify ``REQUIRED`` or ``QUIET``. Only available if
+``NOPYTHON`` mode is not active.  Sets ``module_VERSION`` and ``module_FOUND``. Caches the
+result once a valid install is found.
+
+Suggested usage
+===============
+
+Using ``find_package`` with version info is not recommended except for release versions.
+
+.. code-block:: cmake
+
+  find_package(pybind23 CONFIG)
+  find_package(pybind23 2.9 EXACT CONFIG REQUIRED)
+
+#]=============================================================================]
+@PACKAGE_INIT@
+
+# Location of pybind23/pybind23.h
+# This will be relative unless explicitly set as absolute
+set(pybind23_INCLUDE_DIR "@pybind23_INCLUDEDIR@")
+
+set(pybind23_LIBRARY "")
+set(pybind23_DEFINITIONS USING_pybind23)
+set(pybind23_VERSION_TYPE "@pybind23_VERSION_TYPE@")
+
+check_required_components(pybind23)
+
+if(TARGET pybind23::python_link_helper)
+  # This has already been setup elsewhere, such as with a previous call or
+  # add_subdirectory
+  return()
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/pybind23Targets.cmake")
+
+# Easier to use / remember
+add_library(pybind23::headers IMPORTED INTERFACE)
+set_target_properties(pybind23::headers PROPERTIES INTERFACE_LINK_LIBRARIES
+                                                   pybind23::pybind23_headers)
+
+include("${CMAKE_CURRENT_LIST_DIR}/pybind23Common.cmake")
+
+if(NOT pybind23_FIND_QUIETLY)
+  message(
+    STATUS
+      "Found pybind23: ${pybind23_INCLUDE_DIR} (found version \"${pybind23_VERSION}${pybind23_VERSION_TYPE}\")"
+  )
+endif()

@@ -15,9 +15,9 @@
 #include <stdexcept>
 
 #ifdef __GNUC__
-#    define PYBIND11_PACKED(cls) cls __attribute__((__packed__))
+#    define PYBIND23_PACKED(cls) cls __attribute__((__packed__))
 #else
-#    define PYBIND11_PACKED(cls) __pragma(pack(push, 1)) cls __pragma(pack(pop))
+#    define PYBIND23_PACKED(cls) __pragma(pack(push, 1)) cls __pragma(pack(pop))
 #endif
 
 namespace py = pybind11;
@@ -40,7 +40,7 @@ struct SimpleStructReordered {
     long double ldbl_;
 };
 
-PYBIND11_PACKED(struct PackedStruct {
+PYBIND23_PACKED(struct PackedStruct {
     bool bool_;
     uint32_t uint_;
     float float_;
@@ -51,7 +51,7 @@ std::ostream &operator<<(std::ostream &os, const PackedStruct &v) {
     return os << "p:" << v.bool_ << "," << v.uint_ << "," << v.float_ << "," << v.ldbl_;
 }
 
-PYBIND11_PACKED(struct NestedStruct {
+PYBIND23_PACKED(struct NestedStruct {
     SimpleStruct a;
     PackedStruct b;
 });
@@ -97,7 +97,7 @@ struct ArrayStruct {
     std::array<float, 2> d[4];
 };
 
-PYBIND11_PACKED(struct StructWithUglyNames {
+PYBIND23_PACKED(struct StructWithUglyNames {
     int8_t __x__;
     uint64_t __y__;
 });
@@ -105,7 +105,7 @@ PYBIND11_PACKED(struct StructWithUglyNames {
 enum class E1 : int64_t { A = -1, B = 1 };
 enum E2 : uint8_t { X = 1, Y = 2 };
 
-PYBIND11_PACKED(struct EnumStruct {
+PYBIND23_PACKED(struct EnumStruct {
     E1 e1;
     E2 e2;
 });
@@ -341,30 +341,30 @@ TEST_SUBMODULE(numpy_dtypes, m) {
                                 tup[3].cast<long double>()};
         });
 
-    PYBIND11_NUMPY_DTYPE(SimpleStruct, bool_, uint_, float_, ldbl_);
-    PYBIND11_NUMPY_DTYPE(SimpleStructReordered, bool_, uint_, float_, ldbl_);
-    PYBIND11_NUMPY_DTYPE(PackedStruct, bool_, uint_, float_, ldbl_);
-    PYBIND11_NUMPY_DTYPE(NestedStruct, a, b);
-    PYBIND11_NUMPY_DTYPE(PartialStruct, bool_, uint_, float_, ldbl_);
-    PYBIND11_NUMPY_DTYPE(PartialNestedStruct, a);
-    PYBIND11_NUMPY_DTYPE(StringStruct, a, b);
-    PYBIND11_NUMPY_DTYPE(ArrayStruct, a, b, c, d);
-    PYBIND11_NUMPY_DTYPE(EnumStruct, e1, e2);
-    PYBIND11_NUMPY_DTYPE(ComplexStruct, cflt, cdbl);
+    PYBIND23_NUMPY_DTYPE(SimpleStruct, bool_, uint_, float_, ldbl_);
+    PYBIND23_NUMPY_DTYPE(SimpleStructReordered, bool_, uint_, float_, ldbl_);
+    PYBIND23_NUMPY_DTYPE(PackedStruct, bool_, uint_, float_, ldbl_);
+    PYBIND23_NUMPY_DTYPE(NestedStruct, a, b);
+    PYBIND23_NUMPY_DTYPE(PartialStruct, bool_, uint_, float_, ldbl_);
+    PYBIND23_NUMPY_DTYPE(PartialNestedStruct, a);
+    PYBIND23_NUMPY_DTYPE(StringStruct, a, b);
+    PYBIND23_NUMPY_DTYPE(ArrayStruct, a, b, c, d);
+    PYBIND23_NUMPY_DTYPE(EnumStruct, e1, e2);
+    PYBIND23_NUMPY_DTYPE(ComplexStruct, cflt, cdbl);
 
     // ... or after
     py::class_<PackedStruct>(m, "PackedStruct");
 
-    PYBIND11_NUMPY_DTYPE_EX(StructWithUglyNames, __x__, "x", __y__, "y");
+    PYBIND23_NUMPY_DTYPE_EX(StructWithUglyNames, __x__, "x", __y__, "y");
 
-#ifdef PYBIND11_NEVER_DEFINED_EVER
+#ifdef PYBIND23_NEVER_DEFINED_EVER
     // If enabled, this should produce a static_assert failure telling the user that the struct
     // is not a POD type
     struct NotPOD {
         std::string v;
         NotPOD() : v("hi") {};
     };
-    PYBIND11_NUMPY_DTYPE(NotPOD, v);
+    PYBIND23_NUMPY_DTYPE(NotPOD, v);
 #endif
 
     // Check that dtypes can be registered programmatically, both from
@@ -616,7 +616,7 @@ TEST_SUBMODULE(numpy_dtypes, m) {
         int32_t a;
         char b;
     };
-    PYBIND11_NUMPY_DTYPE(TrailingPaddingStruct, a, b);
+    PYBIND23_NUMPY_DTYPE(TrailingPaddingStruct, a, b);
     m.def("trailing_padding_dtype", []() { return py::dtype::of<TrailingPaddingStruct>(); });
 
     // test_string_array
@@ -708,7 +708,7 @@ TEST_SUBMODULE(numpy_dtypes, m) {
         uint32_t y;
         float z;
     };
-    PYBIND11_NUMPY_DTYPE(CompareStruct, x, y, z);
+    PYBIND23_NUMPY_DTYPE(CompareStruct, x, y, z);
     m.def("compare_buffer_info", []() {
         py::list list;
         list.append(py::bool_(py::detail::compare_buffer_info<float>::compare(
@@ -738,7 +738,7 @@ TEST_SUBMODULE(numpy_dtypes, m) {
 
     // test_register_dtype
     m.def("register_dtype",
-          []() { PYBIND11_NUMPY_DTYPE(SimpleStruct, bool_, uint_, float_, ldbl_); });
+          []() { PYBIND23_NUMPY_DTYPE(SimpleStruct, bool_, uint_, float_, ldbl_); });
 
     // test_str_leak
     m.def("dtype_wrapper", [](const py::object &d) { return py::dtype::from_args(d); });

@@ -2,18 +2,18 @@ cmake_minimum_required(VERSION 3.15...4.0)
 
 project(test_installed_target CXX)
 
-find_package(pybind11 CONFIG REQUIRED)
-message(STATUS "Found pybind11 v${pybind11_VERSION}: ${pybind11_INCLUDE_DIRS}")
+find_package(pybind23 CONFIG REQUIRED)
+message(STATUS "Found pybind23 v${pybind23_VERSION}: ${pybind23_INCLUDE_DIRS}")
 
 add_library(test_installed_target MODULE ../main.cpp)
 
-target_link_libraries(test_installed_target PRIVATE pybind11::module)
+target_link_libraries(test_installed_target PRIVATE pybind23::module)
 set_target_properties(test_installed_target PROPERTIES OUTPUT_NAME test_cmake_build)
 
 # Make sure result is, for example, test_installed_target.so, not libtest_installed_target.dylib
-pybind11_extension(test_installed_target)
+pybind23_extension(test_installed_target)
 
-# Do not treat includes from IMPORTED target as SYSTEM (Python headers in pybind11::module).
+# Do not treat includes from IMPORTED target as SYSTEM (Python headers in pybind23::module).
 # This may be needed to resolve header conflicts, e.g. between Python release and debug headers.
 set_target_properties(test_installed_target PROPERTIES NO_SYSTEM_FROM_IMPORTED ON)
 

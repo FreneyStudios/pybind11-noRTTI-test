@@ -7,7 +7,7 @@ requires = ["scikit-build-core"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "pybind11_tests"
+name = "pybind23_tests"
 version = "0.0.1"
 dependencies = ["pytest", "pytest-timeout"]
 
@@ -22,7 +22,7 @@ build.verbose = true
 logging.level = "INFO"
 
 [tool.scikit-build.cmake.define]
-PYBIND11_FINDPYTHON = true
+PYBIND23_FINDPYTHON = true
 
 
 [tool.cibuildwheel]

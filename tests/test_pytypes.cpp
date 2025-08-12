@@ -15,9 +15,9 @@
 #include <utility>
 
 //__has_include has been part of C++17, no need to check it
-#if defined(PYBIND11_CPP20) && __has_include(<ranges>)
-#    if !defined(PYBIND11_COMPILER_CLANG) || __clang_major__ >= 16 // llvm/llvm-project#52696
-#        define PYBIND11_TEST_PYTYPES_HAS_RANGES
+#if defined(PYBIND23_CPP20) && __has_include(<ranges>)
+#    if !defined(PYBIND23_COMPILER_CLANG) || __clang_major__ >= 16 // llvm/llvm-project#52696
+#        define PYBIND23_TEST_PYTYPES_HAS_RANGES
 #        include <ranges>
 #    endif
 #endif
@@ -42,7 +42,7 @@ PyObject *conv(PyObject *o) {
 PyObject *default_constructed() { return PyFloat_FromDouble(0.0); }
 } // namespace detail
 class float_ : public py::object {
-    PYBIND11_OBJECT_CVT(float_, py::object, external::detail::check, external::detail::conv)
+    PYBIND23_OBJECT_CVT(float_, py::object, external::detail::check, external::detail::conv)
 
     float_() : py::object(external::detail::default_constructed(), stolen_t{}) {}
 
@@ -118,7 +118,7 @@ void m_defs(py::module_ &m) {
 
 } // namespace handle_from_move_only_type_with_operator_PyObject
 
-#if defined(PYBIND11_TYPING_H_HAS_STRING_LITERAL)
+#if defined(PYBIND23_TYPING_H_HAS_STRING_LITERAL)
 namespace literals {
 enum Color { RED = 0, BLUE = 1 };
 
@@ -155,7 +155,7 @@ namespace detail {
 
 template <>
 struct type_caster<RealNumber> {
-    PYBIND11_TYPE_CASTER(RealNumber, io_name("float | int", "float"));
+    PYBIND23_TYPE_CASTER(RealNumber, io_name("float | int", "float"));
 
     static handle cast(const RealNumber &number, return_value_policy, handle) {
         return py::float_(number.value).release();
@@ -479,7 +479,7 @@ TEST_SUBMODULE(pytypes, m) {
 
     m.def("accessor_moves", []() { // See PR #3970
         py::list return_list;
-#ifdef PYBIND11_HANDLE_REF_DEBUG
+#ifdef PYBIND23_HANDLE_REF_DEBUG
         py::int_ py_int_0(0);
         py::int_ py_int_42(42);
         py::str py_str_count("count");
@@ -491,7 +491,7 @@ TEST_SUBMODULE(pytypes, m) {
         py::list lst;
         lst.append(0);
 
-#    define PYBIND11_LOCAL_DEF(...)                                                               \
+#    define PYBIND23_LOCAL_DEF(...)                                                               \
         {                                                                                         \
             std::size_t inc_refs = py::handle::inc_ref_counter();                                 \
             __VA_ARGS__;                                                                          \
@@ -499,29 +499,29 @@ TEST_SUBMODULE(pytypes, m) {
             return_list.append(inc_refs);                                                         \
         }
 
-        PYBIND11_LOCAL_DEF(tup[py_int_0])    // l-value (to have a control)
-        PYBIND11_LOCAL_DEF(tup[py::int_(0)]) // r-value
+        PYBIND23_LOCAL_DEF(tup[py_int_0])    // l-value (to have a control)
+        PYBIND23_LOCAL_DEF(tup[py::int_(0)]) // r-value
 
-        PYBIND11_LOCAL_DEF(tup.attr(py_str_count))     // l-value
-        PYBIND11_LOCAL_DEF(tup.attr(py::str("count"))) // r-value
+        PYBIND23_LOCAL_DEF(tup.attr(py_str_count))     // l-value
+        PYBIND23_LOCAL_DEF(tup.attr(py::str("count"))) // r-value
 
-        PYBIND11_LOCAL_DEF(seq[py_int_0])    // l-value
-        PYBIND11_LOCAL_DEF(seq[py::int_(0)]) // r-value
+        PYBIND23_LOCAL_DEF(seq[py_int_0])    // l-value
+        PYBIND23_LOCAL_DEF(seq[py::int_(0)]) // r-value
 
-        PYBIND11_LOCAL_DEF(seq.attr(py_str_count))     // l-value
-        PYBIND11_LOCAL_DEF(seq.attr(py::str("count"))) // r-value
+        PYBIND23_LOCAL_DEF(seq.attr(py_str_count))     // l-value
+        PYBIND23_LOCAL_DEF(seq.attr(py::str("count"))) // r-value
 
-        PYBIND11_LOCAL_DEF(lst[py_int_0])    // l-value
-        PYBIND11_LOCAL_DEF(lst[py::int_(0)]) // r-value
+        PYBIND23_LOCAL_DEF(lst[py_int_0])    // l-value
+        PYBIND23_LOCAL_DEF(lst[py::int_(0)]) // r-value
 
-        PYBIND11_LOCAL_DEF(lst.attr(py_str_count))     // l-value
-        PYBIND11_LOCAL_DEF(lst.attr(py::str("count"))) // r-value
+        PYBIND23_LOCAL_DEF(lst.attr(py_str_count))     // l-value
+        PYBIND23_LOCAL_DEF(lst.attr(py::str("count"))) // r-value
 
         auto lst_acc = lst[py::int_(0)];
         lst_acc = py::int_(42);                    // Detaches lst_acc from lst.
-        PYBIND11_LOCAL_DEF(lst_acc = py_int_42)    // l-value
-        PYBIND11_LOCAL_DEF(lst_acc = py::int_(42)) // r-value
-#    undef PYBIND11_LOCAL_DEF
+        PYBIND23_LOCAL_DEF(lst_acc = py_int_42)    // l-value
+        PYBIND23_LOCAL_DEF(lst_acc = py::int_(42)) // r-value
+#    undef PYBIND23_LOCAL_DEF
 #endif
         return return_list;
     });
@@ -725,8 +725,8 @@ TEST_SUBMODULE(pytypes, m) {
     // test_builtin_functions
     m.def("get_len", [](py::handle h) { return py::len(h); });
 
-#ifdef PYBIND11_STR_LEGACY_PERMISSIVE
-    m.attr("PYBIND11_STR_LEGACY_PERMISSIVE") = true;
+#ifdef PYBIND23_STR_LEGACY_PERMISSIVE
+    m.attr("PYBIND23_STR_LEGACY_PERMISSIVE") = true;
 #endif
 
     m.def("isinstance_pybind11_bytes",
@@ -752,17 +752,17 @@ TEST_SUBMODULE(pytypes, m) {
 // user code.
 #if (defined(__APPLE__) && defined(__clang__)) || defined(PYPY_VERSION)
 // This is "most correct" and enforced on these platforms.
-#    define PYBIND11_AUTO_IT auto it
+#    define PYBIND23_AUTO_IT auto it
 #else
     // This works on many platforms and is (unfortunately) reflective of existing user code.
     // NOLINTNEXTLINE(bugprone-macro-parentheses)
-#    define PYBIND11_AUTO_IT auto &it
+#    define PYBIND23_AUTO_IT auto &it
 #endif
 
     m.def("tuple_iterator", []() {
         auto tup = py::make_tuple(5, 7);
         int tup_sum = 0;
-        for (PYBIND11_AUTO_IT : tup) {
+        for (PYBIND23_AUTO_IT : tup) {
             tup_sum += it.cast<int>();
         }
         return tup_sum;
@@ -773,7 +773,7 @@ TEST_SUBMODULE(pytypes, m) {
         dct[py::int_(3)] = 5;
         dct[py::int_(7)] = 11;
         int kv_sum = 0;
-        for (PYBIND11_AUTO_IT : dct) {
+        for (PYBIND23_AUTO_IT : dct) {
             kv_sum += it.first.cast<int>() * 100 + it.second.cast<int>();
         }
         return kv_sum;
@@ -781,13 +781,13 @@ TEST_SUBMODULE(pytypes, m) {
 
     m.def("passed_iterator", [](const py::iterator &py_it) {
         int elem_sum = 0;
-        for (PYBIND11_AUTO_IT : py_it) {
+        for (PYBIND23_AUTO_IT : py_it) {
             elem_sum += it.cast<int>();
         }
         return elem_sum;
     });
 
-#undef PYBIND11_AUTO_IT
+#undef PYBIND23_AUTO_IT
 
     // Tests below this line are for pybind11 IMPLEMENTATION DETAILS:
 
@@ -967,7 +967,7 @@ TEST_SUBMODULE(pytypes, m) {
     m.def("annotate_optional_to_object",
           [](py::typing::Optional<int> &o) -> py::object { return o; });
 
-#if defined(PYBIND11_TYPING_H_HAS_STRING_LITERAL)
+#if defined(PYBIND23_TYPING_H_HAS_STRING_LITERAL)
     py::enum_<literals::Color>(m, "Color")
         .value("RED", literals::Color::RED)
         .value("BLUE", literals::Color::BLUE);
@@ -994,12 +994,12 @@ TEST_SUBMODULE(pytypes, m) {
     m.def("annotate_listT_to_T",
           [](const py::typing::List<typevar::TypeVarT> &l) -> typevar::TypeVarT { return l[0]; });
     m.def("annotate_object_to_T", [](const py::object &o) -> typevar::TypeVarT { return o; });
-    m.attr("defined_PYBIND11_TYPING_H_HAS_STRING_LITERAL") = true;
+    m.attr("defined_PYBIND23_TYPING_H_HAS_STRING_LITERAL") = true;
 #else
-    m.attr("defined_PYBIND11_TYPING_H_HAS_STRING_LITERAL") = false;
+    m.attr("defined_PYBIND23_TYPING_H_HAS_STRING_LITERAL") = false;
 #endif
 
-#if defined(PYBIND11_TEST_PYTYPES_HAS_RANGES)
+#if defined(PYBIND23_TEST_PYTYPES_HAS_RANGES)
 
     // test_tuple_ranges
     m.def("tuple_iterator_default_initialization", []() {
@@ -1051,9 +1051,9 @@ TEST_SUBMODULE(pytypes, m) {
         return ret;
     });
 
-    m.attr("defined_PYBIND11_TEST_PYTYPES_HAS_RANGES") = true;
+    m.attr("defined_PYBIND23_TEST_PYTYPES_HAS_RANGES") = true;
 #else
-    m.attr("defined_PYBIND11_TEST_PYTYPES_HAS_RANGES") = false;
+    m.attr("defined_PYBIND23_TEST_PYTYPES_HAS_RANGES") = false;
 #endif
 
 #if defined(__cpp_inline_variables)

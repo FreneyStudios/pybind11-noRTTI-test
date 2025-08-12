@@ -29,7 +29,7 @@ MD_ENTRY = re.compile(
 print()
 
 
-api = ghapi.all.GhApi(owner="pybind", repo="pybind11")
+api = ghapi.all.GhApi(owner="pybind", repo="pybind23")
 
 issues_pages = ghapi.page.paged(
     api.issues.list_for_repo, labels="needs changelog", state="closed"

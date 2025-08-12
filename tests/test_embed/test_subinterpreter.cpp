@@ -1,10 +1,10 @@
-#include <pybind11/embed.h>
-#ifdef PYBIND11_HAS_SUBINTERPRETER_SUPPORT
-#    include <pybind11/subinterpreter.h>
+#include <pybind23/embed.h>
+#ifdef PYBIND23_HAS_SUBINTERPRETER_SUPPORT
+#    include <pybind23/subinterpreter.h>
 
 // Silence MSVC C++17 deprecation warning from Catch regarding std::uncaught_exceptions (up to
 // catch 2.0.1; this should be fixed in the next catch release after 2.0.1).
-PYBIND11_WARNING_DISABLE_MSVC(4996)
+PYBIND23_WARNING_DISABLE_MSVC(4996)
 
 #    include <catch.hpp>
 #    include <cstdlib>
@@ -13,7 +13,7 @@ PYBIND11_WARNING_DISABLE_MSVC(4996)
 #    include <thread>
 #    include <utility>
 
-namespace py = pybind11;
+namespace py = pybind23;
 using namespace py::literals;
 
 bool has_state_dict_internals_obj();
@@ -344,7 +344,7 @@ TEST_CASE("Per-Subinterpreter GIL") {
             bool caught = false;
             try {
                 py::module_::import("trampoline_module");
-            } catch (pybind11::error_already_set &pe) {
+            } catch (pybind23::error_already_set &pe) {
                 T_REQUIRE(pe.matches(PyExc_ImportError));
                 std::string msg(pe.what());
                 T_REQUIRE(msg.find("does not support loading in subinterpreters")
@@ -357,7 +357,7 @@ TEST_CASE("Per-Subinterpreter GIL") {
             try {
                 py::module_::import("widget_module");
                 caught = false;
-            } catch (pybind11::error_already_set &) {
+            } catch (pybind23::error_already_set &) {
                 caught = true;
             }
             T_REQUIRE(!caught);
@@ -439,4 +439,4 @@ TEST_CASE("Per-Subinterpreter GIL") {
 }
 #    endif // Py_MOD_PER_INTERPRETER_GIL_SUPPORTED
 
-#endif // PYBIND11_HAS_SUBINTERPRETER_SUPPORT
+#endif // PYBIND23_HAS_SUBINTERPRETER_SUPPORT

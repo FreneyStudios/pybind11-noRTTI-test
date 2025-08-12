@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.15...4.0)
 
 project(test_installed_function CXX)
 
-find_package(pybind11 CONFIG REQUIRED)
+find_package(pybind23 CONFIG REQUIRED)
 message(
-  STATUS "Found pybind11 v${pybind11_VERSION} ${pybind11_VERSION_TYPE}: ${pybind11_INCLUDE_DIRS}")
+  STATUS "Found pybind23 v${pybind23_VERSION} ${pybind23_VERSION_TYPE}: ${pybind23_INCLUDE_DIRS}")
 
-pybind11_add_module(test_installed_function SHARED NO_EXTRAS ../main.cpp)
+pybind23_add_module(test_installed_function SHARED NO_EXTRAS ../main.cpp)
 set_target_properties(test_installed_function PROPERTIES OUTPUT_NAME test_cmake_build)
 
 if(DEFINED Python_EXECUTABLE)

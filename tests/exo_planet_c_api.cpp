@@ -17,7 +17,7 @@
 #endif
 
 // THIS MUST STAY AT THE TOP!
-#include <pybind11/conduit/pybind11_conduit_v1.h> // VERY light-weight dependency.
+#include <pybind23/conduit/pybind23_conduit_v1.h> // VERY light-weight dependency.
 
 #include "test_cpp_conduit_traveler_types.h"
 
@@ -26,8 +26,8 @@
 namespace {
 
 extern "C" PyObject *wrapGetLuggage(PyObject * /*self*/, PyObject *traveler) {
-    const auto *cpp_traveler = pybind11_conduit_v1::get_type_pointer_ephemeral<
-        pybind11_tests::test_cpp_conduit::Traveler>(traveler);
+    const auto *cpp_traveler = pybind23_conduit_v1::get_type_pointer_ephemeral<
+        pybind23_tests::test_cpp_conduit::Traveler>(traveler);
     if (cpp_traveler == nullptr) {
         return nullptr;
     }
@@ -35,8 +35,8 @@ extern "C" PyObject *wrapGetLuggage(PyObject * /*self*/, PyObject *traveler) {
 }
 
 extern "C" PyObject *wrapGetPoints(PyObject * /*self*/, PyObject *premium_traveler) {
-    const auto *cpp_premium_traveler = pybind11_conduit_v1::get_type_pointer_ephemeral<
-        pybind11_tests::test_cpp_conduit::PremiumTraveler>(premium_traveler);
+    const auto *cpp_premium_traveler = pybind23_conduit_v1::get_type_pointer_ephemeral<
+        pybind23_tests::test_cpp_conduit::PremiumTraveler>(premium_traveler);
     if (cpp_premium_traveler == nullptr) {
         return nullptr;
     }

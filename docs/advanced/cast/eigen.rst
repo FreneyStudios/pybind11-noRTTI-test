@@ -2,18 +2,18 @@ Eigen
 #####
 
 `Eigen <http://eigen.tuxfamily.org>`_ is C++ header-based library for dense and
-sparse linear algebra. Due to its popularity and widespread adoption, pybind11
+sparse linear algebra. Due to its popularity and widespread adoption, pybind23
 provides transparent conversion and limited mapping support between Eigen and
 Scientific Python linear algebra data types.
 
 To enable the built-in Eigen support you must include the optional header file
-:file:`pybind11/eigen.h`.
+:file:`pybind23/eigen.h`.
 
 Pass-by-value
 =============
 
 When binding a function with ordinary Eigen dense object arguments (for
-example, ``Eigen::MatrixXd``), pybind11 will accept any input value that is
+example, ``Eigen::MatrixXd``), pybind23 will accept any input value that is
 already (or convertible to) a ``numpy.ndarray`` with dimensions compatible with
 the Eigen type, copy its values into a temporary Eigen variable of the
 appropriate type, then call the function with this temporary variable.
@@ -32,7 +32,7 @@ would when writing a function taking a generic type in Eigen itself (subject to
 some limitations discussed below).
 
 When calling a bound function accepting a ``Eigen::Ref<const MatrixType>``
-type, pybind11 will attempt to avoid copying by using an ``Eigen::Map`` object
+type, pybind23 will attempt to avoid copying by using an ``Eigen::Map`` object
 that maps into the source ``numpy.ndarray`` data: this requires both that the
 data types are the same (e.g. ``dtype='float64'`` and ``MatrixType::Scalar`` is
 ``double``); and that the storage is layout compatible.  The latter limitation
@@ -42,11 +42,11 @@ compatible.
 
 If the numpy matrix cannot be used as is (either because its types differ, e.g.
 passing an array of integers to an Eigen parameter requiring doubles, or
-because the storage is incompatible), pybind11 makes a temporary copy and
+because the storage is incompatible), pybind23 makes a temporary copy and
 passes the copy instead.
 
 When a bound function parameter is instead ``Eigen::Ref<MatrixType>`` (note the
-lack of ``const``), pybind11 will only allow the function to be called if it
+lack of ``const``), pybind23 will only allow the function to be called if it
 can be mapped *and* if the numpy array is writeable (that is
 ``a.flags.writeable`` is true).  Any access (including modification) made to
 the passed variable will be transparently carried out directly on the
@@ -74,21 +74,21 @@ Returning values to Python
 ==========================
 
 When returning an ordinary dense Eigen matrix type to numpy (e.g.
-``Eigen::MatrixXd`` or ``Eigen::RowVectorXf``) pybind11 keeps the matrix and
+``Eigen::MatrixXd`` or ``Eigen::RowVectorXf``) pybind23 keeps the matrix and
 returns a numpy array that directly references the Eigen matrix: no copy of the
 data is performed.  The numpy array will have ``array.flags.owndata`` set to
 ``False`` to indicate that it does not own the data, and the lifetime of the
 stored Eigen matrix will be tied to the returned ``array``.
 
 If you bind a function with a non-reference, ``const`` return type (e.g.
-``const Eigen::MatrixXd``), the same thing happens except that pybind11 also
+``const Eigen::MatrixXd``), the same thing happens except that pybind23 also
 sets the numpy array's ``writeable`` flag to false.
 
-If you return an lvalue reference or pointer, the usual pybind11 rules apply,
+If you return an lvalue reference or pointer, the usual pybind23 rules apply,
 as dictated by the binding function's return value policy (see the
 documentation on :ref:`return_value_policies` for full details).  That means,
 without an explicit return value policy, lvalue references will be copied and
-pointers will be managed by pybind11.  In order to avoid copying, you should
+pointers will be managed by pybind23.  In order to avoid copying, you should
 explicitly specify an appropriate return value policy, as in the following
 example:
 
@@ -123,15 +123,15 @@ used to tie the life of the MyClass object to the life of the returned arrays.
 You may also return an ``Eigen::Ref``, ``Eigen::Map`` or other map-like Eigen
 object (for example, the return value of ``matrix.block()`` and related
 methods) that map into a dense Eigen type.  When doing so, the default
-behaviour of pybind11 is to simply reference the returned data: you must take
-care to ensure that this data remains valid!  You may ask pybind11 to
+behaviour of pybind23 is to simply reference the returned data: you must take
+care to ensure that this data remains valid!  You may ask pybind23 to
 explicitly *copy* such a return value by using the
 ``py::return_value_policy::copy`` policy when binding the function.  You may
 also use ``py::return_value_policy::reference_internal`` or a
 ``py::keep_alive`` to ensure the data stays valid as long as the returned numpy
 array does.
 
-When returning such a reference of map, pybind11 additionally respects the
+When returning such a reference of map, pybind23 additionally respects the
 readonly-status of the returned value, marking the numpy array as non-writeable
 if the reference or map was itself read-only.
 
@@ -159,7 +159,7 @@ types the "row-major" and "column-major" distinction is meaningless).
 The first approach is to change the use of ``Eigen::Ref<MatrixType>`` to the
 more general ``Eigen::Ref<MatrixType, 0, Eigen::Stride<Eigen::Dynamic,
 Eigen::Dynamic>>`` (or similar type with a fully dynamic stride type in the
-third template argument).  Since this is a rather cumbersome type, pybind11
+third template argument).  Since this is a rather cumbersome type, pybind23
 provides a ``py::EigenDRef<MatrixType>`` type alias for your convenience (along
 with EigenDMap for the equivalent Map, and EigenDStride for just the stride
 type).
@@ -249,7 +249,7 @@ copying to take place:
     }
 
     // The associated binding code:
-    using namespace pybind11::literals; // for "arg"_a
+    using namespace pybind23::literals; // for "arg"_a
     py::class_<MyClass>(m, "MyClass")
         // ... other class definitions
         .def("some_method", &MyClass::some_method, py::arg().noconvert());
@@ -283,7 +283,7 @@ have matching dimensions: That is, you cannot pass a 2-dimensional Nx1 numpy
 array to an Eigen value expecting a row vector, or a 1xN numpy array as a
 column vector argument.
 
-On the other hand, pybind11 allows you to pass 1-dimensional arrays of length N
+On the other hand, pybind23 allows you to pass 1-dimensional arrays of length N
 as Eigen parameters.  If the Eigen type can hold a column vector of length N it
 will be passed as such a column vector.  If not, but the Eigen type constraints
 will accept a row vector, it will be passed as a row vector.  (The column
@@ -295,12 +295,12 @@ Passing the same to an ``Eigen::MatrixXd`` would result in a 5x1 Eigen matrix.
 
 When returning an Eigen vector to numpy, the conversion is ambiguous: a row
 vector of length 4 could be returned as either a 1D array of length 4, or as a
-2D array of size 1x4.  When encountering such a situation, pybind11 compromises
+2D array of size 1x4.  When encountering such a situation, pybind23 compromises
 by considering the returned Eigen type: if it is a compile-time vector--that
 is, the type has either the number of rows or columns set to 1 at compile
-time--pybind11 converts to a 1D numpy array when returning the value.  For
+time--pybind23 converts to a 1D numpy array when returning the value.  For
 instances that are a vector only at run-time (e.g. ``MatrixXd``,
-``Matrix<float, Dynamic, 4>``), pybind11 returns the vector as a 2D array to
+``Matrix<float, Dynamic, 4>``), pybind23 returns the vector as a 2D array to
 numpy.  If this isn't want you want, you can use ``array.reshape(...)`` to get
 a view of the same data in the desired dimensions.
 

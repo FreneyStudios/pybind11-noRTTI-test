@@ -69,8 +69,8 @@ jobs:
       - name: Configure
         run: >
           cmake -S. -Bbuild -Werror=dev
-          -DPYBIND11_WERROR=ON
-          -DPYBIND11_PYTEST_ARGS=-v
+          -DPYBIND23_WERROR=ON
+          -DPYBIND23_PYTEST_ARGS=-v
           -DDOWNLOAD_CATCH=ON
           -DDOWNLOAD_EIGEN=ON
           ${{ inputs.cmake-args }}

@@ -15,8 +15,8 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "DOWNLOAD_CATCH": true,
         "DOWNLOAD_EIGEN": true,
-        "PYBIND11_FINDPYTHON": "NEW",
-        "PYBIND11_WERROR": true,
+        "PYBIND23_FINDPYTHON": "NEW",
+        "PYBIND23_WERROR": true,
         "CMAKE_COLOR_DIAGNOSTICS": true
       }
     },
@@ -25,7 +25,7 @@
       "displayName": "Venv",
       "inherits": "default",
       "cacheVariables": {
-        "PYBIND11_CREATE_WITH_UV": "python3",
+        "PYBIND23_CREATE_WITH_UV": "python3",
         "Python_ROOT_DIR": ".venv"
       }
     },

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to check include/test code for common pybind11 code style errors.
+# Script to check include/test code for common pybind23 code style errors.
 #
 # This script currently checks for
 #

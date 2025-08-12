@@ -53,7 +53,7 @@ jobs:
     - name: Configure C++11
       run: >
         cmake -S . -B build11
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=11
@@ -75,7 +75,7 @@ jobs:
     - name: Configure C++17
       run: >
         cmake -S . -B build17
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=17
@@ -93,11 +93,11 @@ jobs:
     - name: Configure (unstable ABI)
       run: >
         cmake -S . -B build17max
-        -DPYBIND11_WERROR=ON
+        -DPYBIND23_WERROR=ON
         -DDOWNLOAD_CATCH=ON
         -DDOWNLOAD_EIGEN=ON
         -DCMAKE_CXX_STANDARD=17
-        -DPYBIND11_INTERNALS_VERSION=10000000
+        -DPYBIND23_INTERNALS_VERSION=10000000
 
     - name: Build (unstable ABI)
       run: cmake --build build17max -j 2

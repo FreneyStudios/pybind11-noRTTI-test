@@ -1,7 +1,7 @@
-#include <pybind11/embed.h>
-namespace py = pybind11;
+#include <pybind23/embed.h>
+namespace py = pybind23;
 
-PYBIND11_EMBEDDED_MODULE(test_cmake_build, m) {
+PYBIND23_EMBEDDED_MODULE(test_cmake_build, m) {
     m.def("add", [](int i, int j) { return i + j; });
 }
 

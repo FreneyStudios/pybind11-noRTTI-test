@@ -7,68 +7,69 @@
 
 # Propagate this policy (FindPythonInterp removal) so it can be detected later
 if(NOT CMAKE_VERSION VERSION_LESS "3.27")
-  cmake_policy(GET CMP0148 _pybind11_cmp0148)
+  cmake_policy(GET CMP0148 _pybind23_cmp0148)
 endif()
 
 cmake_minimum_required(VERSION 3.15...4.0)
 
-if(_pybind11_cmp0148)
-  cmake_policy(SET CMP0148 ${_pybind11_cmp0148})
-  unset(_pybind11_cmp0148)
+if(_pybind23_cmp0148)
+  cmake_policy(SET CMP0148 ${_pybind23_cmp0148})
+  unset(_pybind23_cmp0148)
 endif()
 
 # Avoid infinite recursion if tests include this as a subdirectory
 include_guard(GLOBAL)
 
 # Extract project version from source
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/pybind11/detail/common.h"
-     pybind11_version_defines REGEX "#define PYBIND11_VERSION_(MAJOR|MINOR|PATCH) ")
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/pybind23/detail/common.h"
+     pybind23_version_defines REGEX "#define PYBIND23_VERSION_(MAJOR|MINOR|PATCH) ")
 
-foreach(ver ${pybind11_version_defines})
-  if(ver MATCHES [[#define PYBIND11_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$]])
-    set(PYBIND11_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}")
+foreach(ver ${pybind23_version_defines})
+  if(ver MATCHES [[#define PYBIND23_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$]])
+    set(PYBIND23_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}")
   endif()
 endforeach()
 
-if(PYBIND11_VERSION_PATCH MATCHES [[\.([a-zA-Z0-9]+)$]])
-  set(pybind11_VERSION_TYPE "${CMAKE_MATCH_1}")
+if(PYBIND23_VERSION_PATCH MATCHES [[\.([a-zA-Z0-9]+)$]])
+  set(pybind23_VERSION_TYPE "${CMAKE_MATCH_1}")
 endif()
-string(REGEX MATCH "^[0-9]+" PYBIND11_VERSION_PATCH "${PYBIND11_VERSION_PATCH}")
+string(REGEX MATCH "^[0-9]+" PYBIND23_VERSION_PATCH "${PYBIND23_VERSION_PATCH}")
 
 project(
-  pybind11
+  pybind23
   LANGUAGES CXX
-  VERSION "${PYBIND11_VERSION_MAJOR}.${PYBIND11_VERSION_MINOR}.${PYBIND11_VERSION_PATCH}")
+  VERSION "${PYBIND23_VERSION_MAJOR}.${PYBIND23_VERSION_MINOR}.${PYBIND23_VERSION_PATCH}")
 
 # Standard includes
+set(CMAKE_CXX_STANDARD 23)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CMakeDependentOption)
 
-if(NOT pybind11_FIND_QUIETLY)
-  message(STATUS "pybind11 v${pybind11_VERSION} ${pybind11_VERSION_TYPE}")
+if(NOT pybind23_FIND_QUIETLY)
+  message(STATUS "pybind23 v${PYBIND23_VERSION} ${PYBIND23_VERSION_TYPE}")
 endif()
 
-# Check if pybind11 is being used directly or via add_subdirectory
+# Check if pybind23 is being used directly or via add_subdirectory
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   ### Warn if not an out-of-source builds
   if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     set(lines
         "You are building in-place. If that is not what you intended to "
         "do, you can clean the source directory with:\n"
-        "rm -r CMakeCache.txt CMakeFiles/ cmake_uninstall.cmake pybind11Config.cmake "
-        "pybind11ConfigVersion.cmake tests/CMakeFiles/\n")
+        "rm -r CMakeCache.txt CMakeFiles/ cmake_uninstall.cmake pybind23Config.cmake "
+        "pybind23ConfigVersion.cmake tests/CMakeFiles/\n")
     message(AUTHOR_WARNING ${lines})
   endif()
 
-  set(PYBIND11_MASTER_PROJECT ON)
+  set(PYBIND23_MASTER_PROJECT ON)
 
   message(STATUS "CMake ${CMAKE_VERSION}")
 
-  if(DEFINED SKBUILD AND DEFINED ENV{PYBIND11_GLOBAL_SDIST})
+  if(DEFINED SKBUILD AND DEFINED ENV{PYBIND23_GLOBAL_SDIST})
     message(
       FATAL_ERROR
-        "PYBIND11_GLOBAL_SDIST is not supported, use nox -s build_global or a pybind11-global SDist instead."
+        "PYBIND23_GLOBAL_SDIST is not supported, use nox -s build_global or a pybind23-global SDist instead."
     )
   endif()
 
@@ -77,54 +78,54 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
   endif()
 
-  set(pybind11_system "")
+  set(pybind23_system "")
 
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
   if(CMAKE_VERSION VERSION_LESS "3.18")
-    set(_pybind11_findpython_default OFF)
+    set(_pybind23_findpython_default OFF)
   else()
-    set(_pybind11_findpython_default ON)
+    set(_pybind23_findpython_default ON)
   endif()
 else()
-  set(PYBIND11_MASTER_PROJECT OFF)
-  set(pybind11_system SYSTEM)
-  set(_pybind11_findpython_default COMPAT)
+  set(PYBIND23_MASTER_PROJECT OFF)
+  set(pybind23_system SYSTEM)
+  set(_pybind23_findpython_default COMPAT)
 endif()
 
 # Options
-option(PYBIND11_INSTALL "Install pybind11 header files?" ${PYBIND11_MASTER_PROJECT})
-option(PYBIND11_TEST "Build pybind11 test suite?" ${PYBIND11_MASTER_PROJECT})
-option(PYBIND11_NOPYTHON "Disable search for Python" OFF)
-option(PYBIND11_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION
+option(PYBIND23_INSTALL "Install pybind23 header files?" ${PYBIND23_MASTER_PROJECT})
+option(PYBIND23_TEST "Build pybind23 test suite?" ${PYBIND23_MASTER_PROJECT})
+option(PYBIND23_NOPYTHON "Disable search for Python" OFF)
+option(PYBIND23_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION
        "To enforce that a handle_type_name<> specialization exists" OFF)
-option(PYBIND11_SIMPLE_GIL_MANAGEMENT
+option(PYBIND23_SIMPLE_GIL_MANAGEMENT
        "Use simpler GIL management logic that does not support disassociation" OFF)
-set(PYBIND11_INTERNALS_VERSION
+set(PYBIND23_INTERNALS_VERSION
     ""
     CACHE STRING "Override the ABI version, may be used to enable the unstable ABI.")
-option(PYBIND11_USE_CROSSCOMPILING "Respect CMAKE_CROSSCOMPILING" OFF)
+option(PYBIND23_USE_CROSSCOMPILING "Respect CMAKE_CROSSCOMPILING" OFF)
 
-if(PYBIND11_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION)
-  add_compile_definitions(PYBIND11_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION)
+if(PYBIND23_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION)
+  add_compile_definitions(PYBIND23_DISABLE_HANDLE_TYPE_NAME_DEFAULT_IMPLEMENTATION)
 endif()
-if(PYBIND11_SIMPLE_GIL_MANAGEMENT)
-  add_compile_definitions(PYBIND11_SIMPLE_GIL_MANAGEMENT)
+if(PYBIND23_SIMPLE_GIL_MANAGEMENT)
+  add_compile_definitions(PYBIND23_SIMPLE_GIL_MANAGEMENT)
 endif()
 
 cmake_dependent_option(
   USE_PYTHON_INCLUDE_DIR
-  "Install pybind11 headers in Python include directory instead of default installation prefix"
-  OFF "PYBIND11_INSTALL" OFF)
+  "Install pybind23 headers in Python include directory instead of default installation prefix"
+  OFF "PYBIND23_INSTALL" OFF)
 
-set(PYBIND11_FINDPYTHON
-    ${_pybind11_findpython_default}
+set(PYBIND23_FINDPYTHON
+    ${_pybind23_findpython_default}
     CACHE STRING "Force new FindPython - NEW, OLD, COMPAT")
 
-if(PYBIND11_MASTER_PROJECT)
+if(PYBIND23_MASTER_PROJECT)
 
-  # Allow PYTHON_EXECUTABLE if in FINDPYTHON mode and building pybind11's tests
+  # Allow PYTHON_EXECUTABLE if in FINDPYTHON mode and building pybind23's tests
   # (makes transition easier while we support both modes).
-  if(PYBIND11_FINDPYTHON
+  if(PYBIND23_FINDPYTHON
      AND DEFINED PYTHON_EXECUTABLE
      AND NOT DEFINED Python_EXECUTABLE)
     set(Python_EXECUTABLE "${PYTHON_EXECUTABLE}")
@@ -132,11 +133,11 @@ if(PYBIND11_MASTER_PROJECT)
 
   # This is a shortcut that is primarily for the venv cmake preset,
   # but can be used to quickly setup tests manually, too
-  set(PYBIND11_CREATE_WITH_UV
+  set(PYBIND23_CREATE_WITH_UV
       ""
       CACHE STRING "Create a virtualenv if it doesn't exist")
 
-  if(NOT PYBIND11_CREATE_WITH_UV STREQUAL "")
+  if(NOT PYBIND23_CREATE_WITH_UV STREQUAL "")
     set(Python_ROOT_DIR "${CMAKE_CURRENT_BINARY_DIR}/.venv")
     if(EXISTS "${Python_ROOT_DIR}")
       if(EXISTS "${CMAKE_BINARY_DIR}/CMakeCache.txt")
@@ -150,8 +151,8 @@ if(PYBIND11_MASTER_PROJECT)
       find_program(UV uv REQUIRED)
       # CMake 3.19+ would be able to use COMMAND_ERROR_IS_FATAL
       message(
-        STATUS "Creating venv with ${UV} venv -p ${PYBIND11_CREATE_WITH_UV} '${Python_ROOT_DIR}'")
-      execute_process(COMMAND ${UV} venv -p ${PYBIND11_CREATE_WITH_UV} "${Python_ROOT_DIR}"
+        STATUS "Creating venv with ${UV} venv -p ${PYBIND23_CREATE_WITH_UV} '${Python_ROOT_DIR}'")
+      execute_process(COMMAND ${UV} venv -p ${PYBIND23_CREATE_WITH_UV} "${Python_ROOT_DIR}"
                       RESULT_VARIABLE _venv_result)
       if(_venv_result AND NOT _venv_result EQUAL 0)
         message(FATAL_ERROR "uv venv failed with '${_venv_result}'")
@@ -179,89 +180,91 @@ if(PYBIND11_MASTER_PROJECT)
   endif()
 endif()
 
-set(PYBIND11_HEADERS
-    include/pybind11/detail/class.h
-    include/pybind11/detail/common.h
-    include/pybind11/detail/cpp_conduit.h
-    include/pybind11/detail/descr.h
-    include/pybind11/detail/dynamic_raw_ptr_cast_if_possible.h
-    include/pybind11/detail/exception_translation.h
-    include/pybind11/detail/function_record_pyobject.h
-    include/pybind11/detail/init.h
-    include/pybind11/detail/internals.h
-    include/pybind11/detail/native_enum_data.h
-    include/pybind11/detail/pybind11_namespace_macros.h
-    include/pybind11/detail/struct_smart_holder.h
-    include/pybind11/detail/type_caster_base.h
-    include/pybind11/detail/typeid.h
-    include/pybind11/detail/using_smart_holder.h
-    include/pybind11/detail/value_and_holder.h
-    include/pybind11/attr.h
-    include/pybind11/buffer_info.h
-    include/pybind11/cast.h
-    include/pybind11/chrono.h
-    include/pybind11/common.h
-    include/pybind11/complex.h
-    include/pybind11/conduit/pybind11_conduit_v1.h
-    include/pybind11/conduit/pybind11_platform_abi_id.h
-    include/pybind11/conduit/wrap_include_python_h.h
-    include/pybind11/critical_section.h
-    include/pybind11/options.h
-    include/pybind11/eigen.h
-    include/pybind11/eigen/common.h
-    include/pybind11/eigen/matrix.h
-    include/pybind11/eigen/tensor.h
-    include/pybind11/embed.h
-    include/pybind11/eval.h
-    include/pybind11/gil.h
-    include/pybind11/gil_safe_call_once.h
-    include/pybind11/gil_simple.h
-    include/pybind11/iostream.h
-    include/pybind11/functional.h
-    include/pybind11/native_enum.h
-    include/pybind11/numpy.h
-    include/pybind11/operators.h
-    include/pybind11/pybind11.h
-    include/pybind11/pytypes.h
-    include/pybind11/subinterpreter.h
-    include/pybind11/stl.h
-    include/pybind11/stl_bind.h
-    include/pybind11/stl/filesystem.h
-    include/pybind11/trampoline_self_life_support.h
-    include/pybind11/type_caster_pyobject_ptr.h
-    include/pybind11/typing.h
-    include/pybind11/warnings.h)
+set(PYBIND23_HEADERS
+    include/pybind23/attr.h
+    include/pybind23/buffer_info.h
+    include/pybind23/cast.h
+    include/pybind23/chrono.h
+    include/pybind23/common.h
+    include/pybind23/complex.h
+    include/pybind23/conduit/pybind23_conduit_v1.h
+    include/pybind23/conduit/pybind23_platform_abi_id.h
+    include/pybind23/conduit/wrap_include_python_h.h
+    include/pybind23/critical_section.h
+    include/pybind23/detail/class.h
+    include/pybind23/detail/common.h
+    include/pybind23/detail/cpp_conduit.h
+    include/pybind23/detail/descr.h
+    include/pybind23/detail/dynamic_caster.h
+    include/pybind23/detail/dynamic_raw_ptr_cast_if_possible.h
+    include/pybind23/detail/exception_translation.h
+    include/pybind23/detail/function_record_pyobject.h
+    include/pybind23/detail/init.h
+    include/pybind23/detail/internals.h
+    include/pybind23/detail/native_enum_data.h
+    include/pybind23/detail/pybind23_namespace_macros.h
+    include/pybind23/detail/struct_smart_holder.h
+    include/pybind23/detail/type_caster_base.h
+    include/pybind23/detail/type_id_no_rtti.h
+    include/pybind23/detail/typeid.h
+    include/pybind23/detail/using_smart_holder.h
+    include/pybind23/detail/value_and_holder.h
+    include/pybind23/eigen.h
+    include/pybind23/eigen/common.h
+    include/pybind23/eigen/matrix.h
+    include/pybind23/eigen/tensor.h
+    include/pybind23/embed.h
+    include/pybind23/eval.h
+    include/pybind23/functional.h
+    include/pybind23/gil.h
+    include/pybind23/gil_safe_call_once.h
+    include/pybind23/gil_simple.h
+    include/pybind23/iostream.h
+    include/pybind23/native_enum.h
+    include/pybind23/numpy.h
+    include/pybind23/operators.h
+    include/pybind23/options.h
+    include/pybind23/pybind23.h
+    include/pybind23/pytypes.h
+    include/pybind23/stl.h
+    include/pybind23/stl/filesystem.h
+    include/pybind23/stl_bind.h
+    include/pybind23/subinterpreter.h
+    include/pybind23/trampoline_self_life_support.h
+    include/pybind23/type_caster_pyobject_ptr.h
+    include/pybind23/typing.h
+    include/pybind23/warnings.h)
 
 # Compare with grep and warn if mismatched
-if(PYBIND11_MASTER_PROJECT)
+if(PYBIND23_MASTER_PROJECT)
   file(
-    GLOB_RECURSE _pybind11_header_check
+    GLOB_RECURSE _pybind23_header_check
     LIST_DIRECTORIES false
     RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-    CONFIGURE_DEPENDS "include/pybind11/*.h")
-  set(_pybind11_here_only ${PYBIND11_HEADERS})
-  set(_pybind11_disk_only ${_pybind11_header_check})
-  list(REMOVE_ITEM _pybind11_here_only ${_pybind11_header_check})
-  list(REMOVE_ITEM _pybind11_disk_only ${PYBIND11_HEADERS})
-  if(_pybind11_here_only)
-    message(AUTHOR_WARNING "PYBIND11_HEADERS has extra files:" ${_pybind11_here_only})
+    CONFIGURE_DEPENDS "include/pybind23/*.h")
+  set(_pybind23_here_only ${PYBIND23_HEADERS})
+  set(_pybind23_disk_only ${_pybind23_header_check})
+  list(REMOVE_ITEM _pybind23_here_only ${_pybind23_header_check})
+  list(REMOVE_ITEM _pybind23_disk_only ${PYBIND23_HEADERS})
+  if(_pybind23_here_only)
+    message(AUTHOR_WARNING "PYBIND23_HEADERS has extra files:" ${_pybind23_here_only})
   endif()
-  if(_pybind11_disk_only)
-    message(AUTHOR_WARNING "PYBIND11_HEADERS is missing files:" ${_pybind11_disk_only})
+  if(_pybind23_disk_only)
+    message(AUTHOR_WARNING "PYBIND23_HEADERS is missing files:" ${_pybind23_disk_only})
   endif()
 endif()
 
-list(TRANSFORM PYBIND11_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
+list(TRANSFORM PYBIND23_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 # Cache variable so this can be used in parent projects
-set(pybind11_INCLUDE_DIR
+set(pybind23_INCLUDE_DIR
     "${CMAKE_CURRENT_LIST_DIR}/include"
-    CACHE INTERNAL "Directory where pybind11 headers are located")
+    CACHE INTERNAL "Directory where pybind23 headers are located")
 
 # Backward compatible variable for add_subdirectory mode
-if(NOT PYBIND11_MASTER_PROJECT)
-  set(PYBIND11_INCLUDE_DIR
-      "${pybind11_INCLUDE_DIR}"
+if(NOT PYBIND23_MASTER_PROJECT)
+  set(PYBIND23_INCLUDE_DIR
+      "${pybind23_INCLUDE_DIR}"
       CACHE INTERNAL "")
 endif()
 
@@ -271,29 +274,31 @@ endif()
 
 # This section builds targets, but does *not* touch Python
 # Non-IMPORT targets cannot be defined twice
-if(NOT TARGET pybind11_headers)
+if(NOT TARGET pybind23_headers)
   # Build the headers-only target (no Python included):
   # (long name used here to keep this from clashing in subdirectory mode)
-  add_library(pybind11_headers INTERFACE)
-  add_library(pybind11::pybind11_headers ALIAS pybind11_headers) # to match exported target
-  add_library(pybind11::headers ALIAS pybind11_headers) # easier to use/remember
+  add_library(pybind23_headers INTERFACE)
+  add_library(pybind23::pybind23_headers ALIAS pybind23_headers) # to match exported target
+  add_library(pybind23::headers ALIAS pybind23_headers) # easier to use/remember
 
   target_include_directories(
-    pybind11_headers ${pybind11_system} INTERFACE $<BUILD_INTERFACE:${pybind11_INCLUDE_DIR}>
+    pybind23_headers ${pybind23_system} INTERFACE $<BUILD_INTERFACE:${pybind23_INCLUDE_DIR}>
                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-  target_compile_features(pybind11_headers INTERFACE cxx_inheriting_constructors cxx_user_literals
+  target_compile_features(pybind23_headers INTERFACE cxx_inheriting_constructors cxx_user_literals
                                                      cxx_right_angle_brackets)
-  if(NOT "${PYBIND11_INTERNALS_VERSION}" STREQUAL "")
+  target_compile_options(pybind23_headers INTERFACE -fno-rtti)
+  target_compile_definitions(pybind23_headers INTERFACE PYBIND23_NO_RTTI)
+  if(NOT "${PYBIND23_INTERNALS_VERSION}" STREQUAL "")
     target_compile_definitions(
-      pybind11_headers INTERFACE "PYBIND11_INTERNALS_VERSION=${PYBIND11_INTERNALS_VERSION}")
+      pybind23_headers INTERFACE "PYBIND23_INTERNALS_VERSION=${PYBIND23_INTERNALS_VERSION}")
   endif()
 else()
   # It is invalid to install a target twice, too.
-  set(PYBIND11_INSTALL OFF)
+  set(PYBIND23_INSTALL OFF)
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/tools/pybind11Common.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/tools/pybind23Common.cmake")
 # https://github.com/jtojnar/cmake-snips/#concatenating-paths-when-building-pkg-config-files
 # TODO: cmake 3.20 adds the cmake_path() function, which obsoletes this snippet
 include("${CMAKE_CURRENT_SOURCE_DIR}/tools/JoinPaths.cmake")
@@ -305,24 +310,24 @@ elseif(USE_PYTHON_INCLUDE_DIR AND DEFINED PYTHON_INCLUDE_DIR)
   file(RELATIVE_PATH CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX} ${PYTHON_INCLUDE_DIRS})
 endif()
 
-if(PYBIND11_INSTALL)
-  if(DEFINED SKBUILD_PROJECT_NAME AND SKBUILD_PROJECT_NAME STREQUAL "pybind11_global")
-    install(DIRECTORY ${pybind11_INCLUDE_DIR}/pybind11 DESTINATION "${SKBUILD_HEADERS_DIR}")
+if(PYBIND23_INSTALL)
+  if(DEFINED SKBUILD_PROJECT_NAME AND SKBUILD_PROJECT_NAME STREQUAL "pybind23_global")
+    install(DIRECTORY ${pybind23_INCLUDE_DIR}/pybind23 DESTINATION "${SKBUILD_HEADERS_DIR}")
   endif()
-  install(DIRECTORY ${pybind11_INCLUDE_DIR}/pybind11 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-  set(PYBIND11_CMAKECONFIG_INSTALL_DIR
+  install(DIRECTORY ${pybind23_INCLUDE_DIR}/pybind23 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  set(PYBIND23_CMAKECONFIG_INSTALL_DIR
       "${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}"
-      CACHE STRING "install path for pybind11Config.cmake")
+      CACHE STRING "install path for pybind23Config.cmake")
 
   if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
-    set(pybind11_INCLUDEDIR "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+    set(pybind23_INCLUDEDIR "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
   else()
-    set(pybind11_INCLUDEDIR "\$\{PACKAGE_PREFIX_DIR\}/${CMAKE_INSTALL_INCLUDEDIR}")
+    set(pybind23_INCLUDEDIR "\$\{PACKAGE_PREFIX_DIR\}/${CMAKE_INSTALL_INCLUDEDIR}")
   endif()
 
   configure_package_config_file(
     tools/${PROJECT_NAME}Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${PYBIND11_CMAKECONFIG_INSTALL_DIR})
+    INSTALL_DESTINATION ${PYBIND23_CMAKECONFIG_INSTALL_DIR})
 
   # CMake natively supports header-only libraries
   write_basic_package_version_file(
@@ -334,22 +339,22 @@ if(PYBIND11_INSTALL)
     FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
           ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
           tools/FindPythonLibsNew.cmake
-          tools/pybind11Common.cmake
-          tools/pybind11Tools.cmake
-          tools/pybind11NewTools.cmake
-          tools/pybind11GuessPythonExtSuffix.cmake
-    DESTINATION ${PYBIND11_CMAKECONFIG_INSTALL_DIR})
+          tools/pybind23Common.cmake
+          tools/pybind23Tools.cmake
+          tools/pybind23NewTools.cmake
+          tools/pybind23GuessPythonExtSuffix.cmake
+    DESTINATION ${PYBIND23_CMAKECONFIG_INSTALL_DIR})
 
-  if(NOT PYBIND11_EXPORT_NAME)
-    set(PYBIND11_EXPORT_NAME "${PROJECT_NAME}Targets")
+  if(NOT PYBIND23_EXPORT_NAME)
+    set(PYBIND23_EXPORT_NAME "${PROJECT_NAME}Targets")
   endif()
 
-  install(TARGETS pybind11_headers EXPORT "${PYBIND11_EXPORT_NAME}")
+  install(TARGETS pybind23_headers EXPORT "${PYBIND23_EXPORT_NAME}")
 
   install(
-    EXPORT "${PYBIND11_EXPORT_NAME}"
-    NAMESPACE "pybind11::"
-    DESTINATION ${PYBIND11_CMAKECONFIG_INSTALL_DIR})
+    EXPORT "${PYBIND23_EXPORT_NAME}"
+    NAMESPACE "pybind23::"
+    DESTINATION ${PYBIND23_CMAKECONFIG_INSTALL_DIR})
 
   # pkg-config support
   if(NOT prefix_for_pc_file)
@@ -370,14 +375,14 @@ if(PYBIND11_INSTALL)
     endif()
   endif()
   join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
-  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/pybind11.pc.in"
-                 "${CMAKE_CURRENT_BINARY_DIR}/pybind11.pc" @ONLY)
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pybind11.pc"
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/pybind23.pc.in"
+                 "${CMAKE_CURRENT_BINARY_DIR}/pybind23.pc" @ONLY)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pybind23.pc"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig/")
 
   # When building a wheel, include __init__.py's for modules
-  # (see https://github.com/pybind/pybind11/pull/5552)
-  if(DEFINED SKBUILD_PROJECT_NAME AND SKBUILD_PROJECT_NAME STREQUAL "pybind11")
+  # (see https://github.com/pybind/pybind23/pull/5552)
+  if(DEFINED SKBUILD_PROJECT_NAME AND SKBUILD_PROJECT_NAME STREQUAL "pybind23")
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/empty")
     file(TOUCH "${CMAKE_CURRENT_BINARY_DIR}/empty/__init__.py")
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/empty/__init__.py"
@@ -387,7 +392,7 @@ if(PYBIND11_INSTALL)
   endif()
 
   # Uninstall target
-  if(PYBIND11_MASTER_PROJECT)
+  if(PYBIND23_MASTER_PROJECT)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/cmake_uninstall.cmake.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
 
@@ -397,27 +402,27 @@ if(PYBIND11_INSTALL)
 endif()
 
 # BUILD_TESTING takes priority, but only if this is the master project
-if(PYBIND11_MASTER_PROJECT AND DEFINED BUILD_TESTING)
-  if(BUILD_TESTING)
-    if(_pybind11_nopython)
-      message(FATAL_ERROR "Cannot activate tests in NOPYTHON mode")
-    else()
-      add_subdirectory(tests)
-    endif()
-  endif()
-else()
-  if(PYBIND11_TEST)
-    if(_pybind11_nopython)
-      message(FATAL_ERROR "Cannot activate tests in NOPYTHON mode")
-    else()
-      add_subdirectory(tests)
-    endif()
-  endif()
-endif()
+#if(PYBIND23_MASTER_PROJECT AND DEFINED BUILD_TESTING)
+#  if(BUILD_TESTING)
+#    if(_pybind23_nopython)
+#      message(FATAL_ERROR "Cannot activate tests in NOPYTHON mode")
+#    else()
+#      add_subdirectory(tests)
+#    endif()
+#  endif()
+#else()
+#  if(PYBIND23_TEST)
+#    if(_pybind23_nopython)
+#      message(FATAL_ERROR "Cannot activate tests in NOPYTHON mode")
+#    else()
+#      add_subdirectory(tests)
+#    endif()
+#  endif()
+#endif()
 
-# Better symmetry with find_package(pybind11 CONFIG) mode.
-if(NOT PYBIND11_MASTER_PROJECT)
-  set(pybind11_FOUND
+# Better symmetry with find_package(pybind23 CONFIG) mode.
+if(NOT PYBIND23_MASTER_PROJECT)
+  set(pybind23_FOUND
       TRUE
-      CACHE INTERNAL "True if pybind11 and all required components found on the system")
+      CACHE INTERNAL "True if pybind23 and all required components found on the system")
 endif()

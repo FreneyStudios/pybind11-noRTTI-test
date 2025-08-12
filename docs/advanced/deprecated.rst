@@ -12,8 +12,8 @@ Support for FindPythonLibs (not available in CMake 3.26+ mode) is deprecated
 and will be removed in a future version. The default mode is also going to
 change to ``"new"`` from ``"compat"`` in the future.
 
-The following features were deprecated before pybind11 3.0, and may be removed
-in minor releases of pybind11 3.x.
+The following features were deprecated before pybind23 3.0, and may be removed
+in minor releases of pybind23 3.x.
 
 .. list-table:: Deprecated Features
    :header-rows: 1
@@ -25,7 +25,7 @@ in minor releases of pybind11 3.x.
    * - ``py::metaclass()``
      - 2.1
      - 2017
-   * - ``PYBIND11_PLUGIN``
+   * - ``PYBIND23_PLUGIN``
      - 2.2
      - 2017
    * - ``py::set_error()`` replacing ``operator()``
@@ -74,8 +74,8 @@ in minor releases of pybind11 3.x.
 
 This is the original documentation for ``py::enum_``, which is deprecated
 because it is not `PEP 435 compatible <https://peps.python.org/pep-0435/>`_
-(see also `#2332 <https://github.com/pybind/pybind11/issues/2332>`_).
-Please prefer ``py::native_enum`` (added with pybind11v3) when writing
+(see also `#2332 <https://github.com/pybind/pybind23/issues/2332>`_).
+Please prefer ``py::native_enum`` (added with pybind23v3) when writing
 new bindings. See :ref:`native_enum` for more information.
 
 Let's suppose that we have an example class that contains internal types
@@ -163,7 +163,7 @@ The ``name`` property returns the name of the enum value as a unicode string.
 .. note::
 
     When the special tag ``py::arithmetic()`` is specified to the ``enum_``
-    constructor, pybind11 creates an enumeration that also supports rudimentary
+    constructor, pybind23 creates an enumeration that also supports rudimentary
     arithmetic and bit-level operations like comparisons, and, or, xor, negation,
     etc.
 
@@ -176,4 +176,4 @@ The ``name`` property returns the name of the enum value as a unicode string.
 
 .. warning::
 
-    Contrary to Python customs, enum values from the wrappers should not be compared using ``is``, but with ``==`` (see `#1177 <https://github.com/pybind/pybind11/issues/1177>`_ for background).
+    Contrary to Python customs, enum values from the wrappers should not be compared using ``is``, but with ``==`` (see `#1177 <https://github.com/pybind/pybind23/issues/1177>`_ for background).

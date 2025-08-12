@@ -107,11 +107,11 @@ public:
 
     int value;
 };
-PYBIND11_NAMESPACE_BEGIN(pybind11)
-PYBIND11_NAMESPACE_BEGIN(detail)
+PYBIND23_NAMESPACE_BEGIN(pybind11)
+PYBIND23_NAMESPACE_BEGIN(detail)
 template <>
 struct type_caster<MoveOnlyInt> {
-    PYBIND11_TYPE_CASTER(MoveOnlyInt, const_name("MoveOnlyInt"));
+    PYBIND23_TYPE_CASTER(MoveOnlyInt, const_name("MoveOnlyInt"));
     bool load(handle src, bool) {
         value = MoveOnlyInt(src.cast<int>());
         return true;
@@ -123,7 +123,7 @@ struct type_caster<MoveOnlyInt> {
 
 template <>
 struct type_caster<MoveOrCopyInt> {
-    PYBIND11_TYPE_CASTER(MoveOrCopyInt, const_name("MoveOrCopyInt"));
+    PYBIND23_TYPE_CASTER(MoveOrCopyInt, const_name("MoveOrCopyInt"));
     bool load(handle src, bool) {
         value = MoveOrCopyInt(src.cast<int>());
         return true;
@@ -158,8 +158,8 @@ public:
     template <typename T>
     using cast_op_type = pybind11::detail::cast_op_type<T>;
 };
-PYBIND11_NAMESPACE_END(detail)
-PYBIND11_NAMESPACE_END(pybind11)
+PYBIND23_NAMESPACE_END(detail)
+PYBIND23_NAMESPACE_END(pybind11)
 
 namespace {
 
@@ -233,7 +233,7 @@ TEST_SUBMODULE(copy_move_policies, m) {
         d["CopyOnlyInt"] = py::cast(co, py::return_value_policy::reference);
         return d;
     });
-#ifdef PYBIND11_HAS_OPTIONAL
+#ifdef PYBIND23_HAS_OPTIONAL
     // test_move_and_copy_load_optional
     m.attr("has_optional") = true;
     m.def("move_optional", [](std::optional<MoveOnlyInt> o) { return o->value; });

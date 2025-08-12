@@ -8,18 +8,18 @@ For example:
 
 .. code-block:: C++
 
-    #define PYBIND11_VERSION_MAJOR X
-    #define PYBIND11_VERSION_MINOR Y
-    #define PYBIND11_VERSION_MICRO Z
-    #define PYBIND11_VERSION_RELEASE_LEVEL PY_RELEASE_LEVEL_ALPHA
-    #define PYBIND11_VERSION_RELEASE_SERIAL 0
-    #define PYBIND11_VERSION_PATCH Za0
+    #define PYBIND23_VERSION_MAJOR X
+    #define PYBIND23_VERSION_MINOR Y
+    #define PYBIND23_VERSION_MICRO Z
+    #define PYBIND23_VERSION_RELEASE_LEVEL PY_RELEASE_LEVEL_ALPHA
+    #define PYBIND23_VERSION_RELEASE_SERIAL 0
+    #define PYBIND23_VERSION_PATCH Za0
 
-For beta, ``PYBIND11_VERSION_PATCH`` should be ``Zb1``. RC's can be ``Zrc1``.
+For beta, ``PYBIND23_VERSION_PATCH`` should be ``Zb1``. RC's can be ``Zrc1``.
 For a final release, this must be a simple integer.
 
 
-To release a new version of pybind11:
+To release a new version of pybind23:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you don't have nox, you should either use ``pipx run nox`` instead, or use
@@ -27,8 +27,8 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
 
 - Update the version number
 
-  - Update ``PYBIND11_VERSION_MAJOR`` etc. in
-    ``include/pybind11/detail/common.h``. MICRO should be a simple integer.
+  - Update ``PYBIND23_VERSION_MAJOR`` etc. in
+    ``include/pybind23/detail/common.h``. MICRO should be a simple integer.
 
   - Run ``nox -s tests_packaging`` to ensure this was done correctly.
 
@@ -39,7 +39,7 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
   ``nox -s make_changelog``.
 
   - Note that the ``nox -s make_changelog`` command inspects
-    `needs changelog <https://github.com/pybind/pybind11/pulls?q=is%3Apr+is%3Aclosed+label%3A%22needs+changelog%22>`_.
+    `needs changelog <https://github.com/pybind/pybind23/pulls?q=is%3Apr+is%3Aclosed+label%3A%22needs+changelog%22>`_.
 
   - Manually clear the ``needs changelog`` labels using the GitHub web
     interface (very easy: start by clicking the link above).
@@ -50,7 +50,7 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
 - Add a release branch if this is a new MINOR version, or update the existing
   release branch if it is a patch version
 
-  - NOTE: This documentation assumes your ``upstream`` is ``https://github.com/pybind/pybind11.git``
+  - NOTE: This documentation assumes your ``upstream`` is ``https://github.com/pybind/pybind23.git``
 
   - New branch: ``git checkout -b vX.Y``, ``git push -u upstream vX.Y``
 
@@ -61,7 +61,7 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
 
   - ``git tag -a vX.Y.Z -m 'vX.Y.Z release'``
 
-  - ``git grep PYBIND11_VERSION include/pybind11/detail/common.h``
+  - ``git grep PYBIND23_VERSION include/pybind23/detail/common.h``
 
     - Last-minute consistency check: same as tag?
 
@@ -84,7 +84,7 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
   (Note: if you do not use an existing tag, this creates a new lightweight tag
   for you, so you could skip the above step.)
 
-  - GUI method: Under `releases <https://github.com/pybind/pybind11/releases>`_
+  - GUI method: Under `releases <https://github.com/pybind/pybind23/releases>`_
     click "Draft a new release" on the far right, fill in the tag name
     (if you didn't tag above, it will be made here), fill in a release name
     like "Version X.Y.Z", and copy-and-paste the markdown-formatted (!) changelog
@@ -99,10 +99,10 @@ If you don't have nox, you should either use ``pipx run nox`` instead, or use
 
   - Make sure you are on master, not somewhere else: ``git checkout master``
 
-  - Update version macros in ``include/pybind11/detail/common.h`` (set PATCH to
+  - Update version macros in ``include/pybind23/detail/common.h`` (set PATCH to
     ``0a0`` and increment MINOR).
 
-  - Update ``pybind11/_version.py`` to match.
+  - Update ``pybind23/_version.py`` to match.
 
   - Run ``nox -s tests_packaging`` to ensure this was done correctly.
 

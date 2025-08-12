@@ -28,9 +28,9 @@ public:
 };
 
 class PyVirtClass : public VirtClass {
-    void virtual_func() override { PYBIND11_OVERRIDE(void, VirtClass, virtual_func, ); }
+    void virtual_func() override { PYBIND23_OVERRIDE(void, VirtClass, virtual_func, ); }
     void pure_virtual_func() override {
-        PYBIND11_OVERRIDE_PURE(void, VirtClass, pure_virtual_func, );
+        PYBIND23_OVERRIDE_PURE(void, VirtClass, pure_virtual_func, );
     }
 };
 
@@ -117,7 +117,7 @@ TEST_SUBMODULE(gil_scoped, m) {
     });
     m.def("test_multi_acquire_release_cross_module", [](unsigned bits) {
         py::set internals_ids;
-        internals_ids.add(PYBIND11_INTERNALS_ID);
+        internals_ids.add(PYBIND23_INTERNALS_ID);
         {
             py::gil_scoped_release gil_released;
             auto thread_f = [bits, &internals_ids]() {

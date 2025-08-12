@@ -19,7 +19,7 @@ a type ``T`` is ``std::unique_ptr<T>``.
 ``py::smart_holder``
 ====================
 
-Starting with pybind11v3, ``py::smart_holder`` is built into pybind11. It is
+Starting with pybind23v3, ``py::smart_holder`` is built into pybind23. It is
 the recommended ``py::class_`` holder for most situations. However, for
 backward compatibility it is **not** the default holder, and there are no
 plans to make it the default holder in the future.
@@ -86,7 +86,7 @@ However, this will fail with ``py::class_<Example>`` (but works with
 .. note::
 
     The ``reinterpret_cast`` mentioned above is `here
-    <https://github.com/pybind/pybind11/blob/30eb39ed79d1e2eeff15219ac00773034300a5e6/include/pybind11/cast.h#L235>`_.
+    <https://github.com/pybind/pybind23/blob/30eb39ed79d1e2eeff15219ac00773034300a5e6/include/pybind23/cast.h#L235>`_.
     For completeness: The same cast is also applied to ``py::smart_holder``,
     but that is safe, because ``py::smart_holder`` is not templated.
 
@@ -123,9 +123,9 @@ It must be declared at the top namespace level before any binding code:
 
 .. code-block:: cpp
 
-    PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr<T>)
+    PYBIND23_DECLARE_HOLDER_TYPE(T, SmartPtr<T>)
 
-The first argument of :func:`PYBIND11_DECLARE_HOLDER_TYPE` should be a
+The first argument of :func:`PYBIND23_DECLARE_HOLDER_TYPE` should be a
 placeholder name that is used as a template parameter of the second argument.
 Thus, feel free to use any identifier, but use it consistently on both sides;
 also, don't use the name of a type that already exists in your codebase.
@@ -135,7 +135,7 @@ by default. Specify
 
 .. code-block:: cpp
 
-    PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr<T>, true)
+    PYBIND23_DECLARE_HOLDER_TYPE(T, SmartPtr<T>, true)
 
 if ``SmartPtr<T>`` can always be initialized from a ``T*`` pointer without the
 risk of inconsistencies (such as multiple independent ``SmartPtr`` instances
@@ -145,25 +145,25 @@ situation where ``true`` should be passed is when the ``T`` instances use
 
 Please take a look at the :ref:`macro_notes` before using this feature.
 
-By default, pybind11 assumes that your custom smart pointer has a standard
+By default, pybind23 assumes that your custom smart pointer has a standard
 interface, i.e. provides a ``.get()`` member function to access the underlying
-raw pointer. If this is not the case, pybind11's ``holder_helper`` must be
+raw pointer. If this is not the case, pybind23's ``holder_helper`` must be
 specialized:
 
 .. code-block:: cpp
 
     // Always needed for custom holder types
-    PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr<T>)
+    PYBIND23_DECLARE_HOLDER_TYPE(T, SmartPtr<T>)
 
     // Only needed if the type's `.get()` goes by another name
-    namespace PYBIND11_NAMESPACE { namespace detail {
+    namespace PYBIND23_NAMESPACE { namespace detail {
         template <typename T>
         struct holder_helper<SmartPtr<T>> { // <-- specialization
             static const T *get(const SmartPtr<T> &p) { return p.getPointer(); }
         };
     }}
 
-The above specialization informs pybind11 that the custom ``SmartPtr`` class
+The above specialization informs pybind23 that the custom ``SmartPtr`` class
 provides ``.get()`` functionality via ``.getPointer()``.
 
 .. note::

@@ -246,7 +246,7 @@ def test_str(doc):
     assert s1 == s2
 
     malformed_utf8 = b"\x80"
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert m.str_from_object(malformed_utf8) is malformed_utf8
     else:
         assert m.str_from_object(malformed_utf8) == "b'\\x80'"
@@ -422,7 +422,7 @@ def test_accessor_moves():
     if inc_refs:
         assert inc_refs == [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
     else:
-        pytest.skip("Not defined: PYBIND11_HANDLE_REF_DEBUG")
+        pytest.skip("Not defined: PYBIND23_HANDLE_REF_DEBUG")
 
 
 @pytest.mark.xfail("env.GRAALPY", reason="TODO should be fixed on GraalPy side")
@@ -503,14 +503,14 @@ def test_pybind11_str_raw_str():
     valid_orig = "Ǳ"
     valid_utf8 = valid_orig.encode("utf-8")
     valid_cvt = cvt(valid_utf8)
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert valid_cvt is valid_utf8
     else:
         assert type(valid_cvt) is str
         assert valid_cvt == "b'\\xc7\\xb1'"
 
     malformed_utf8 = b"\x80"
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert cvt(malformed_utf8) is malformed_utf8
     else:
         malformed_cvt = cvt(malformed_utf8)
@@ -559,7 +559,7 @@ def test_print(capture):
     assert str(excinfo.value) == "Unable to convert call argument " + (
         "'1' of type 'UnregisteredType' to Python object"
         if detailed_error_messages_enabled
-        else "'1' to Python object (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+        else "'1' to Python object (#define PYBIND23_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
     )
 
 
@@ -690,7 +690,7 @@ def test_isinstance_string_types():
     assert not m.isinstance_pybind11_bytes("")
 
     assert m.isinstance_pybind11_str("")
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert m.isinstance_pybind11_str(b"")
     else:
         assert not m.isinstance_pybind11_str(b"")
@@ -701,7 +701,7 @@ def test_pass_bytes_or_unicode_to_string_types():
     with pytest.raises(TypeError):
         m.pass_to_pybind11_bytes("Str")
 
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert m.pass_to_pybind11_str(b"Bytes") == 5
     else:
         with pytest.raises(TypeError):
@@ -712,7 +712,7 @@ def test_pass_bytes_or_unicode_to_string_types():
     assert m.pass_to_std_string("Str") == 3
 
     malformed_utf8 = b"\x80"
-    if hasattr(m, "PYBIND11_STR_LEGACY_PERMISSIVE"):
+    if hasattr(m, "PYBIND23_STR_LEGACY_PERMISSIVE"):
         assert m.pass_to_pybind11_str(malformed_utf8) == 1
     else:
         with pytest.raises(TypeError):
@@ -1042,7 +1042,7 @@ def test_optional_object_annotations(doc):
 
 
 @pytest.mark.skipif(
-    not m.defined_PYBIND11_TYPING_H_HAS_STRING_LITERAL,
+    not m.defined_PYBIND23_TYPING_H_HAS_STRING_LITERAL,
     reason="C++20 non-type template args feature not available.",
 )
 def test_literal(doc):
@@ -1086,7 +1086,7 @@ def test_literal(doc):
 
 
 @pytest.mark.skipif(
-    not m.defined_PYBIND11_TYPING_H_HAS_STRING_LITERAL,
+    not m.defined_PYBIND23_TYPING_H_HAS_STRING_LITERAL,
     reason="C++20 non-type template args feature not available.",
 )
 def test_typevar(doc):
@@ -1101,7 +1101,7 @@ def test_typevar(doc):
 
 
 @pytest.mark.skipif(
-    not m.defined_PYBIND11_TEST_PYTYPES_HAS_RANGES,
+    not m.defined_PYBIND23_TEST_PYTYPES_HAS_RANGES,
     reason="<ranges> not available.",
 )
 @pytest.mark.parametrize(
@@ -1114,7 +1114,7 @@ def test_tuple_ranges(tested_tuple, expected):
 
 
 @pytest.mark.skipif(
-    not m.defined_PYBIND11_TEST_PYTYPES_HAS_RANGES,
+    not m.defined_PYBIND23_TEST_PYTYPES_HAS_RANGES,
     reason="<ranges> not available.",
 )
 @pytest.mark.parametrize(
@@ -1126,7 +1126,7 @@ def test_list_ranges(tested_list, expected):
 
 
 @pytest.mark.skipif(
-    not m.defined_PYBIND11_TEST_PYTYPES_HAS_RANGES,
+    not m.defined_PYBIND23_TEST_PYTYPES_HAS_RANGES,
     reason="<ranges> not available.",
 )
 @pytest.mark.parametrize(

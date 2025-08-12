@@ -16,7 +16,7 @@ lifetime of objects managed by them. This can lead to issues when creating
 bindings for functions that return a non-trivial type. Just by looking at the
 type information, it is not clear whether Python should take charge of the
 returned value and eventually free its resources, or if this is handled on the
-C++ side. For this reason, pybind11 provides several *return value policy*
+C++ side. For this reason, pybind23 provides several *return value policy*
 annotations that can be passed to the :func:`module_::def` and
 :func:`class_::def` functions. The default policy is
 :enum:`return_value_policy::automatic`.
@@ -36,10 +36,10 @@ Just to illustrate what can go wrong, consider the following simple example:
 What's going on here? When ``get_data()`` is called from Python, the return
 value (a native C++ type) must be wrapped to turn it into a usable Python type.
 In this case, the default return value policy (:enum:`return_value_policy::automatic`)
-causes pybind11 to assume ownership of the static ``_data`` instance.
+causes pybind23 to assume ownership of the static ``_data`` instance.
 
 When Python's garbage collector eventually deletes the Python
-wrapper, pybind11 will also attempt to delete the C++ instance (via ``operator
+wrapper, pybind23 will also attempt to delete the C++ instance (via ``operator
 delete()``) due to the implied ownership. At this point, the entire application
 will come crashing down, though errors could also be more subtle and involve
 silent data corruption.
@@ -54,7 +54,7 @@ implied transfer of ownership, i.e.:
 
 On the other hand, this is not the right policy for many other situations,
 where ignoring ownership could lead to resource leaks.
-As a developer using pybind11, it's important to be familiar with the different
+As a developer using pybind23, it's important to be familiar with the different
 return value policies, including which situation calls for which one of them.
 The following table provides an overview of available policies:
 
@@ -102,7 +102,7 @@ The following table provides an overview of available policies:
 | :enum:`return_value_policy::automatic_reference` | As above, but use policy :enum:`return_value_policy::reference` when the   |
 |                                                  | return value is a pointer. This is the default conversion policy for       |
 |                                                  | function arguments when calling Python functions manually from C++ code    |
-|                                                  | (i.e. via ``handle::operator()``) and the casters in ``pybind11/stl.h``.   |
+|                                                  | (i.e. via ``handle::operator()``) and the casters in ``pybind23/stl.h``.   |
 |                                                  | You probably won't need to use this explicitly.                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
 
@@ -137,9 +137,9 @@ targeted arguments can be passed through the :class:`cpp_function` constructor:
 .. note::
 
     One important aspect of the above policies is that they only apply to
-    instances which pybind11 has *not* seen before, in which case the policy
+    instances which pybind23 has *not* seen before, in which case the policy
     clarifies essential questions about the return value's lifetime and
-    ownership.  When pybind11 knows the instance already (as identified by its
+    ownership.  When pybind23 knows the instance already (as identified by its
     type and address in memory), it will return the existing Python object
     wrapper rather than creating a new copy.
 
@@ -180,9 +180,9 @@ indices start at one, while zero refers to the return value. For methods, index
 index ``2``. Arbitrarily many call policies can be specified. When a ``Nurse``
 with value ``None`` is detected at runtime, the call policy does nothing.
 
-When the nurse is not a pybind11-registered type, the implementation internally
+When the nurse is not a pybind23-registered type, the implementation internally
 relies on the ability to create a *weak reference* to the nurse object. When
-the nurse object is not a pybind11-registered type and does not support weak
+the nurse object is not a pybind23-registered type and does not support weak
 references, an exception will be thrown.
 
 If you use an incorrect argument index, you will get a ``RuntimeError`` saying
@@ -250,7 +250,7 @@ constructor order is left to right and destruction happens in reverse.
 Python objects as arguments
 ===========================
 
-pybind11 exposes all major Python types using thin C++ wrapper classes. These
+pybind23 exposes all major Python types using thin C++ wrapper classes. These
 wrapper classes can also be used as parameters of functions in bindings, which
 makes it possible to directly work with native Python types on the C++ side.
 For instance, the following statement iterates over a Python ``dict``:
@@ -291,7 +291,7 @@ numbers of arguments and keyword arguments:
    def generic(*args, **kwargs):
        ...  # do something with args and kwargs
 
-Such functions can also be created using pybind11:
+Such functions can also be created using pybind23:
 
 .. code-block:: cpp
 
@@ -326,7 +326,7 @@ Default arguments revisited
 ===========================
 
 The section on :ref:`default_args` previously discussed basic usage of default
-arguments using pybind11. One noteworthy aspect of their implementation is that
+arguments using pybind23. One noteworthy aspect of their implementation is that
 default arguments are converted to Python objects right at declaration time.
 Consider the following example:
 
@@ -335,7 +335,7 @@ Consider the following example:
     py::class_<MyClass>("MyClass")
         .def("myFunction", py::arg("arg") = SomeType(123));
 
-In this case, pybind11 must already be set up to deal with values of the type
+In this case, pybind23 must already be set up to deal with values of the type
 ``SomeType`` (via a prior instantiation of ``py::class_<SomeType>``), or an
 exception will be thrown.
 
@@ -439,11 +439,11 @@ examples of conversions are:
 * :ref:`implicit_conversions` declared using ``py::implicitly_convertible<A,B>()``
 * Calling a method accepting a double with an integer argument
 * Calling a ``std::complex<float>`` argument with a non-complex python type
-  (for example, with a float).  (Requires the optional ``pybind11/complex.h``
+  (for example, with a float).  (Requires the optional ``pybind23/complex.h``
   header).
 * Calling a function taking an Eigen matrix reference with a numpy array of the
   wrong type or of an incompatible data layout.  (Requires the optional
-  ``pybind11/eigen.h`` header).
+  ``pybind23/eigen.h`` header).
 
 This behaviour is sometimes undesirable: the binding code may prefer to raise
 an error rather than convert the argument.  This behaviour can be obtained
@@ -537,7 +537,7 @@ The default behaviour when the tag is unspecified is to allow ``None``.
 
     Even when ``.none(true)`` is specified for an argument, ``None`` will be converted to a
     ``nullptr`` *only* for custom and :ref:`opaque <opaque>` types. Pointers to built-in types
-    (``double *``, ``int *``, ...) and STL types (``std::vector<T> *``, ...; if ``pybind11/stl.h``
+    (``double *``, ``int *``, ...) and STL types (``std::vector<T> *``, ...; if ``pybind23/stl.h``
     is included) are copied when converted to C++ (see :doc:`/advanced/cast/overview`) and will
     not allow ``None`` as argument.  To pass optional argument of these copied types consider
     using ``std::optional<T>``
@@ -548,7 +548,7 @@ Overload resolution order
 =========================
 
 When a function or method with multiple overloads is called from Python,
-pybind11 determines which overload to call in two passes.  The first pass
+pybind23 determines which overload to call in two passes.  The first pass
 attempts to call each overload without allowing argument conversion (as if
 every argument had been specified as ``py::arg().noconvert()`` as described
 above).
@@ -560,18 +560,18 @@ an explicit ``py::arg().noconvert()`` attribute in the function definition).
 If the second pass also fails a ``TypeError`` is raised.
 
 Within each pass, overloads are tried in the order they were registered with
-pybind11. If the ``py::prepend()`` tag is added to the definition, a function
+pybind23. If the ``py::prepend()`` tag is added to the definition, a function
 can be placed at the beginning of the overload sequence instead, allowing user
 overloads to proceed built in functions.
 
-What this means in practice is that pybind11 will prefer any overload that does
+What this means in practice is that pybind23 will prefer any overload that does
 not require conversion of arguments to an overload that does, but otherwise
 prefers earlier-defined overloads to later-defined ones.
 
 .. note::
 
-    pybind11 does *not* further prioritize based on the number/pattern of
-    overloaded arguments.  That is, pybind11 does not prioritize a function
+    pybind23 does *not* further prioritize based on the number/pattern of
+    overloaded arguments.  That is, pybind23 does not prioritize a function
     requiring one conversion over one requiring three, but only prioritizes
     overloads requiring no conversion at all to overloads that require
     conversion of at least one argument.

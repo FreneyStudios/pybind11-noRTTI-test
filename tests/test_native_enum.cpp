@@ -46,11 +46,11 @@ enum class func_sig_rendering {};
 
 } // namespace test_native_enum
 
-PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
-PYBIND11_NAMESPACE_BEGIN(detail)
+PYBIND23_NAMESPACE_BEGIN(PYBIND23_NAMESPACE)
+PYBIND23_NAMESPACE_BEGIN(detail)
 
 // Negate this condition to demonstrate "ambiguous template instantiation" compilation error:
-#if defined(PYBIND11_HAS_NATIVE_ENUM)
+#if defined(PYBIND23_HAS_NATIVE_ENUM)
 template <typename ProtoEnumType>
 struct type_caster_enum_type_enabled<
     ProtoEnumType,
@@ -71,11 +71,11 @@ struct type_caster<ProtoEnumType,
         return true;
     }
 
-    PYBIND11_TYPE_CASTER(ProtoEnumType, const_name<ProtoEnumType>());
+    PYBIND23_TYPE_CASTER(ProtoEnumType, const_name<ProtoEnumType>());
 };
 
-PYBIND11_NAMESPACE_END(detail)
-PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)
+PYBIND23_NAMESPACE_END(detail)
+PYBIND23_NAMESPACE_END(PYBIND23_NAMESPACE)
 
 TEST_SUBMODULE(native_enum, m) {
     using namespace test_native_enum;
@@ -243,7 +243,7 @@ TEST_SUBMODULE(native_enum, m) {
         py::enum_<fake>(m, "name_must_be_different_to_reach_desired_code_path");
     });
 
-#if defined(PYBIND11_NEGATE_THIS_CONDITION_FOR_LOCAL_TESTING) && !defined(NDEBUG)
+#if defined(PYBIND23_NEGATE_THIS_CONDITION_FOR_LOCAL_TESTING) && !defined(NDEBUG)
     m.def("native_enum_missing_finalize_failure", []() {
         enum fake { x };
         py::native_enum<fake>(

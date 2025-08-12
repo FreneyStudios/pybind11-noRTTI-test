@@ -1,5 +1,5 @@
-PROJECT_NAME           = pybind11
-INPUT                  = ../include/pybind11/
+PROJECT_NAME           = pybind23
+INPUT                  = ../include/pybind23/
 RECURSIVE              = YES
 
 GENERATE_HTML          = NO
@@ -10,7 +10,7 @@ XML_PROGRAMLISTING     = YES
 
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
-EXPAND_AS_DEFINED      = PYBIND11_RUNTIME_EXCEPTION
+EXPAND_AS_DEFINED      = PYBIND23_RUNTIME_EXCEPTION
 
 ALIASES                = "rst=\verbatim embed:rst"
 ALIASES               += "endrst=\endverbatim"
@@ -18,4 +18,4 @@ ALIASES               += "endrst=\endverbatim"
 QUIET                  = YES
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
-PREDEFINED             = PYBIND11_NOINLINE
+PREDEFINED             = PYBIND23_NOINLINE

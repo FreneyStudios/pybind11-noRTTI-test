@@ -22,7 +22,7 @@
 
 #include <utility>
 
-PYBIND11_WARNING_DISABLE_MSVC(4324)
+PYBIND23_WARNING_DISABLE_MSVC(4324)
 //     warning C4324: structure was padded due to alignment specifier
 
 // test_brace_initialization
@@ -416,9 +416,9 @@ TEST_SUBMODULE(class_, m) {
 
     class TrampolineB : public ProtectedB {
     public:
-        int foo() const override { PYBIND11_OVERRIDE(int, ProtectedB, foo, ); }
-        void *void_foo() override { PYBIND11_OVERRIDE(void *, ProtectedB, void_foo, ); }
-        void *get_self() override { PYBIND11_OVERRIDE(void *, ProtectedB, get_self, ); }
+        int foo() const override { PYBIND23_OVERRIDE(int, ProtectedB, foo, ); }
+        void *void_foo() override { PYBIND23_OVERRIDE(void *, ProtectedB, void_foo, ); }
+        void *get_self() override { PYBIND23_OVERRIDE(void *, ProtectedB, get_self, ); }
     };
 
     class PublicistB : public ProtectedB {
@@ -503,7 +503,7 @@ TEST_SUBMODULE(class_, m) {
     py::class_<StringWrapper>(m, "StringWrapper").def(py::init<std::string>());
     py::implicitly_convertible<std::string, StringWrapper>();
 
-#if defined(PYBIND11_CPP17)
+#if defined(PYBIND23_CPP17)
     struct alignas(1024) Aligned {
         std::uintptr_t ptr() const { return (uintptr_t) this; }
     };
@@ -632,7 +632,7 @@ CHECK_NOALIAS(8);
 CHECK_HOLDER(1, unique);
 CHECK_HOLDER(2, unique);
 CHECK_HOLDER(3, unique);
-#ifndef PYBIND11_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
+#ifndef PYBIND23_RUN_TESTING_WITH_SMART_HOLDER_AS_DEFAULT_BUT_NEVER_USE_IN_PRODUCTION_PLEASE
 CHECK_HOLDER(4, unique);
 CHECK_HOLDER(5, unique);
 #endif
@@ -649,7 +649,7 @@ CHECK_HOLDER(8, shared);
     static_assert(std::is_same<typename Breaks##N::type, BreaksBase<-(N)>>::value,                \
                   "Breaks1 has wrong type!");
 
-#ifdef PYBIND11_NEVER_DEFINED_EVER
+#ifdef PYBIND23_NEVER_DEFINED_EVER
 // Two holder classes:
 typedef py::
     class_<BreaksBase<-1>, std::unique_ptr<BreaksBase<-1>>, std::unique_ptr<BreaksBase<-1>>>
